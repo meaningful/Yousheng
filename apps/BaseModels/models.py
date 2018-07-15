@@ -46,15 +46,130 @@ class CustomerManage(models.Model):
     customQualification = models.CharField(max_length=100)
     annualSales = models.CharField(max_length=100)
 
-
 # <- 客户管理表 End ->
 
 
+# <- 供货商管理表 Begin ->
+# 供应商编号		supplierID
+# 单位名称		supplierName
+# 电话		tel
+# 地址		addr
+# 公司负责人（姓名）		companyChargeName
+# 公司负责人（职务）		companyChargePosition
+# 公司负责人（电话）		companyChargeTel
+# 公司联系人（姓名）		companyContactName
+# 公司联系人（职务）		companyContactPosition
+# 公司联系人（电话）		companyContactTel
+# 客户资质	三证	customQualification
+# 客户资质（税号）		customTaxFileNO
+# 客户资质（开户行）		customBankOfDepsit
+# 客户资质（账号）		customBankAccount
+# 客户资质（联系人）		customContactName
+# 客户资质（手机）		customContactTel
+# 采购品种		purchaseCategory
 
-# 气体编号 ：gasID
-# 气体名称 ：gasName
+
+class Supplier(models.Model):
+    supplierID = models.CharField(max_length=100)
+    supplierName = models.CharField(max_length=100)
+    tel = models.CharField(max_length=100)
+    addr = models.CharField(max_length=100)
+    companyChargeName = models.CharField(max_length=100)
+    companyChargePosition = models.CharField(max_length=100)
+    companyChargeTel = models.CharField(max_length=100)
+    companyContactName = models.CharField(max_length=100)
+    companyContactPosition = models.CharField(max_length=100)
+    companyContactTel = models.CharField(max_length=100)
+    customQualification = models.CharField(max_length=100)
+    customTaxFileNO = models.CharField(max_length=100)
+    customBankOfDepsit = models.CharField(max_length=100)
+    customBankAccount = models.CharField(max_length=100)
+    customContactName = models.CharField(max_length=100)
+    customContactTel = models.CharField(max_length=100)
+    purchaseCategory = models.CharField(max_length=100)
+
+# <- 供货商管理 End ->
+
+# <- 气体管理表 Begin ->
+# 气体编号		gasID
+# 气体名称		gasName
 
 
 class GasManage(models.Model):
     gasID = models.CharField(max_length=100)
     gasName = models.CharField(max_length=100)
+
+# <- 气体管理表 End ->
+
+
+# <- 拖车管理表 Begin ->
+# 车牌号		tractorID
+# 年检时间		annualInspectionTime
+# 保险时间		insuranceTime
+# 车架号		chassisNumber
+# 出厂时间		deliveryTime
+
+
+class TractorManage(models.Model):
+    tractorID = models.CharField(max_length=100)
+    annualInspectionTime = models.DateField()
+    insuranceTime = models.DateField()
+    chassisNumber = models.CharField(max_length=100)
+    deliveryTime = models.CharField(max_length=100)
+
+# <- 拖车管理表 End ->
+
+
+# <- 挂车管理表 Begin ->
+# 挂车号		trailerID
+# 年检时间		annualInspectionTime
+# 保险时间		insuranceTime
+# 车架号		chassisNumber
+# 出厂时间		deliveryTime
+
+
+class TrailerManage(models.Model):
+    trailerID = models.CharField(max_length=100)
+    annualInspectionTime = models.DateField()
+    insuranceTime = models.DateField()
+    chassisNumber = models.CharField(max_length=100)
+    deliveryTime = models.CharField(max_length=100)
+
+# <- 挂车管理表 End ->
+
+
+# <- 公司人员管理表 Begin ->
+# 编号		staffID
+# 姓名		staffName
+# 身份证号		idNumber
+# 入职时间		hiredate
+# 职务		position
+# 照片		photo
+# 人员简历		resume
+# 人员类别	（办公室/司机/押运员）	category
+
+
+class StaffManage(models.Model):
+    staffID = models.CharField(max_length=100)
+    staffName = models.CharField(max_length=100)
+    idNumber = models.CharField(max_length=100)
+    hiredate = models.DateField()
+    position = models.CharField(max_length=100)
+    photo = models.CharField(max_length=100)
+    resume = models.CharField(max_length=100)
+    category = models.CharField(max_length=100)
+
+# <- 公司人员管理表 End ->
+
+
+# <- 用户管理表 Begin ->
+# 用户名		userName
+# 密码		userPassword
+
+
+class UserManage(models.Model):
+    userName = models.CharField(max_length=100)
+    userPassword = models.CharField(max_length=100)
+
+# <- 用户管理表 End ->
+
