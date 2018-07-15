@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'customerManage',
 ]
 
 MIDDLEWARE = [
@@ -75,9 +76,12 @@ WSGI_APPLICATION = 'yousheng.wsgi.application'
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+      'default':{
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': "yousheng",
+            'USER': 'root',
+            'PASSWORD': 'WLW2017test',
+            'HOST': '47.93.228.118',
     }
 }
 
