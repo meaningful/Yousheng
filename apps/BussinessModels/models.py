@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+
 from django.db import models
 
+
 # Create your models here.
+
 
 # salesList【销售单】
 # 销售单编号		salesListID
@@ -25,6 +28,7 @@ from django.db import models
 # 是否已开发票（是/否）		isInvoiced
 # 本单是否入库（是/否）	未入库销售单可修改 ， 已入库销售单只能浏览不能修改。【分支业务：超级管理员可更改已入库的销售单信息 ， 不能删除】	isStoraged
 
+
 class SalesList(models.Model):
     salesListID = models.CharField(max_length=100)
     customName = models.CharField(max_length=100)
@@ -43,6 +47,7 @@ class SalesList(models.Model):
     isInvoiced = models.CharField(max_length=100)
     isStoraged = models.CharField(max_length=100)
 
+
 # materialPurchase 【采购单表】
 # 采购单编号	时间日期+流水ID	purchaseID
 # 供货商		supplierName
@@ -56,6 +61,7 @@ class SalesList(models.Model):
 # 码表数		mileage
 # 日期		date
 # 本单是否入库（是/否）	未入库采购单可修改 ， 已入库采购单只能浏览不能修改。【分支业务：超级管理员可更改已入库的采购单信息，不能删除】	isStoraged
+
 
 class MaterialPurchase(models.Model):
     purchaseID = models.CharField(max_length=100)
@@ -79,6 +85,7 @@ class MaterialPurchase(models.Model):
 # 费用		maintenanceCost
 # 备注		maintenanceComment
 
+
 class VehicleMaintenanceManage(models.Model):
     salesListID = models.CharField(max_length=100)
     vehicleType = models.CharField(max_length=100)
@@ -97,10 +104,11 @@ class VehicleMaintenanceManage(models.Model):
 # wastageManage【损耗校验】
 # 挂车号		trailerID
 # 损耗量 （吨）	默认值为现余量	wastageCount
+
+
 class WastageManage(models.Model):
     trailerID = models.CharField(max_length=100)
     wastageCount = models.CharField(max_length=100)
-
 
 
 # customPaymentInfo[客户充值信息]
@@ -108,6 +116,8 @@ class WastageManage(models.Model):
 # 缴费时间		payTime
 # 缴费金额		payAmount
 # 余额 【计算出来的， 不能改】		balance
+
+
 class CustomPaymentInfo(models.Model):
     customName = models.CharField(max_length=100)
     payTime = models.DateField()
