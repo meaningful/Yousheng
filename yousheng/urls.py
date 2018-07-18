@@ -15,7 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.conf.urls import url
+from django.conf import settings
+from django.conf.urls.static import static
+from . import view
 
 urlpatterns = [
     url('admin/', admin.site.urls),
+    url(r'^$',view.index),
+    url(r'^homePage.html$',view.homePage),
+    url(r'^404.html$',view.unfound),
 ]
+
+urlpatterns += static(settings.STATIC_URL , document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.STATIC_JS, document_root=settings.STATIC_JSROOT)
+urlpatterns += static(settings.STATIC_CSS, document_root=settings.STATIC_CSSROOT)

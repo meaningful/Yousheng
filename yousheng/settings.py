@@ -131,3 +131,21 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+# STATIC_ROOT = '/home/liujie/static'
+STATIC_ROOT = os.path.join(BASE_DIR, 'statics')
+
+STATIC_JS = '/js/'
+STATIC_JSROOT = os.path.join(BASE_DIR,'static/js')
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static/'),
+)
+
+STATIC_CSS = '/css/'
+STATIC_CSSROOT = os.path.join(BASE_DIR,'static/css')
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static/'),
+)
+
+# STATICFILES_DIRS 中不能包含 STATIC_ROOT
