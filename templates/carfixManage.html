@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>汽车修理</title>
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="{% static "css/bootstrap.min14ed.css" %}?v=3.3.6" rel="stylesheet">
+    <link href="{% static "css/font-awesome.min93e3.css" %}?v=4.4.0" rel="stylesheet">
+    <link href="{% static "css/animate.min.css" %}" rel="stylesheet">
+    <link href="{% static "css/style.min862f.css" %}?v=4.1.0" rel="stylesheet">
+     <!-- jqgrid-->
+    <link href="{% static "css/plugins/jqgrid/ui.jqgridffe4.css" %}?0820" rel="stylesheet">
+
+
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <!-- 车辆维修统计 -->
+         <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>车辆维修统计</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="jqGrid_wrapperfixcar">
+                            <table id="table_fixCar"></table>
+                            <div id="pager_fixCar"></div>
+                        </div>
+
+                     </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="{% static "js/jquery.min.js" %}?v=2.1.4"></script>
+    <script src="{% static "js/bootstrap.min.js" %}?v=3.3.6"></script>
+    <script src="{% static "js/plugins/peity/jquery.peity.min.js" %}"></script>
+    <script src="{% static "js/plugins/jqgrid/i18n/grid.locale-cnffe4.js" %}?0820"></script>
+    <script src="{% static "js/plugins/jqgrid/jquery.jqGrid.minffe4.js" %}?0820"></script>
+
+    <script type="text/javascript">
+         function InitFixCarGrid(parameters) {
+             $.jgrid.defaults.styleUI="Bootstrap";
+           var mydata=[{carNo:"鄂A A50L2",carType:"挂车",fixTime:"2017-05-6",cost:"3204.6",fixTopic:"保养",contents:"日常养护"},
+           {carNo:"鄂A A50L2",carType:"挂车",fixTime:"2017-05-6",cost:"3204.6",fixTopic:"保养",contents:"日常养护"},
+           {carNo:"鄂A A50L2",carType:"挂车",fixTime:"2017-05-6",cost:"3204.6",fixTopic:"保养",contents:"日常养护"},
+           {carNo:"鄂A A50L2",carType:"挂车",fixTime:"2017-05-6",cost:"3204.6",fixTopic:"保养",contents:"日常养护"},
+           {carNo:"鄂A A50L2",carType:"挂车",fixTime:"2017-05-6",cost:"3204.6",fixTopic:"保养",contents:"日常养护"},
+           {carNo:"鄂A A50L2",carType:"挂车",fixTime:"2017-05-6",cost:"3204.6",fixTopic:"保养",contents:"日常养护"}
+           ];
+
+           $("#table_fixCar").jqGrid(
+                {  data:mydata,datatype:"local",height:450,autowidth:true,shrinkToFit:true,rowNum:20,rowList:[10,20,30],
+                     colNames:["挂车号/拖车号","类型","维修时间","费用","维修项目","备注"],
+                     colModel:[
+                        {name:"carNo",index:"carNo",editable:true,width:120,sorttype:"int",search:true},
+                        {name:"carType",index:"carType",editable:true,width:90,sorttype:"date"},
+                        {name:"fixTime",index:"fixTime",editable:true,width:100 , sorttype:"date",formatter:"date"},
+                        {name:"cost",index:"cost",editable:true,width:80,align:"right",sorttype:"float",formatter:"number"},
+                        {name:"fixTopic",index:"fixTopic",editable:true,width:80,align:"right"},
+                        {name:"contents",index:"contents",editable:true,width:80,align:"right"}],
+                    pager:"#pager_fixCar",viewrecords:true,caption:"车辆维修统计",add:true,edit:true,addtext:"Add",edittext:"Edit",hidegrid:false
+                }
+            );
+
+           $("#table_fixCar").jqGrid("navGrid","#pager_fixCar",{edit:true,add:true,del:true,search:true},{height:200,reloadAfterSubmit:true});
+           $(window).bind("resize",function(){
+            var width=$(".jqGrid_wrapperfixcar").width();
+            $("#table_fixCar").setGridWidth(width)}) ;
+
+        };
+
+        $(document).ready(function(){InitFixCarGrid();}) ;
+
+
+    </script>
+</body>
+
+</html>

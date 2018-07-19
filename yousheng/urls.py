@@ -23,9 +23,12 @@ urlpatterns = [
     url('admin/', admin.site.urls),
     url(r'^$',view.index),
     url(r'^homePage.html$',view.homePage),
+    url(r'^carfixManage.html$',view.carfixManage),
+    url(r'^customManage.html$',view.customManage),
+    url(r'^materialPurchase.html$',view.materialPurchase),
+    url(r'^monthWastage.html$',view.monthWastage),
+    url(r'^saleform.html$',view.saleform),
     url(r'^404.html$',view.unfound),
 ]
 
-urlpatterns += static(settings.STATIC_URL , document_root=settings.STATIC_ROOT)
-urlpatterns += static(settings.STATIC_JS, document_root=settings.STATIC_JSROOT)
-urlpatterns += static(settings.STATIC_CSS, document_root=settings.STATIC_CSSROOT)
+urlpatterns += static(settings.STATIC_URL , document_root=settings.STATIC_ROOTS)

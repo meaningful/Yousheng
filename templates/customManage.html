@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>首页</title>
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="{% static "css/bootstrap.min14ed.css" %}?v=3.3.6" rel="stylesheet">
+    <link href="{% static "css/font-awesome.min93e3.css" %}?v=4.4.0" rel="stylesheet">
+    <link href="{% static "css/animate.min.css" %}" rel="stylesheet">
+    <link href="{% static "css/style.min862f.css" %}?v=4.1.0" rel="stylesheet">
+     <!-- jqgrid-->
+    <link href="{% static "css/plugins/jqgrid/ui.jqgridffe4.css" %}?0820" rel="stylesheet">
+
+
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <!-- 客户管理 -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>客户管理</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="jqGrid_wrapper">
+                            <table id="table_list_2"></table>
+                            <div id="pager_list_2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="{% static "js/jquery.min.js" %}?v=2.1.4"></script>
+    <script src="{% static "js/bootstrap.min.js" %}?v=3.3.6"></script>
+    <script src="{% static "js/plugins/peity/jquery.peity.min.js" %}"></script>
+    <script src="{% static "js/plugins/jqgrid/i18n/grid.locale-cnffe4.js" %}?0820"></script>
+    <script src="{% static "js/plugins/jqgrid/jquery.jqGrid.minffe4.js" %}?0820"></script>
+
+    <script type="text/javascript">
+        function InitCustomerManageGrid(parameters) {
+           $.jgrid.defaults.styleUI="Bootstrap";
+           var mydata=[{hangye:"化工",companyxingzi:"股份有限公司",yongqizhonglei:"液氮",cuguansize:"100",hezuoleixing:"合资",level:"3",hetong:"HT_2017-10",payZhouqi:"365天",fuzePeople:"张三", contactPeople:"李四",zizi:"甲级",xiaoshoue:"20000万"},
+           {hangye:"机械",companyxingzi:"股份有限公司",yongqizhonglei:"液氮",cuguansize:"100",hezuoleixing:"合资",level:"3",hetong:"HT_2017-10",payZhouqi:"365天",fuzePeople:"张三", contactPeople:"李四",zizi:"甲级",xiaoshoue:"20000万"},
+           {hangye:"航天",companyxingzi:"股份有限公司",yongqizhonglei:"液氮",cuguansize:"100",hezuoleixing:"合资",level:"3",hetong:"HT_2017-10",payZhouqi:"365天",fuzePeople:"张三", contactPeople:"李四",zizi:"甲级",xiaoshoue:"20000万"},
+           {hangye:"机械",companyxingzi:"股份有限公司",yongqizhonglei:"液氮",cuguansize:"100",hezuoleixing:"合资",level:"3",hetong:"HT_2017-10",payZhouqi:"365天",fuzePeople:"张三", contactPeople:"李四",zizi:"甲级",xiaoshoue:"20000万"},
+           {hangye:"航天",companyxingzi:"股份有限公司",yongqizhonglei:"液氮",cuguansize:"100",hezuoleixing:"合资",level:"3",hetong:"HT_2017-10",payZhouqi:"365天",fuzePeople:"张三", contactPeople:"李四",zizi:"甲级",xiaoshoue:"20000万"},
+           {hangye:"机械",companyxingzi:"股份有限公司",yongqizhonglei:"液氮",cuguansize:"100",hezuoleixing:"合资",level:"3",hetong:"HT_2017-10",payZhouqi:"365天",fuzePeople:"张三", contactPeople:"李四",zizi:"甲级",xiaoshoue:"20000万"},
+           {hangye:"航天",companyxingzi:"股份有限公司",yongqizhonglei:"液氮",cuguansize:"100",hezuoleixing:"合资",level:"3",hetong:"HT_2017-10",payZhouqi:"365天",fuzePeople:"张三", contactPeople:"李四",zizi:"甲级",xiaoshoue:"20000万"}
+           ];
+
+           $("#table_list_2").jqGrid(
+            {  data:mydata,datatype:"local",height:450,autowidth:true,shrinkToFit:true,rowNum:20,rowList:[10,20,30],
+                 colNames:["所属行业","公司性质","用气种类","储罐大小","合作类型","等级","合同","付款周期","公司负责人","公司联系人","客户资质","年销售额"],
+                 colModel:[
+                    {name:"hangye",index:"hangye",editable:true,width:120,sorttype:"int",search:true},
+                    {name:"companyxingzi",index:"companyxingzi",editable:true,width:90,sorttype:"date"},
+                    {name:"yongqizhonglei",index:"yongqizhonglei",editable:true,width:100},
+                    {name:"cuguansize",index:"cuguansize",editable:true,width:80,align:"right",sorttype:"float",formatter:"number"},
+                    {name:"hezuoleixing",index:"hezuoleixing",editable:true,width:80,align:"right",sorttype:"float"},
+                    {name:"level",index:"level",editable:true,width:80,align:"right",sorttype:"float"},
+                    {name:"hetong",index:"hetong",editable:true,width:100,sortable:false},
+                    {name:"payZhouqi",index:"payZhouqi",editable:true,width:100,sortable:false},
+                    {name:"fuzePeople",index:"fuzePeople",editable:true,width:100,sortable:false},
+                    {name:"contactPeople",index:"contactPeople",editable:true,width:100,sortable:false},
+                    {name:"zizi",index:"zizi",editable:true,width:100,sortable:false},
+                    {name:"xiaoshoue",index:"xiaoshoue",editable:true,width:100,sortable:false}],
+                pager:"#pager_list_2",viewrecords:true,caption:"客户管理",add:true,edit:true,addtext:"Add",edittext:"Edit",hidegrid:false
+            });
+
+           $("#table_list_2").jqGrid("navGrid","#pager_list_2",{edit:true,add:true,del:true,search:true},{height:200,reloadAfterSubmit:true});
+           $(window).bind("resize",function(){var width=$(".jqGrid_wrapper").width();$("#table_list_2").setGridWidth(width)}) ;
+
+        };
+
+         $(document).ready(function(){InitCustomerManageGrid();}) ;
+
+
+    </script>
+</body>
+
+</html>
