@@ -50,32 +50,31 @@
     <script type="text/javascript">
         function InitCustomerManageGrid(parameters) {
            $.jgrid.defaults.styleUI="Bootstrap";
-           var mydata=[{hangye:"化工",companyxingzi:"股份有限公司",yongqizhonglei:"液氮",cuguansize:"100",hezuoleixing:"合资",level:"3",hetong:"HT_2017-10",payZhouqi:"365天",fuzePeople:"张三", contactPeople:"李四",zizi:"甲级",xiaoshoue:"20000万"},
-           {hangye:"机械",companyxingzi:"股份有限公司",yongqizhonglei:"液氮",cuguansize:"100",hezuoleixing:"合资",level:"3",hetong:"HT_2017-10",payZhouqi:"365天",fuzePeople:"张三", contactPeople:"李四",zizi:"甲级",xiaoshoue:"20000万"},
-           {hangye:"航天",companyxingzi:"股份有限公司",yongqizhonglei:"液氮",cuguansize:"100",hezuoleixing:"合资",level:"3",hetong:"HT_2017-10",payZhouqi:"365天",fuzePeople:"张三", contactPeople:"李四",zizi:"甲级",xiaoshoue:"20000万"},
-           {hangye:"机械",companyxingzi:"股份有限公司",yongqizhonglei:"液氮",cuguansize:"100",hezuoleixing:"合资",level:"3",hetong:"HT_2017-10",payZhouqi:"365天",fuzePeople:"张三", contactPeople:"李四",zizi:"甲级",xiaoshoue:"20000万"},
-           {hangye:"航天",companyxingzi:"股份有限公司",yongqizhonglei:"液氮",cuguansize:"100",hezuoleixing:"合资",level:"3",hetong:"HT_2017-10",payZhouqi:"365天",fuzePeople:"张三", contactPeople:"李四",zizi:"甲级",xiaoshoue:"20000万"},
-           {hangye:"机械",companyxingzi:"股份有限公司",yongqizhonglei:"液氮",cuguansize:"100",hezuoleixing:"合资",level:"3",hetong:"HT_2017-10",payZhouqi:"365天",fuzePeople:"张三", contactPeople:"李四",zizi:"甲级",xiaoshoue:"20000万"},
-           {hangye:"航天",companyxingzi:"股份有限公司",yongqizhonglei:"液氮",cuguansize:"100",hezuoleixing:"合资",level:"3",hetong:"HT_2017-10",payZhouqi:"365天",fuzePeople:"张三", contactPeople:"李四",zizi:"甲级",xiaoshoue:"20000万"}
-           ];
+           var mydata={{ showData|safe }};
 
            $("#table_list_2").jqGrid(
             {  data:mydata,datatype:"local",height:450,autowidth:true,shrinkToFit:true,rowNum:20,rowList:[10,20,30],
-                 colNames:["所属行业","公司性质","用气种类","储罐大小","合作类型","等级","合同","付款周期","公司负责人","公司联系人","客户资质","年销售额"],
+                 colNames:["客户编号","名称","电话","地址","税号","开户行","账号","传真","所属行业","公司性质","合作类型	【直供， 共建，中间站]","等级","合同","付款周期","公司负责人","公司联系人","客户资质","年销售额"],
                  colModel:[
-                    {name:"hangye",index:"hangye",editable:true,width:120,sorttype:"int",search:true},
-                    {name:"companyxingzi",index:"companyxingzi",editable:true,width:90,sorttype:"date"},
-                    {name:"yongqizhonglei",index:"yongqizhonglei",editable:true,width:100},
-                    {name:"cuguansize",index:"cuguansize",editable:true,width:80,align:"right",sorttype:"float",formatter:"number"},
-                    {name:"hezuoleixing",index:"hezuoleixing",editable:true,width:80,align:"right",sorttype:"float"},
-                    {name:"level",index:"level",editable:true,width:80,align:"right",sorttype:"float"},
-                    {name:"hetong",index:"hetong",editable:true,width:100,sortable:false},
-                    {name:"payZhouqi",index:"payZhouqi",editable:true,width:100,sortable:false},
-                    {name:"fuzePeople",index:"fuzePeople",editable:true,width:100,sortable:false},
-                    {name:"contactPeople",index:"contactPeople",editable:true,width:100,sortable:false},
-                    {name:"zizi",index:"zizi",editable:true,width:100,sortable:false},
-                    {name:"xiaoshoue",index:"xiaoshoue",editable:true,width:100,sortable:false}],
-                pager:"#pager_list_2",viewrecords:true,caption:"客户管理",add:true,edit:true,addtext:"Add",edittext:"Edit",hidegrid:false
+                    {name:"customID",index:"customID",editable:true,width:100,sortable:false},
+                    {name:"customName",index:"customName",editable:true,width:100,sortable:false},
+                    {name:"tel",index:"tel",editable:true,width:100,sortable:false},
+                    {name:"addr",index:"addr",editable:true,width:120,sorttype:"int",search:true},
+                    {name:"taxFileNO",index:"taxFileNO",editable:true,width:100},
+                    {name:"bankOfDepsit",index:"bankOfDepsit",editable:true,width:100,sortable:false},
+                    {name:"bankAccount",index:"bankAccount",editable:true,width:100,sortable:false},
+                    {name:"fax",index:"fax",editable:true,width:80,align:"right",sorttype:"float"},
+                    {name:"industryField",index:"industryField",editable:true,width:100,sortable:false},
+                    {name:"companyNature",index:"companyNature",editable:true,width:80,align:"right",sorttype:"float"},
+                    {name:"consocationMode",index:"consocationMode",editable:true,width:90,sorttype:"date"},
+                    {name:"level",index:"level",editable:true,width:100,sortable:false},
+                    {name:"contract",index:"contract",editable:true,width:80,align:"right",sorttype:"float",formatter:"number"},
+                    {name:"payCycle",index:"payCycle",editable:true,width:100,sorttype:"date",formatter:"date"},
+                    {name:"companyCharge",index:"companyCharge",editable:true,width:100,sortable:false},
+                    {name:"companyContact",index:"companyContact",editable:true,width:100,sortable:false},
+                    {name:"customQualification",index:"customQualification",editable:true,width:100,sortable:false},
+                    {name:"annualSales",index:"annualSales",editable:true,width:100,sortable:false}],
+                pager:"#pager_list_2",viewrecords:true,caption:"客户管理",add:true,edit:true,addtext:"Add",edittext:"Edit",hidegrid:false,editurl:"./editCustomManage",
             });
 
            $("#table_list_2").jqGrid("navGrid","#pager_list_2",{edit:true,add:true,del:true,search:true},{height:200,reloadAfterSubmit:true});

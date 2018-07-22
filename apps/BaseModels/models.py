@@ -48,6 +48,9 @@ class CustomerManage(models.Model):
     customQualification = models.CharField(max_length=100)
     annualSales = models.CharField(max_length=100)
 
+    def __repr__(self):
+        return repr((self.customID, self.customName, self.tel))
+
 # <- 客户管理表 End ->
 
 
