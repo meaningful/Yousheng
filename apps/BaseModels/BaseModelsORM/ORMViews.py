@@ -95,6 +95,13 @@ class StaffManageDBUtils(object):
         session.commit()
         session.close()
 
+    def delete(self, delId):
+        session = DBSession()
+        item_to_del = session.query(StaffManage).filter_by(id=delId).first()
+        session.delete(item_to_del)
+        session.commit()
+        session.close()
+
     def queryAll(self):
         session = DBSession()
         queryAll = session.query(StaffManage).all()
@@ -108,18 +115,55 @@ class StaffManageDBUtils(object):
 
 # <- 公司人员管理表 End ->
 
-# <- 用户管理表 Begin ->
-# 用户名		userName
-# 密码		userPassword
+
+# <- 气体管理表 Begin ->
+# 气体编号		gasID
+# 气体名称		gasName
 
 
-class UserManage(Base):
-    __tablename__ = 'BaseModels_usermanage'
+class GasManage(Base):
+    __tablename__ = 'BaseModels_gasmanage'
 
-    # 表的结构:
     id = Column(Integer, primary_key=True, autoincrement=True)
-    userName = Column(String(128))
-    userPassword = Column(String(128))
+    gasID = Column(String(128))
+    gasName = Column(String(128))
 
 
+class GasManageDBUtils(object):
+    def add(self, gas):
+        if not isinstance(gas, GasManage):
+            raise TypeError('The parameter gas is not instance of the GasManage instance')
+        session = DBSession()
+        session.add(gas)
+        session.commit()
+        session.close()
 
+    def delete(self, delId):
+        session = DBSession()
+        item_to_del = session.query(GasManage).filter_by(id=delId).first()
+        session.delete(item_to_del)
+        session.commit()
+        session.close()
+
+    def update(self, updateId, gas):
+        if not isinstance(gas, GasManage):
+            raise TypeError('The parameter gas is not instance of the GasManage instance')
+        session = DBSession()
+        item_to_update = session.query(GasManage).filter_by(id=updateId).first()
+        item_to_update.gasID = gas.gasID
+        item_to_update.gasName = gas.gasName
+        session.commit()
+        session.close()
+
+    def queryAll(self):
+        session = DBSession()
+        queryAll = session.query(GasManage).all()
+        allGas = []
+        for item in queryAll:
+            gas_json = json.dumps(object2dict(item), cls=DateEncoder)
+            staff = json.loads(gas_json)
+            allGas.append(staff)
+        session.close()
+        return allGas
+
+# <- 气体管理表 End ->

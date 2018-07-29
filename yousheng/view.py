@@ -2,12 +2,13 @@ from django.shortcuts import render
 import datetime
 import json
 import ast
-from apps.BaseModels.models import StaffManage,GasManage,TrailerManage,Supplier,TractorManage
-from apps.BussinessModels.models import SalesList,VehicleMaintenanceManage,WastageManage,MaterialPurchase,CustomPaymentInfo
-from apps.BaseModels.models import CustomerManage,GasManage
+from apps.BaseModels.models import StaffManage, CustomerManage, TrailerManage, Supplier, TractorManage
+from apps.BussinessModels.models import SalesList, VehicleMaintenanceManage, WastageManage, MaterialPurchase, CustomPaymentInfo
 from apps.BaseModels.BaseModelsORM.ORMViews import StaffManageDBUtils, StaffManage
+from apps.BaseModels.BaseModelsORM.ORMViews import GasManageDBUtils, GasManage
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.http import HttpResponse
+
 
 def json_default(value):
     if isinstance(value, datetime.date):
@@ -37,7 +38,7 @@ def carfixManage(request):
 def staffManage(request):
     ormUtils = StaffManageDBUtils()
     allStaffs = ormUtils.queryAll()
-    return render(request, "staffManage.html" ,{'showData': json.dumps(allStaffs)})
+    return render(request, "staffManage.html", {'showData': json.dumps(allStaffs)})
     # allStaffs = []
     # for staff in ormUtils.queryAll():
     #     # aa = json.dumps(staff, default=json_default)
@@ -48,13 +49,14 @@ def staffManage(request):
 
 
 def gasManage(request):
-    allGas = []
-    for gas in GasManage.objects.all():
-        aa = json.dumps(gas, default=json_default)
-        bb = json.loads(aa)
-        allGas.append(bb)
+    ormUtils = GasManageDBUtils()
+    allGas = ormUtils.queryAll()
+    # for gas in GasManage.objects.all():
+    #     aa = json.dumps(gas, default=json_default)
+    #     bb = json.loads(aa)
+    #     allGas.append(bb)
 
-    return render(request, "gasManage.html" ,{'showData': json.dumps(allGas)})
+    return render(request, "gasManage.html", {'showData': json.dumps(allGas)})
 
 def customManage(request):
     allCustom = []
@@ -201,8 +203,8 @@ def editCustomManage(request):
 
 @csrf_exempt
 def editStaffManage(request):
-    mode = request.POST.get('oper', '')
-    editDBUtils = StaffManageDBUtils()
+    mode = request.POST.get('oper')
+    editDBStaffUtils = StaffManageDBUtils()
     if mode == 'add':
         staffID = request.POST.get('staffID')
         staffName = request.POST.get('staffName')
@@ -217,33 +219,50 @@ def editStaffManage(request):
                             position=position, photo=photo, resume=resume, category=category)
 
         # staff.save()
-        editDBUtils.add(staff)
+        editDBStaffUtils.add(staff)
 
     # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
     # 待修改
         return HttpResponse("OK")
 
     if mode == 'del':
-        staffID = request.POST.get('staffID')
-        print(staffID)
+        delId = request.POST.get('id')
+        editDBStaffUtils.delete(delId)
 
         return HttpResponse("OK")
 
 
+
+
 @csrf_exempt
 def editGasManage(request):
-    mode = request.POST.get('oper', '')
+    mode = request.POST.get('oper')
+    editDBGasUtils = GasManageDBUtils()
     if mode == 'add':
         gasID = request.POST.get('gasID')
         gasName = request.POST.get('gasName')
 
         gas = GasManage(gasID=gasID, gasName=gasName)
+        editDBGasUtils.add(gas)
+        # gas.save()
 
-        gas.save()
+        # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
+        # 待修改
+        return HttpResponse("OK")
 
-    # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
-    # 待修改
-    return HttpResponse("OK")
+    if mode == 'del':
+        delId = request.POST.get('id')
+        editDBGasUtils.delete(delId)
+        return HttpResponse("OK")
+
+    if mode == 'edit':
+        updateId = request.POST.get('id')
+        gasID = request.POST.get('gasID')
+        gasName = request.POST.get('gasName')
+        editDBGasUtils.update(updateId, GasManage(gasID=gasID, gasName=gasName))
+        return HttpResponse("OK")
+
+
 
 @csrf_exempt
 def editTrailerManage(request):
