@@ -1,119 +1,79 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-    <title>基本表单</title>
+    <title>销售单</title>
 
-    <link rel="shortcut icon" href="{% static "favicon.ico" %}"> <link href="{% static "css/bootstrap.min14ed.css" %}?v=3.3.6" rel="stylesheet">
+    <link rel="shortcut icon" href="favicon.ico"> <link href="{% static "css/bootstrap.min14ed.css" %}?v=3.3.6" rel="stylesheet">
     <link href="{% static "css/font-awesome.min93e3.css" %}?v=4.4.0" rel="stylesheet">
-    <link href="{% static "css/plugins/iCheck/custom.css" %}" rel="stylesheet">
     <link href="{% static "css/animate.min.css" %}" rel="stylesheet">
     <link href="{% static "css/style.min862f.css" %}?v=4.1.0" rel="stylesheet">
-
+    <link href="{% static "css/plugins/jqgrid/ui.jqgridffe4.css" %}?0820" rel="stylesheet">
 </head>
-
-<body class="gray-bg">
+<body>
     <div class="wrapper wrapper-content animated fadeInRight">
-        <!-- 原料采购单 -->
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="ibox float-e-margins">
-                                <div class="ibox-title">
-                                    <h5>原料采购单</h5>
-                                </div>
-                                <div class="ibox-content">
-                                    <form class="form-horizontal">
-                                        <p>原料采购计划录入： </p>
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">采购单编号</label>
-                                            <div class="col-sm-8">
-                                                <input type="text" placeholder="时间日期+流水ID" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">供货商</label>
-                                            <div class="col-sm-8">
-                                                <input type="text" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">品种</label>
-                                            <div class="col-sm-8">
-                                                <input type="text" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">拖车号</label>
-                                            <div class="col-sm-8">
-                                                <input type="text" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">挂车号</label>
-                                            <div class="col-sm-8">
-                                                <input type="text" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">司机</label>
-                                            <div class="col-sm-8">
-                                                <input type="text" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">押运员</label>
-                                            <div class="col-sm-8">
-                                                <input type="text" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">数量</label>
-                                            <div class="col-sm-8">
-                                                <input type="text" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">单价</label>
-                                            <div class="col-sm-8">
-                                                <input type="text" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">码表数</label>
-                                            <div class="col-sm-8">
-                                                <input type="text" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">日期</label>
-                                            <div class="col-sm-8">
-                                                <input type="text" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-offset-3 col-sm-8">
-                                                <button class="btn btn-sm btn-white" type="submit">提交表单 </button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
+        <!-- 采购单 -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>采购单</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="jqGrid_wrapper">
+                            <table id="table_list_2"></table>
+                            <div id="pager_list_2"></div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="{% static "js/jquery.min.js" %}?v=2.1.4"></script>
     <script src="{% static "js/bootstrap.min.js" %}?v=3.3.6"></script>
-    <script src="{% static "js/plugins/iCheck/icheck.min.js" %}"></script>
-    <script>
-        // $(document).ready(function(){$(".i-checks").iCheck({checkboxClass:"icheckbox_square-green",radioClass:"iradio_square-green",})});
-    </script>
-</body>
+    <script src="{% static "js/plugins/peity/jquery.peity.min.js" %}"></script>
+    <script src="{% static "js/plugins/jqgrid/i18n/grid.locale-cnffe4.js" %}?0820"></script>
+    <script src="{% static "js/plugins/jqgrid/jquery.jqGrid.minffe4.js" %}?0820"></script>
 
+<script type="text/javascript">
+        function InitCustomerManageGrid(parameters) {
+           $.jgrid.defaults.styleUI="Bootstrap";
+           var mydata = {{ showData|safe }};
+
+           $("#table_list_2").jqGrid(
+            {  data:mydata,datatype:"local",height:450,autowidth:true,shrinkToFit:true,rowNum:20,rowList:[10,20,30],
+                 colNames:["采购单编号","供货商","品种","拖车号","挂车号","司机","押运员","数量","单价","码表数","日期","是否入库"],
+                 colModel:[
+                    {name:"purchaseID",index:"purchaseID",editable:true,width:100,sortable:false},
+                    {name:"supplierName",index:"supplierName",editable:true,width:100,sortable:false},
+                    {name:"category",index:"category",editable:true,width:100,sortable:false},
+                    {name:"tractorID",index:"tractorID",editable:true,width:100,sortable:false},
+                    {name:"trailerID",index:"trailerID",editable:true,width:100},
+
+                    {name:"driverName",index:"driverName",editable:true,width:100,sortable:false},
+                    {name:"supercargo",index:"supercargo",editable:true,width:100},
+                    {name:"count",index:"count",editable:true,width:100,sortable:false},
+                    {name:"unitPrice",index:"unitPrice",editable:true,width:100,sortable:false},
+                    {name:"mileage",index:"mileage",editable:true,width:100,sortable:false},
+                    {name:"date",index:"date",editable:true,width:100,sorttype:"date",formatter:"date"},
+                    {name:"isStoraged",index:"isStoraged",editable:true,width:100,sortable:false}],
+                pager:"#pager_list_2",viewrecords:true,caption:"采购单",add:true,edit:true,addtext:"Add",edittext:"Edit",hidegrid:false,editurl:"./editSalesList",
+            });
+
+           $("#table_list_2").jqGrid("navGrid","#pager_list_2",{edit:true,add:true,del:true,search:true},{height:200,reloadAfterSubmit:true});
+           $(window).bind("resize",function(){var width=$(".jqGrid_wrapper").width();$("#table_list_2").setGridWidth(width)}) ;
+
+        };
+
+         $(document).ready(function(){InitCustomerManageGrid();}) ;
+
+
+    </script>
+
+</body>
 </html>

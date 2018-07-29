@@ -3,7 +3,7 @@ import datetime
 import json
 import ast
 from apps.BaseModels.models import CustomerManage,StaffManage,GasManage,TrailerManage,Supplier,TractorManage
-from apps.BussinessModels.models import SalesList,VehicleMaintenanceManage,WastageManage
+from apps.BussinessModels.models import SalesList,VehicleMaintenanceManage,WastageManage,MaterialPurchase
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.http import HttpResponse
 
@@ -115,6 +115,15 @@ def wastageManage(request):
         allWastageManage.append(bb)
 
     return render(request, "wastageManage.html" ,{'showData': json.dumps(allWastageManage)})
+
+def materialPurchase(request):
+    allmaterialPurchase = []
+    for materialpurchase in MaterialPurchase.objects.all():
+        aa = json.dumps(materialpurchase, default=json_default)
+        bb = json.loads(aa)
+        allmaterialPurchase.append(bb)
+
+    return render(request, "materialPurchase.html", {'showData': json.dumps(allmaterialPurchase)})
 
 @csrf_exempt
 def editCustomManage(request):
@@ -347,7 +356,7 @@ def editWastageManage(request):
         trailerID= request.POST.get('trailerID')
         wastageCount = request.POST.get('wastageCount')
 
-        vehicleMaintenanceManage = VehicleMaintenanceManage(trailerID=trailerID, wastageCount=wastageCount)
+        wastageManage = WastageManage(trailerID=trailerID, wastageCount=wastageCount)
 
         wastageManage.save()
 
@@ -356,9 +365,39 @@ def editWastageManage(request):
     return HttpResponse("OK")
 
 
+@csrf_exempt
+def editmaterialPurchaseManage(request):
+    mode = request.POST.get('oper', '')
+    if mode == 'add':
+        purchaseID= request.POST.get('purchaseID')
+        supplierName= request.POST.get('supplierName')
+        category = request.POST.get('category')
+        tractorID = request.POST.get('tractorID')
+        trailerID = request.POST.get('trailerID')
+        driverName= request.POST.get('driverName')
+        supercargo = request.POST.get('supercargo')
+        count = request.POST.get('count')
+        unitPrice = request.POST.get('unitPrice')
+        mileage = request.POST.get('mileage')
+        date = request.POST.get('date')
+        isStoraged = request.POST.get('isStoraged')
 
-def materialPurchase(request):
-    return render(request,"materialPurchase.html")
+        materialPurchaseManage = MaterialPurchase(purchaseID=purchaseID,supplierName=supplierName,
+                                                  category=category,tractorID=tractorID,
+                                                  trailerID=trailerID,driverName=driverName,
+                                                  supercargo=supercargo,count=count,
+                                                  unitPrice=unitPrice,mileage=mileage,
+                                                  date=date,isStoraged=isStoraged)
+
+
+        materialPurchaseManage.save()
+
+    # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
+    # 待修改
+    return HttpResponse("OK")
+
+
+
 
 def monthWastage(request):
     return render(request,"monthWastage.html")
