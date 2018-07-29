@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-    <title>损耗校验</title>
+    <title>客户充值信息</title>
 
     <link rel="shortcut icon" href="favicon.ico"> <link href="{% static "css/bootstrap.min14ed.css" %}?v=3.3.6" rel="stylesheet">
     <link href="{% static "css/font-awesome.min93e3.css" %}?v=4.4.0" rel="stylesheet">
@@ -16,12 +16,12 @@
 </head>
 <body>
     <div class="wrapper wrapper-content animated fadeInRight">
-        <!-- 损耗校验 -->
+        <!-- 客户充值信息 -->
         <div class="row">
             <div class="col-lg-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>损耗校验</h5>
+                        <h5>客户充值信息</h5>
                     </div>
                     <div class="ibox-content">
                         <div class="jqGrid_wrapper">
@@ -47,12 +47,14 @@
 
            $("#table_list_2").jqGrid(
             {  data:mydata,datatype:"local",height:450,autowidth:true,shrinkToFit:true,rowNum:20,rowList:[10,20,30],
-                 colNames:["挂车号","损耗量（吨）"],
+                 colNames:["客户名","缴费时间","缴费金额","余额"],
                  colModel:[
-                    {name:"trailerID",index:"trailerID",editable:true,width:100,sortable:false},
-                    {name:"wastageCount",index:"wastageCount",editable:true,width:100,sortable:false},
+                    {name:"customName",index:"customName",editable:true,width:100,sortable:false},
+                    {name:"payTime",index:"payTime",editable:true,width:100,sorttype:"date",formatter:"date"}],
+                    {name:"payAmount",index:"payAmount",editable:true,width:100,sortable:false},
+                    {name:"balance",index:"balance",editable:true,width:100,sortable:false},
                  ],
-                pager:"#pager_list_2",viewrecords:true,caption:"损耗校验",add:true,edit:true,addtext:"Add",edittext:"Edit",hidegrid:false,editurl:"./editWastageManage",
+                pager:"#pager_list_2",viewrecords:true,caption:"客户充值信息",add:true,edit:true,addtext:"Add",edittext:"Edit",hidegrid:false,editurl:"./editCustomPaymentInfo",
             });
 
            $("#table_list_2").jqGrid("navGrid","#pager_list_2",{edit:true,add:true,del:true,search:true},{height:200,reloadAfterSubmit:true});
