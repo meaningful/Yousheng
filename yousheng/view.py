@@ -2,7 +2,7 @@ from django.shortcuts import render
 import datetime
 import json
 import ast
-from apps.BaseModels.models import CustomerManage,StaffManage,GasManage,TrailerManage,TractorManage
+from apps.BaseModels.models import CustomerManage,StaffManage,GasManage,TrailerManage,Supplier,TractorManage
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.http import HttpResponse
 
@@ -77,6 +77,15 @@ def tractorManage(request):
         bb = json.loads(aa)
         allTractor.append(bb)
     return render(request, "tractorManage.html", {'showData': json.dumps(allTractor)})
+
+def supplier(request):
+    allSupplier = []
+    for supplier in Supplier.objects.all():
+        aa = json.dumps(supplier, default=json_default)
+        bb = json.loads(aa)
+        allSupplier.append(bb)
+
+    return render(request, "supplier.html" ,{'showData': json.dumps(allSupplier)})
 
 @csrf_exempt
 def editCustomManage(request):
@@ -204,6 +213,42 @@ def editTractorManage(request):
         tractor = TractorManage(tractorID=tractorID, annualInspectionTime=annualInspectionTime, insuranceTime=insuranceTime, chassisNumber=chassisNumber, deliveryTime=deliveryTime)
 
         tractor.save()
+
+    # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
+    # 待修改
+    return HttpResponse("OK")
+
+
+
+@csrf_exempt
+def editSupplier(request):
+    mode = request.POST.get('oper', '')
+    if mode == 'add':
+        supplierID = request.POST.get('supplierID')
+        supplierName = request.POST.get('supplierName')
+        tel = request.POST.get('tel')
+        addr = request.POST.get('addr')
+        companyChargeName = request.POST.get('companyChargeName')
+        companyChargePosition = request.POST.get('companyChargePosition')
+        companyChargeTel = request.POST.get('companyChargeTel')
+        companyContactName = request.POST.get('companyContactName')
+        companyContactPosition = request.POST.get('companyContactPosition')
+        companyContactTel = request.POST.get('companyContactTel')
+        customQualification = request.POST.get('customQualification')
+        customTaxFileNO = request.POST.get('customTaxFileNO')
+        customBankOfDepsit = request.POST.get('customBankOfDepsit')
+        customBankAccount = request.POST.get('customBankAccount')
+        customContactName = request.POST.get('customContactName')
+        customContactTel = request.POST.get('customContactTel')
+        purchaseCategory = request.POST.get('purchaseCategory')
+
+        supplier = Supplier(supplierID=supplierID, supplierName=supplierName,tel=tel,addr=addr,companyChargeName=companyChargeName,companyChargePosition=companyChargePosition,
+                            companyChargeTel=companyChargeTel,companyContactName=companyContactName,companyContactPosition=companyContactPosition,companyContactTel=companyContactTel,
+                            customQualification=customQualification,customTaxFileNO=customTaxFileNO,customBankOfDepsit=customBankOfDepsit,customBankAccount=customBankAccount,
+                            customContactName=customContactName,customContactTel=customContactTel,purchaseCategory=purchaseCategory
+                            )
+
+        supplier.save()
 
     # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
     # 待修改
