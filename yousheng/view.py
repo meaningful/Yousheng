@@ -3,6 +3,7 @@ import datetime
 import json
 import ast
 from apps.BaseModels.models import CustomerManage,StaffManage,GasManage,TrailerManage,Supplier,TractorManage
+from apps.BussinessModels.models import SalesList,VehicleMaintenanceManage
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.http import HttpResponse
 
@@ -86,6 +87,25 @@ def supplier(request):
         allSupplier.append(bb)
 
     return render(request, "supplier.html" ,{'showData': json.dumps(allSupplier)})
+
+def salesList(request):
+    allSalesList = []
+    for salesList in Supplier.objects.all():
+        aa = json.dumps(salesList, default=json_default)
+        bb = json.loads(aa)
+        allSalesList.append(bb)
+
+    return render(request, "salesList.html" ,{'showData': json.dumps(allSalesList)})
+
+
+def vehicleMaintenanceManage(request):
+    allVehicleMaintenanceManage = []
+    for vehicleMaintenanceManage in Supplier.objects.all():
+        aa = json.dumps(salesList, default=json_default)
+        bb = json.loads(aa)
+        allVehicleMaintenanceManage.append(bb)
+
+    return render(request, "vehicleMaintenanceManage.html" ,{'showData': json.dumps(allVehicleMaintenanceManage)})
 
 @csrf_exempt
 def editCustomManage(request):
@@ -256,9 +276,60 @@ def editSupplier(request):
 
 
 
+@csrf_exempt
+def editSalesList(request):
+    mode = request.POST.get('oper', '')
+    if mode == 'add':
+        salesListID = request.POST.get('salesListID')
+        customName = request.POST.get('customName')
+        customID = request.POST.get('customID')
+        customBalance = request.POST.get('customBalance')
+        purchaseID = request.POST.get('purchaseID')
+        category = request.POST.get('category')
+        tractorID = request.POST.get('tractorID')
+        trailerID = request.POST.get('trailerID')
+        driverName = request.POST.get('driverName')
+        supercargo = request.POST.get('supercargo')
+        count = request.POST.get('count')
+        unitPrice = request.POST.get('unitPrice')
+        mileage = request.POST.get('mileage')
+        date = request.POST.get('date')
+        comment = request.POST.get('comment')
+        isInvoiced = request.POST.get('isInvoiced')
+        isStoraged = request.POST.get('isStoraged')
+
+        salesList = SalesList(salesListID=salesListID, customName=customName,customID=customID,customBalance=customBalance,
+                              purchaseID=purchaseID,category=category,tractorID=tractorID,trailerID=trailerID,
+                              driverName=driverName,supercargo=supercargo,count=count,unitPrice=unitPrice,
+                              mileage=mileage,date=date,comment=comment,isInvoiced=isInvoiced,isStoraged=isStoraged
+                            )
+
+        salesList.save()
+
+    # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
+    # 待修改
+    return HttpResponse("OK")
 
 
+@csrf_exempt
+def editVehicleMaintenanceManage(request):
+    mode = request.POST.get('oper', '')
+    if mode == 'add':
+        vehicleType= request.POST.get('vehicleType')
+        vehicleID = request.POST.get('vehicleID')
+        maintenanceDate = request.POST.get('maintenanceDate')
+        maintenanceItems = request.POST.get('maintenanceItems')
+        maintenanceCost = request.POST.get('maintenanceCost')
+        maintenanceComment = request.POST.get('maintenanceComment')
 
+        vehicleMaintenanceManage = VehicleMaintenanceManage(vehicleType=vehicleType, vehicleID=vehicleID, maintenanceDate=maintenanceDate,
+                                maintenanceItems=maintenanceItems, maintenanceCost=maintenanceCost,maintenanceComment=maintenanceComment)
+
+        vehicleMaintenanceManage.save()
+
+    # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
+    # 待修改
+    return HttpResponse("OK")
 
 
 
