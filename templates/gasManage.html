@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-    <title>公司人员管理</title>
+    <title>气体管理</title>
 
     <link rel="shortcut icon" href="favicon.ico"> <link href="{% static "css/bootstrap.min14ed.css" %}?v=3.3.6" rel="stylesheet">
     <link href="{% static "css/font-awesome.min93e3.css" %}?v=4.4.0" rel="stylesheet">
@@ -16,12 +16,12 @@
 </head>
 <body>
     <div class="wrapper wrapper-content animated fadeInRight">
-        <!-- 公司人员管理 -->
+        <!-- 气体管理 -->
         <div class="row">
             <div class="col-lg-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>公司人员管理</h5>
+                        <h5>气体管理</h5>
                     </div>
                     <div class="ibox-content">
                         <div class="jqGrid_wrapper">
@@ -47,17 +47,11 @@
 
            $("#table_list_2").jqGrid(
             {  data:mydata,datatype:"local",height:450,autowidth:true,shrinkToFit:true,rowNum:20,rowList:[10,20,30],
-                 colNames:["编号","姓名","身份证号","入职时间","职务","照片","人员简历","人员类别"],
+                 colNames:["气体编号","气体名称"],
                  colModel:[
-                    {name:"staffID",index:"staffID",editable:true,width:100,sortable:false},
-                    {name:"staffName",index:"staffName",editable:true,width:100,sortable:false},
-                    {name:"idNumber",index:"idNumber",editable:true,width:100,sortable:false},
-                    {name:"hiredate",index:"hiredate",editable:true,width:100,sorttype:"date",formatter:"date"},
-                    {name:"position",index:"position",editable:true,width:100},
-                    {name:"photo",index:"photo",editable:true,width:100,sortable:false},
-                    {name:"resume",index:"resume",editable:true,width:100,sortable:false},
-                    {name:"category",index:"category",editable:true,width:80,align:"right",sortable:false}],
-                pager:"#pager_list_2",viewrecords:true,caption:"公司人员管理",add:true,edit:true,addtext:"Add",edittext:"Edit",hidegrid:false,editurl:"./editStaffManage",
+                    {name:"gasID",index:"gasID",editable:true,width:100,sortable:false},
+                    {name:"gasName",index:"gasID",editable:true,width:100,sortable:false}],
+                pager:"#pager_list_2",viewrecords:true,caption:"气体管理",add:true,edit:true,addtext:"Add",edittext:"Edit",hidegrid:false,editurl:"./editGasManage",
             });
 
            $("#table_list_2").jqGrid("navGrid","#pager_list_2",{edit:true,add:true,del:true,search:true},{height:200,reloadAfterSubmit:true});

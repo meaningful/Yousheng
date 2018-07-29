@@ -2,7 +2,7 @@ from django.shortcuts import render
 import datetime
 import json
 import ast
-from apps.BaseModels.models import CustomerManage,StaffManage
+from apps.BaseModels.models import CustomerManage,StaffManage,GasManage
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.http import HttpResponse
 
@@ -39,6 +39,16 @@ def staffManage(request):
         allStaffs.append(bb)
 
     return render(request, "staffManage.html" ,{'showData': json.dumps(allStaffs)})
+
+
+def gasManage(request):
+    allGas = []
+    for gas in GasManage.objects.all():
+        aa = json.dumps(gas, default=json_default)
+        bb = json.loads(aa)
+        allGas.append(bb)
+
+    return render(request, "gasManage.html" ,{'showData': json.dumps(allGas)})
 
 def customManage(request):
     allCustom = []
@@ -125,6 +135,22 @@ def editStaffManage(request):
                             position=position, photo=photo, resume=resume, category=category)
 
         staff.save()
+
+    # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
+    # 待修改
+    return HttpResponse("OK")
+
+
+@csrf_exempt
+def editGasManage(request):
+    mode = request.POST.get('oper', '')
+    if mode == 'add':
+        gasID = request.POST.get('gasID')
+        gasName = request.POST.get('gasName')
+
+        gas = GasManage(gasID=gasID, gasName=gasName)
+
+        gas.save()
 
     # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
     # 待修改
