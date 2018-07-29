@@ -3,7 +3,7 @@ import datetime
 import json
 import ast
 from apps.BaseModels.models import CustomerManage,StaffManage,GasManage,TrailerManage,Supplier,TractorManage
-from apps.BussinessModels.models import SalesList,VehicleMaintenanceManage,WastageManage
+from apps.BussinessModels.models import SalesList,VehicleMaintenanceManage,WastageManage,CustomPaymentInfo
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.http import HttpResponse
 
@@ -115,6 +115,15 @@ def wastageManage(request):
         allWastageManage.append(bb)
 
     return render(request, "wastageManage.html" ,{'showData': json.dumps(allWastageManage)})
+
+def customPaymentInfo(request):
+    allCustomPaymentInfo = []
+    for customPaymentInfo in CustomPaymentInfo.objects.all():
+        aa = json.dumps(customPaymentInfo, default=json_default)
+        bb = json.loads(aa)
+        allCustomPaymentInfo.append(bb)
+
+    return render(request, "customPaymentInfo.html" ,{'showData': json.dumps(allCustomPaymentInfo)})
 
 @csrf_exempt
 def editCustomManage(request):
@@ -355,6 +364,22 @@ def editWastageManage(request):
     # 待修改
     return HttpResponse("OK")
 
+@csrf_exempt
+def editCustomPaymentInfo(request):
+    mode = request.POST.get('oper', '')
+    if mode == 'add':
+        customName= request.POST.get('customName')
+        payTime = request.POST.get('payTime')
+        payAmount= request.POST.get('payAmount')
+        balance = request.POST.get('balance')
+
+        customPaymentInfo = CustomPaymentInfo(customName=customName, payTime=payTime,payAmount=payAmount,balance=balance)
+
+        customPaymentInfo.save()
+
+    # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
+    # 待修改
+    return HttpResponse("OK")
 
 
 def materialPurchase(request):
