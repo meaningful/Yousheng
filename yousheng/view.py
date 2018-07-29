@@ -100,7 +100,7 @@ def salesList(request):
 
 def vehicleMaintenanceManage(request):
     allVehicleMaintenanceManage = []
-    for vehicleMaintenanceManage in Supplier.objects.all():
+    for vehicleMaintenanceManage in VehicleMaintenanceManage.objects.all():
         aa = json.dumps(salesList, default=json_default)
         bb = json.loads(aa)
         allVehicleMaintenanceManage.append(bb)
