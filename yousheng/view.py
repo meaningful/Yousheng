@@ -90,7 +90,7 @@ def supplier(request):
 
 def salesList(request):
     allSalesList = []
-    for salesList in Supplier.objects.all():
+    for salesList in SalesList.objects.all():
         aa = json.dumps(salesList, default=json_default)
         bb = json.loads(aa)
         allSalesList.append(bb)
@@ -301,7 +301,6 @@ def editSalesList(request):
         salesListID = request.POST.get('salesListID')
         customName = request.POST.get('customName')
         customID = request.POST.get('customID')
-        customBalance = request.POST.get('customBalance')
         purchaseID = request.POST.get('purchaseID')
         category = request.POST.get('category')
         tractorID = request.POST.get('tractorID')
@@ -316,11 +315,12 @@ def editSalesList(request):
         isInvoiced = request.POST.get('isInvoiced')
         isStoraged = request.POST.get('isStoraged')
 
-        salesList = SalesList(salesListID=salesListID, customName=customName,customID=customID,customBalance=customBalance,
+        salesList = SalesList(salesListID=salesListID, customName=customName,customID=customID,
                               purchaseID=purchaseID,category=category,tractorID=tractorID,trailerID=trailerID,
                               driverName=driverName,supercargo=supercargo,count=count,unitPrice=unitPrice,
-                              mileage=mileage,date=date,comment=comment,isInvoiced=isInvoiced,isStoraged=isStoraged
-                            )
+                              mileage=mileage,date=date,
+                              comment=comment,isInvoiced=isInvoiced,
+                              isStoraged=isStoraged)
 
         salesList.save()
 
