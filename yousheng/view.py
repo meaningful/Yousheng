@@ -356,7 +356,7 @@ def editWastageManage(request):
         trailerID= request.POST.get('trailerID')
         wastageCount = request.POST.get('wastageCount')
 
-        vehicleMaintenanceManage = VehicleMaintenanceManage(trailerID=trailerID, wastageCount=wastageCount)
+        wastageManage = WastageManage(trailerID=trailerID, wastageCount=wastageCount)
 
         wastageManage.save()
 
