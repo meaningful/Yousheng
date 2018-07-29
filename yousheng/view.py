@@ -3,7 +3,7 @@ import datetime
 import json
 import ast
 from apps.BaseModels.models import CustomerManage,StaffManage,GasManage,TrailerManage,Supplier,TractorManage
-from apps.BussinessModels.models import SalesList,VehicleMaintenanceManage
+from apps.BussinessModels.models import SalesList,VehicleMaintenanceManage,WastageManage
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.http import HttpResponse
 
@@ -106,6 +106,15 @@ def vehicleMaintenanceManage(request):
         allVehicleMaintenanceManage.append(bb)
 
     return render(request, "vehicleMaintenanceManage.html" ,{'showData': json.dumps(allVehicleMaintenanceManage)})
+
+def wastageManage(request):
+    allWastageManage = []
+    for wastageManage in WastageManage.objects.all():
+        aa = json.dumps(wastageManage, default=json_default)
+        bb = json.loads(aa)
+        allWastageManage.append(bb)
+
+    return render(request, "wastageManage.html" ,{'showData': json.dumps(allWastageManage)})
 
 @csrf_exempt
 def editCustomManage(request):
@@ -326,6 +335,21 @@ def editVehicleMaintenanceManage(request):
                                 maintenanceItems=maintenanceItems, maintenanceCost=maintenanceCost,maintenanceComment=maintenanceComment)
 
         vehicleMaintenanceManage.save()
+
+    # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
+    # 待修改
+    return HttpResponse("OK")
+
+@csrf_exempt
+def editWastageManage(request):
+    mode = request.POST.get('oper', '')
+    if mode == 'add':
+        trailerID= request.POST.get('trailerID')
+        wastageCount = request.POST.get('wastageCount')
+
+        vehicleMaintenanceManage = VehicleMaintenanceManage(trailerID=trailerID, wastageCount=wastageCount)
+
+        wastageManage.save()
 
     # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
     # 待修改
