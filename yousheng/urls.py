@@ -45,8 +45,8 @@ urlpatterns = [
     url(r'^editVehicleMaintenanceManage', view.editVehicleMaintenanceManage),
     url(r'^wastageManage', view.wastageManage),
     url(r'^editWastageManage', view.editWastageManage),
-    url(r'^customPaymentInfo', view.wastageManage),
-    url(r'^editWastageManage', view.editWastageManage),
+    url(r'^customPaymentInfo', view.customPaymentInfo),
+    url(r'^editCustomPaymentInfo', view.editCustomPaymentInfo),
 ]
 
 urlpatterns += static(settings.STATIC_URL , document_root=settings.STATIC_ROOTS)
