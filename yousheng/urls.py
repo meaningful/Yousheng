@@ -35,6 +35,7 @@ urlpatterns = [
     url(r'^gasManage', view.gasManage),
     url(r'^editGasManage', view.editGasManage),
     url(r'^trailerManage', view.trailerManage),
+    url(r'^tractorManage', view.tractorManage),
     url(r'^editTrailerManage', view.editTrailerManage),
 ]
 

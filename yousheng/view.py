@@ -2,7 +2,7 @@ from django.shortcuts import render
 import datetime
 import json
 import ast
-from apps.BaseModels.models import CustomerManage,StaffManage,GasManage,TrailerManage
+from apps.BaseModels.models import CustomerManage,StaffManage,GasManage,TrailerManage,TractorManage
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.http import HttpResponse
 
@@ -69,6 +69,14 @@ def trailerManage(request):
         allTrailer.append(bb)
 
     return render(request, "trailerManage.html" ,{'showData': json.dumps(allTrailer)})
+
+def tractorManage(request):
+    allTractor = []
+    for tractor in TractorManage.objects.all():
+        aa = json.dumps(tractor,default=json_default)
+        bb = json.loads(aa)
+        allTractor.append(bb)
+    return render(request, "tractorManage.html", {'showData': json.dumps(allTractor)})
 
 @csrf_exempt
 def editCustomManage(request):
@@ -183,6 +191,23 @@ def editTrailerManage(request):
     # 待修改
     return HttpResponse("OK")
 
+@csrf_exempt
+def editTractorManage(request):
+    mode = request.POST.get('oper', '')
+    if mode == 'add':
+        tractorID= request.POST.get('tractorID')
+        annualInspectionTime = request.POST.get('annualInspectionTime')
+        insuranceTime = request.POST.get('insuranceTime')
+        chassisNumber = request.POST.get('chassisNumber')
+        deliveryTime = request.POST.get('deliveryTime')
+
+        tractor = TractorManage(tractorID=tractorID, annualInspectionTime=annualInspectionTime, insuranceTime=insuranceTime, chassisNumber=chassisNumber, deliveryTime=deliveryTime)
+
+        tractor.save()
+
+    # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
+    # 待修改
+    return HttpResponse("OK")
 
 
 
