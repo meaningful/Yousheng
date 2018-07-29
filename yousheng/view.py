@@ -2,8 +2,9 @@ from django.shortcuts import render
 import datetime
 import json
 import ast
-from apps.BaseModels.models import CustomerManage
+from apps.BaseModels.models import CustomerManage,StaffManage
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.http import HttpResponse
 
 def json_default(value):
     if isinstance(value, datetime.date):
@@ -28,6 +29,16 @@ def unfound(request):
 
 def carfixManage(request):
     return render(request,"carfixManage.html")
+
+
+def staffManage(request):
+    allStaffs = []
+    for staff in StaffManage.objects.all():
+        aa = json.dumps(staff, default=json_default)
+        bb = json.loads(aa)
+        allStaffs.append(bb)
+
+    return render(request, "staffManage.html" ,{'showData': json.dumps(allStaffs)})
 
 def customManage(request):
     allCustom = []
@@ -95,6 +106,37 @@ def editCustomManage(request):
          annualSales = request.POST.get('annualSales', '')
 
      return 1 ;
+
+
+@csrf_exempt
+def editStaffManage(request):
+    mode = request.POST.get('oper', '')
+    if mode == 'add':
+        staffID = request.POST.get('staffID')
+        staffName = request.POST.get('staffName')
+        idNumber = request.POST.get('idNumber')
+        hiredate = request.POST.get('hiredate')
+        position = request.POST.get('position')
+        photo = request.POST.get('photo')
+        resume = request.POST.get('resume')
+        category = request.POST.get('category')
+
+        staff = StaffManage(staffID=staffID, staffName=staffName, idNumber=idNumber, hiredate=hiredate,
+                            position=position, photo=photo, resume=resume, category=category)
+
+        staff.save()
+
+    # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
+    # 待修改
+    return HttpResponse("OK")
+
+
+
+
+
+
+
+
 
 
 

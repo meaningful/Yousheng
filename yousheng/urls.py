@@ -30,6 +30,8 @@ urlpatterns = [
     url(r'^saleform.html$',view.saleform),
     url(r'^404.html$',view.unfound),
     url(r'^editCustomManage$',view.editCustomManage),
+    url(r'^staffManage', view.staffManage),
+    url(r'^editStaffManage', view.editStaffManage),
 ]
 
 urlpatterns += static(settings.STATIC_URL , document_root=settings.STATIC_ROOTS)
