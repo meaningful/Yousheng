@@ -3,7 +3,7 @@ import datetime
 import json
 import ast
 from apps.BaseModels.models import CustomerManage,StaffManage,GasManage,TrailerManage,Supplier,TractorManage
-from apps.BussinessModels.models import SalesList,VehicleMaintenanceManage,WastageManage,MaterialPurchase
+from apps.BussinessModels.models import SalesList,VehicleMaintenanceManage,WastageManage,MaterialPurchase,CustomPaymentInfo
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.http import HttpResponse
 
@@ -124,6 +124,17 @@ def materialPurchase(request):
         allmaterialPurchase.append(bb)
 
     return render(request, "materialPurchase.html", {'showData': json.dumps(allmaterialPurchase)})
+
+
+
+def customPaymentInfo(request):
+    allCustomPaymentInfo = []
+    for customPaymentInfo in CustomPaymentInfo.objects.all():
+        aa = json.dumps(customPaymentInfo, default=json_default)
+        bb = json.loads(aa)
+        allCustomPaymentInfo.append(bb)
+
+    return render(request, "customPaymentInfo.html" ,{'showData': json.dumps(allCustomPaymentInfo)})
 
 @csrf_exempt
 def editCustomManage(request):
@@ -301,7 +312,6 @@ def editSalesList(request):
         salesListID = request.POST.get('salesListID')
         customName = request.POST.get('customName')
         customID = request.POST.get('customID')
-        customBalance = request.POST.get('customBalance')
         purchaseID = request.POST.get('purchaseID')
         category = request.POST.get('category')
         tractorID = request.POST.get('tractorID')
@@ -316,7 +326,7 @@ def editSalesList(request):
         isInvoiced = request.POST.get('isInvoiced')
         isStoraged = request.POST.get('isStoraged')
 
-        salesList = SalesList(salesListID=salesListID, customName=customName,customID=customID,customBalance=customBalance,
+        salesList = SalesList(salesListID=salesListID, customName=customName,customID=customID,
                               purchaseID=purchaseID,category=category,tractorID=tractorID,trailerID=trailerID,
                               driverName=driverName,supercargo=supercargo,count=count,unitPrice=unitPrice,
                               mileage=mileage,date=date,comment=comment,isInvoiced=isInvoiced,isStoraged=isStoraged
@@ -364,7 +374,6 @@ def editWastageManage(request):
     # 待修改
     return HttpResponse("OK")
 
-
 @csrf_exempt
 def editmaterialPurchaseManage(request):
     mode = request.POST.get('oper', '')
@@ -396,8 +405,26 @@ def editmaterialPurchaseManage(request):
     # 待修改
     return HttpResponse("OK")
 
+@csrf_exempt
+def editCustomPaymentInfo(request):
+    mode = request.POST.get('oper', '')
+    if mode == 'add':
+        customName= request.POST.get('customName')
+        payTime = request.POST.get('payTime')
+        payAmount= request.POST.get('payAmount')
+        balance = request.POST.get('balance')
+
+        customPaymentInfo = CustomPaymentInfo(customName=customName, payTime=payTime,payAmount=payAmount,balance=balance)
+
+        customPaymentInfo.save()
+
+    # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
+    # 待修改
+    return HttpResponse("OK")
 
 
+def materialPurchase(request):
+    return render(request,"materialPurchase.html")
 
 def monthWastage(request):
     return render(request,"monthWastage.html")
