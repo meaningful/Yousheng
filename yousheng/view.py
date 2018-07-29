@@ -2,8 +2,10 @@ from django.shortcuts import render
 import datetime
 import json
 import ast
-from apps.BaseModels.models import CustomerManage,StaffManage,GasManage,TrailerManage,Supplier,TractorManage
+from apps.BaseModels.models import StaffManage,GasManage,TrailerManage,Supplier,TractorManage
 from apps.BussinessModels.models import SalesList,VehicleMaintenanceManage,WastageManage,MaterialPurchase,CustomPaymentInfo
+from apps.BaseModels.models import CustomerManage,GasManage
+from apps.BaseModels.BaseModelsORM.ORMViews import StaffManageDBUtils, StaffManage
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.http import HttpResponse
 
@@ -33,13 +35,16 @@ def carfixManage(request):
 
 
 def staffManage(request):
-    allStaffs = []
-    for staff in StaffManage.objects.all():
-        aa = json.dumps(staff, default=json_default)
-        bb = json.loads(aa)
-        allStaffs.append(bb)
-
+    ormUtils = StaffManageDBUtils()
+    allStaffs = ormUtils.queryAll()
     return render(request, "staffManage.html" ,{'showData': json.dumps(allStaffs)})
+    # allStaffs = []
+    # for staff in ormUtils.queryAll():
+    #     # aa = json.dumps(staff, default=json_default)
+    #     # bb = json.loads(aa)
+    #     allStaffs.append(staff)
+
+    # return render(request, "staffManage.html" ,{'showData': json.dumps(allStaffs)})
 
 
 def gasManage(request):
@@ -167,6 +172,7 @@ def editCustomManage(request):
          return 1
 
      if mode == 'del':
+
          customID = request.POST.get('customID', '')
 
 
@@ -196,6 +202,7 @@ def editCustomManage(request):
 @csrf_exempt
 def editStaffManage(request):
     mode = request.POST.get('oper', '')
+    editDBUtils = StaffManageDBUtils()
     if mode == 'add':
         staffID = request.POST.get('staffID')
         staffName = request.POST.get('staffName')
@@ -209,11 +216,18 @@ def editStaffManage(request):
         staff = StaffManage(staffID=staffID, staffName=staffName, idNumber=idNumber, hiredate=hiredate,
                             position=position, photo=photo, resume=resume, category=category)
 
-        staff.save()
+        # staff.save()
+        editDBUtils.add(staff)
 
     # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
     # 待修改
-    return HttpResponse("OK")
+        return HttpResponse("OK")
+
+    if mode == 'del':
+        staffID = request.POST.get('staffID')
+        print(staffID)
+
+        return HttpResponse("OK")
 
 
 @csrf_exempt
