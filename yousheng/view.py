@@ -101,7 +101,7 @@ def salesList(request):
 def vehicleMaintenanceManage(request):
     allVehicleMaintenanceManage = []
     for vehicleMaintenanceManage in VehicleMaintenanceManage.objects.all():
-        aa = json.dumps(salesList, default=json_default)
+        aa = json.dumps(vehicleMaintenanceManage, default=json_default)
         bb = json.loads(aa)
         allVehicleMaintenanceManage.append(bb)
 
@@ -422,12 +422,8 @@ def editCustomPaymentInfo(request):
     # 待修改
     return HttpResponse("OK")
 
-
-def materialPurchase(request):
-    return render(request,"materialPurchase.html")
-
-def monthWastage(request):
-    return render(request,"monthWastage.html")
-
-def saleform(request):
-    return render(request,"saleform.html")
+# def monthWastage(request):
+#     return render(request,"monthWastage.html")
+#
+# def saleform(request):
+#     return render(request,"saleform.html")
