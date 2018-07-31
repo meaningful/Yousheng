@@ -102,6 +102,22 @@ class StaffManageDBUtils(object):
         session.commit()
         session.close()
 
+    def update(self, updateId, staff):
+        if not isinstance(staff, StaffManage):
+            raise TypeError('The parameter staff is not instance of the StaffManage instance')
+        session = DBSession()
+        item_to_update = session.query(StaffManage).filter_by(id=updateId).first()
+        item_to_update.staffID = staff.staffID
+        item_to_update.staffName = staff.staffName
+        item_to_update.idNumber = staff.idNumber
+        item_to_update.hiredate = staff.hiredate
+        item_to_update.position = staff.position
+        item_to_update.photo = staff.photo
+        item_to_update.resume = staff.resume
+        item_to_update.category = staff.category
+        session.commit()
+        session.close()
+
     def queryAll(self):
         session = DBSession()
         queryAll = session.query(StaffManage).all()

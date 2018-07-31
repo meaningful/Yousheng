@@ -204,62 +204,57 @@ def editCustomManage(request):
 @csrf_exempt
 def editStaffManage(request):
     mode = request.POST.get('oper')
+
+    editId = request.POST.get('id')
+    staffID = request.POST.get('staffID')
+    staffName = request.POST.get('staffName')
+    idNumber = request.POST.get('idNumber')
+    hiredate = request.POST.get('hiredate')
+    position = request.POST.get('position')
+    photo = request.POST.get('photo')
+    resume = request.POST.get('resume')
+    category = request.POST.get('category')
+
+    staff = StaffManage(staffID=staffID, staffName=staffName, idNumber=idNumber, hiredate=hiredate,
+                        position=position, photo=photo, resume=resume, category=category)
+
     editDBStaffUtils = StaffManageDBUtils()
+
     if mode == 'add':
-        staffID = request.POST.get('staffID')
-        staffName = request.POST.get('staffName')
-        idNumber = request.POST.get('idNumber')
-        hiredate = request.POST.get('hiredate')
-        position = request.POST.get('position')
-        photo = request.POST.get('photo')
-        resume = request.POST.get('resume')
-        category = request.POST.get('category')
-
-        staff = StaffManage(staffID=staffID, staffName=staffName, idNumber=idNumber, hiredate=hiredate,
-                            position=position, photo=photo, resume=resume, category=category)
-
-        # staff.save()
         editDBStaffUtils.add(staff)
-
     # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
     # 待修改
         return HttpResponse("OK")
 
-    if mode == 'del':
-        delId = request.POST.get('id')
-        editDBStaffUtils.delete(delId)
-
+    if mode == 'del' and editId:
+        editDBStaffUtils.delete(editId)
         return HttpResponse("OK")
 
-
+    if mode == 'update' and editId:
+        editDBStaffUtils.update(editId,staff)
 
 
 @csrf_exempt
 def editGasManage(request):
     mode = request.POST.get('oper')
+
+    editId = request.POST.get('id')
+    gasID = request.POST.get('gasID')
+    gasName = request.POST.get('gasName')
+
+    gas = GasManage(gasID=gasID, gasName=gasName)
     editDBGasUtils = GasManageDBUtils()
+
     if mode == 'add':
-        gasID = request.POST.get('gasID')
-        gasName = request.POST.get('gasName')
-
-        gas = GasManage(gasID=gasID, gasName=gasName)
         editDBGasUtils.add(gas)
-        # gas.save()
-
-        # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
-        # 待修改
         return HttpResponse("OK")
 
-    if mode == 'del':
-        delId = request.POST.get('id')
-        editDBGasUtils.delete(delId)
+    if mode == 'del' and editId:
+        editDBGasUtils.delete(editId)
         return HttpResponse("OK")
 
-    if mode == 'edit':
-        updateId = request.POST.get('id')
-        gasID = request.POST.get('gasID')
-        gasName = request.POST.get('gasName')
-        editDBGasUtils.update(updateId, GasManage(gasID=gasID, gasName=gasName))
+    if mode == 'edit' and editId:
+        editDBGasUtils.update(editId, gas)
         return HttpResponse("OK")
 
 
