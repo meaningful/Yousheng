@@ -231,7 +231,7 @@ def editStaffManage(request):
         return HttpResponse("OK")
 
     if mode == 'update' and editId:
-        editDBStaffUtils.update(editId,staff)
+        editDBStaffUtils.update(editId, staff)
 
 
 @csrf_exempt
