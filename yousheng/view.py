@@ -1,11 +1,9 @@
 from django.shortcuts import render
 import datetime
 import json
-import ast
-from apps.BaseModels.models import StaffManage, CustomerManage, TrailerManage, Supplier, TractorManage
 from apps.BussinessModels.models import SalesList, VehicleMaintenanceManage, WastageManage, MaterialPurchase, CustomPaymentInfo
-from apps.BaseModels.BaseModelsORM.ORMViews import StaffManageDBUtils, StaffManage
-from apps.BaseModels.BaseModelsORM.ORMViews import GasManageDBUtils, GasManage
+from apps.BaseModels.BaseModelsORM.ORMViews import StaffManage, GasManage, CustomerManage,TrailerManage, Supplier, TractorManage
+from apps.BaseModels.BaseModelsORM.ORMViews import StaffManageDBUtils, GasManageDBUtils, CustomerManageDBUtils, TrailerManageDBUtils, SupplierDBUtils, TractorManageDBUtils
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.http import HttpResponse
 
@@ -25,11 +23,14 @@ def json_default(value):
 def index(request):
     return render(request, "index.html")
 
+
 def homePage(request):
     return render(request, "homePage.html")
 
+
 def unfound(request):
     return render(request, "404.html")
+
 
 def carfixManage(request):
     return render(request,"carfixManage.html")
@@ -39,61 +40,37 @@ def staffManage(request):
     ormUtils = StaffManageDBUtils()
     allStaffs = ormUtils.queryAll()
     return render(request, "staffManage.html", {'showData': json.dumps(allStaffs)})
-    # allStaffs = []
-    # for staff in ormUtils.queryAll():
-    #     # aa = json.dumps(staff, default=json_default)
-    #     # bb = json.loads(aa)
-    #     allStaffs.append(staff)
-
-    # return render(request, "staffManage.html" ,{'showData': json.dumps(allStaffs)})
 
 
 def gasManage(request):
     ormUtils = GasManageDBUtils()
     allGas = ormUtils.queryAll()
-    # for gas in GasManage.objects.all():
-    #     aa = json.dumps(gas, default=json_default)
-    #     bb = json.loads(aa)
-    #     allGas.append(bb)
-
     return render(request, "gasManage.html", {'showData': json.dumps(allGas)})
 
+
 def customManage(request):
-    allCustom = []
-    for a in CustomerManage.objects.all():
-        # 获取字符串
-        aa = json.dumps(a, default=json_default)
-        bb = json.loads(aa)
-        # print(bb)
-        allCustom.append(bb)
-        # allCustom.append(json.dumps(a, default=json_default))
-    return render(request,"customManage.html" ,  {'showData': json.dumps(allCustom)})
+    ormUtils = CustomerManageDBUtils()
+    allCustom = ormUtils.queryAll()
+    return render(request, "customManage.html",  {'showData': json.dumps(allCustom)})
+
 
 def trailerManage(request):
-    allTrailer = []
-    for trailer in TrailerManage.objects.all():
-        aa = json.dumps(trailer, default=json_default)
-        bb = json.loads(aa)
-        allTrailer.append(bb)
+    ormUtils = TrailerManageDBUtils()
+    allTrailer = ormUtils.queryAll()
+    return render(request, "trailerManage.html", {'showData': json.dumps(allTrailer)})
 
-    return render(request, "trailerManage.html" ,{'showData': json.dumps(allTrailer)})
 
 def tractorManage(request):
-    allTractor = []
-    for tractor in TractorManage.objects.all():
-        aa = json.dumps(tractor,default=json_default)
-        bb = json.loads(aa)
-        allTractor.append(bb)
+    ormUtils = TractorManageDBUtils()
+    allTractor = ormUtils.queryAll()
     return render(request, "tractorManage.html", {'showData': json.dumps(allTractor)})
 
-def supplier(request):
-    allSupplier = []
-    for supplier in Supplier.objects.all():
-        aa = json.dumps(supplier, default=json_default)
-        bb = json.loads(aa)
-        allSupplier.append(bb)
 
-    return render(request, "supplier.html" ,{'showData': json.dumps(allSupplier)})
+def supplier(request):
+    ormUtils = SupplierDBUtils()
+    allSupplier = ormUtils.queryAll()
+    return render(request, "supplier.html", {'showData': json.dumps(allSupplier)})
+
 
 def salesList(request):
     allSalesList = []
@@ -114,6 +91,7 @@ def vehicleMaintenanceManage(request):
 
     return render(request, "vehicleMaintenanceManage.html" ,{'showData': json.dumps(allVehicleMaintenanceManage)})
 
+
 def wastageManage(request):
     allWastageManage = []
     for wastageManage in WastageManage.objects.all():
@@ -122,6 +100,7 @@ def wastageManage(request):
         allWastageManage.append(bb)
 
     return render(request, "wastageManage.html" ,{'showData': json.dumps(allWastageManage)})
+
 
 def materialPurchase(request):
     allmaterialPurchase = []
@@ -133,7 +112,6 @@ def materialPurchase(request):
     return render(request, "materialPurchase.html", {'showData': json.dumps(allmaterialPurchase)})
 
 
-
 def customPaymentInfo(request):
     allCustomPaymentInfo = []
     for customPaymentInfo in CustomPaymentInfo.objects.all():
@@ -143,62 +121,51 @@ def customPaymentInfo(request):
 
     return render(request, "customPaymentInfo.html" ,{'showData': json.dumps(allCustomPaymentInfo)})
 
+
 @csrf_exempt
 def editCustomManage(request):
-     # mode = request.get()
-     mode = request.POST.get('oper','')
-     if mode == 'add' :
-         customID = request.POST.get('customID', '')
-         customName = request.POST.get('customName', '')
-         tel = request.POST.get('tel', '')
-         addr = request.POST.get('addr', '')
-         taxFileNO = request.POST.get('taxFileNO', '')
-         bankOfDepsit = request.POST.get('bankOfDepsit', '')
-         bankAccount = request.POST.get('bankAccount', '')
-         fax = request.POST.get('fax', '')
-         industryField = request.POST.get('industryField', '')
-         companyNature = request.POST.get('companyNature', '')
-         consocationMode = request.POST.get('consocationMode', '')
-         level = request.POST.get('level', '')
-         contract = request.POST.get('contract', '')
-         payCycle = request.POST.get('payCycle', '')
-         companyCharge = request.POST.get('companyCharge', '')
-         companyContact = request.POST.get('companyContact', '')
-         customQualification = request.POST.get('customQualification', '')
-         annualSales = request.POST.get('annualSales', '')
+    mode = request.POST.get('oper')
 
-         b = CustomerManage(customID= customID, customName= customName ,tel=tel,addr=addr,taxFileNO=taxFileNO, bankOfDepsit=bankOfDepsit,bankAccount = bankAccount ,  fax=fax,
-                            industryField = industryField, companyNature=companyNature, consocationMode=consocationMode, level=level, contract=contract,payCycle=payCycle,
-                            companyCharge=companyCharge,companyContact =companyContact , customQualification =customQualification, annualSales=annualSales)
-         b.save()
-         return 1
+    editId = request.POST.get('id')
+    customID = request.POST.get('customID')
+    customName = request.POST.get('customName')
+    tel = request.POST.get('tel')
+    addr = request.POST.get('addr')
+    taxFileNO = request.POST.get('taxFileNO')
+    bankOfDepsit = request.POST.get('bankOfDepsit')
+    bankAccount = request.POST.get('bankAccount')
+    fax = request.POST.get('fax')
+    industryField = request.POST.get('industryField')
+    companyNature = request.POST.get('companyNature')
+    consocationMode = request.POST.get('consocationMode')
+    level = request.POST.get('level')
+    contract = request.POST.get('contract')
+    payCycle = request.POST.get('payCycle')
+    companyCharge = request.POST.get('companyCharge')
+    companyContact = request.POST.get('companyContact')
+    customQualification = request.POST.get('customQualification')
+    annualSales = request.POST.get('annualSales')
 
-     if mode == 'del':
+    custom = CustomerManage(customID=customID, customName=customName, tel=tel, addr=addr, taxFileNO=taxFileNO,
+                        bankOfDepsit=bankOfDepsit, bankAccount=bankAccount, fax=fax,
+                        industryField=industryField, companyNature=companyNature, consocationMode=consocationMode,
+                        level=level, contract=contract, payCycle=payCycle,
+                        companyCharge=companyCharge, companyContact=companyContact,
+                        customQualification=customQualification, annualSales=annualSales)
 
-         customID = request.POST.get('customID', '')
+    editCustomDBUtils = CustomerManageDBUtils()
 
+    if mode == 'add':
+        editCustomDBUtils.add(custom)
+        return HttpResponse("OK")
 
-     if mode == 'edit':
-         customID = request.POST.get('customID', '')
-         customName = request.POST.get('customName', '')
-         tel = request.POST.get('tel', '')
-         addr = request.POST.get('addr', '')
-         taxFileNO = request.POST.get('taxFileNO', '')
-         bankOfDepsit = request.POST.get('bankOfDepsit', '')
-         bankAccount = request.POST.get('bankAccount', '')
-         fax = request.POST.get('fax', '')
-         industryField = request.POST.get('industryField', '')
-         companyNature = request.POST.get('companyNature', '')
-         consocationMode = request.POST.get('consocationMode', '')
-         level = request.POST.get('level', '')
-         contract = request.POST.get('contract', '')
-         payCycle = request.POST.get('payCycle', '')
-         companyCharge = request.POST.get('companyCharge', '')
-         companyContact = request.POST.get('companyContact', '')
-         customQualification = request.POST.get('customQualification', '')
-         annualSales = request.POST.get('annualSales', '')
+    if mode == 'del' and editId:
+        editCustomDBUtils.delete(editId)
+        return HttpResponse("OK")
 
-     return 1 ;
+    if mode == 'edit' and editId:
+        editCustomDBUtils.update(editId, custom)
+        return HttpResponse("OK")
 
 
 @csrf_exempt
@@ -230,8 +197,9 @@ def editStaffManage(request):
         editDBStaffUtils.delete(editId)
         return HttpResponse("OK")
 
-    if mode == 'update' and editId:
+    if mode == 'edit' and editId:
         editDBStaffUtils.update(editId, staff)
+        return HttpResponse("OK")
 
 
 @csrf_exempt
@@ -258,78 +226,107 @@ def editGasManage(request):
         return HttpResponse("OK")
 
 
-
 @csrf_exempt
 def editTrailerManage(request):
-    mode = request.POST.get('oper', '')
+    mode = request.POST.get('oper')
+
+    editId = request.POST.get('id')
+    trailerID = request.POST.get('trailerID')
+    annualInspectionTime = request.POST.get('annualInspectionTime')
+    insuranceTime = request.POST.get('insuranceTime')
+    chassisNumber = request.POST.get('chassisNumber')
+    deliveryTime = request.POST.get('deliveryTime')
+
+    trailer = TrailerManage(trailerID=trailerID, annualInspectionTime=annualInspectionTime, insuranceTime=insuranceTime,
+                            chassisNumber=chassisNumber, deliveryTime=deliveryTime)
+    editDBTrailerUtils = TrailerManageDBUtils()
+
     if mode == 'add':
-        trailerID= request.POST.get('trailerID')
-        annualInspectionTime = request.POST.get('annualInspectionTime')
-        insuranceTime = request.POST.get('insuranceTime')
-        chassisNumber = request.POST.get('chassisNumber')
-        deliveryTime = request.POST.get('deliveryTime')
+        editDBTrailerUtils.add(trailer)
+        return HttpResponse("OK")
 
-        trailer = TrailerManage(trailerID=trailerID, annualInspectionTime=annualInspectionTime, insuranceTime=insuranceTime, chassisNumber=chassisNumber, deliveryTime=deliveryTime)
+    if mode == 'del' and editId:
+        editDBTrailerUtils.delete(editId)
+        return HttpResponse("OK")
 
-        trailer.save()
+    if mode == 'edit' and editId:
+        editDBTrailerUtils.update(editId, trailer)
+        return HttpResponse("OK")
 
-    # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
-    # 待修改
-    return HttpResponse("OK")
 
 @csrf_exempt
 def editTractorManage(request):
-    mode = request.POST.get('oper', '')
+    mode = request.POST.get('oper')
+
+    editId = request.POST.get('id')
+    tractorID = request.POST.get('tractorID')
+    annualInspectionTime = request.POST.get('annualInspectionTime')
+    insuranceTime = request.POST.get('insuranceTime')
+    chassisNumber = request.POST.get('chassisNumber')
+    deliveryTime = request.POST.get('deliveryTime')
+
+    tractor = TractorManage(tractorID=tractorID, annualInspectionTime=annualInspectionTime, insuranceTime=insuranceTime,
+                            chassisNumber=chassisNumber, deliveryTime=deliveryTime)
+    editDBTractorUtils = TractorManageDBUtils()
+
     if mode == 'add':
-        tractorID= request.POST.get('tractorID')
-        annualInspectionTime = request.POST.get('annualInspectionTime')
-        insuranceTime = request.POST.get('insuranceTime')
-        chassisNumber = request.POST.get('chassisNumber')
-        deliveryTime = request.POST.get('deliveryTime')
+        editDBTractorUtils.add(tractor)
+        return HttpResponse("OK")
 
-        tractor = TractorManage(tractorID=tractorID, annualInspectionTime=annualInspectionTime, insuranceTime=insuranceTime, chassisNumber=chassisNumber, deliveryTime=deliveryTime)
+    if mode == 'del' and editId:
+        editDBTractorUtils.delete(editId)
+        return HttpResponse("OK")
 
-        tractor.save()
-
-    # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
-    # 待修改
-    return HttpResponse("OK")
+    if mode == 'edit' and editId:
+        editDBTractorUtils.update(editId, tractor)
+        return HttpResponse("OK")
 
 
 
 @csrf_exempt
 def editSupplier(request):
-    mode = request.POST.get('oper', '')
+    mode = request.POST.get('oper')
+
+    editId = request.POST.get('id')
+    supplierID = request.POST.get('supplierID')
+    supplierName = request.POST.get('supplierName')
+    tel = request.POST.get('tel')
+    addr = request.POST.get('addr')
+    companyChargeName = request.POST.get('companyChargeName')
+    companyChargePosition = request.POST.get('companyChargePosition')
+    companyChargeTel = request.POST.get('companyChargeTel')
+    companyContactName = request.POST.get('companyContactName')
+    companyContactPosition = request.POST.get('companyContactPosition')
+    companyContactTel = request.POST.get('companyContactTel')
+    customQualification = request.POST.get('customQualification')
+    customTaxFileNO = request.POST.get('customTaxFileNO')
+    customBankOfDepsit = request.POST.get('customBankOfDepsit')
+    customBankAccount = request.POST.get('customBankAccount')
+    customContactName = request.POST.get('customContactName')
+    customContactTel = request.POST.get('customContactTel')
+    purchaseCategory = request.POST.get('purchaseCategory')
+
+    supplier = Supplier(supplierID=supplierID, supplierName=supplierName, tel=tel, addr=addr,
+                        companyChargeName=companyChargeName, companyChargePosition=companyChargePosition,
+                        companyChargeTel=companyChargeTel, companyContactName=companyContactName,
+                        companyContactPosition=companyContactPosition, companyContactTel=companyContactTel,
+                        customQualification=customQualification, customTaxFileNO=customTaxFileNO,
+                        customBankOfDepsit=customBankOfDepsit, customBankAccount=customBankAccount,
+                        customContactName=customContactName, customContactTel=customContactTel,
+                        purchaseCategory=purchaseCategory)
+    editDBSupplierUtils = SupplierDBUtils()
+
     if mode == 'add':
-        supplierID = request.POST.get('supplierID')
-        supplierName = request.POST.get('supplierName')
-        tel = request.POST.get('tel')
-        addr = request.POST.get('addr')
-        companyChargeName = request.POST.get('companyChargeName')
-        companyChargePosition = request.POST.get('companyChargePosition')
-        companyChargeTel = request.POST.get('companyChargeTel')
-        companyContactName = request.POST.get('companyContactName')
-        companyContactPosition = request.POST.get('companyContactPosition')
-        companyContactTel = request.POST.get('companyContactTel')
-        customQualification = request.POST.get('customQualification')
-        customTaxFileNO = request.POST.get('customTaxFileNO')
-        customBankOfDepsit = request.POST.get('customBankOfDepsit')
-        customBankAccount = request.POST.get('customBankAccount')
-        customContactName = request.POST.get('customContactName')
-        customContactTel = request.POST.get('customContactTel')
-        purchaseCategory = request.POST.get('purchaseCategory')
+        editDBSupplierUtils.add(supplier)
+        return HttpResponse("OK")
 
-        supplier = Supplier(supplierID=supplierID, supplierName=supplierName,tel=tel,addr=addr,companyChargeName=companyChargeName,companyChargePosition=companyChargePosition,
-                            companyChargeTel=companyChargeTel,companyContactName=companyContactName,companyContactPosition=companyContactPosition,companyContactTel=companyContactTel,
-                            customQualification=customQualification,customTaxFileNO=customTaxFileNO,customBankOfDepsit=customBankOfDepsit,customBankAccount=customBankAccount,
-                            customContactName=customContactName,customContactTel=customContactTel,purchaseCategory=purchaseCategory
-                            )
+    if mode == 'del' and editId:
+        editDBSupplierUtils.delete(editId)
+        return HttpResponse("OK")
 
-        supplier.save()
-
-    # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
-    # 待修改
-    return HttpResponse("OK")
+    if mode == 'edit' and editId:
+        editDBSupplierUtils.update(editId, supplier)
+        return HttpResponse("OK")
 
 
 

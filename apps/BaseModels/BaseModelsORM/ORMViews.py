@@ -60,6 +60,189 @@ def object2dict(obj):
 #         inst = d
 #     return inst
 
+
+# <- 客户管理表 Begin ->
+# 客户编号		customID
+# 名称	单位名称+简称	customName
+# 电话		tel
+# 地址		addr
+# 税号		taxFileNO
+# 开户行		bankOfDepsit
+# 账号		bankAccount
+# 传真		fax
+# 所属行业		industryField
+# 公司性质		companyNature
+# 用气种类	【废弃，不用】	gasCategory
+# 储罐大小	【废弃，不用】	gasTankSize
+# 合作类型	【直供， 共建，中间站】	consocationMode
+# 等级	【A/B/C/D】	level
+# 合同	【varchar(256)】 合同号	contract
+# 付款周期		payCycle
+# 公司负责人		companyCharge
+# 公司联系人		companyContact
+# 客户资质	三证	customQualification
+# 年销售额		annualSales
+
+
+class CustomerManage(Base):
+    __tablename__ = 'BaseModels_customermanage'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    customID = Column(String(128))
+    customName = Column(String(128))
+    tel = Column(String(128))
+    addr = Column(String(128))
+    taxFileNO = Column(String(128))
+    bankOfDepsit = Column(String(128))
+    bankAccount = Column(String(128))
+    fax = Column(String(128))
+    industryField = Column(String(128))
+    companyNature = Column(String(128))
+    gasCategory = Column(String(128))
+    consocationMode = Column(String(128))
+    level = Column(String(128))
+    contract = Column(String(128))
+    payCycle = Column(Date)
+    companyCharge = Column(String(128))
+    companyContact = Column(String(128))
+    customQualification = Column(String(128))
+    annualSales = Column(String(128))
+
+
+class CustomerManageDBUtils(object):
+    def add(self, customer):
+        if not isinstance(customer, CustomerManage):
+            raise TypeError('The parameter customer is not instance of the CustomerManage instance')
+        session = DBSession()
+        session.add(customer)
+        session.commit()
+        session.close()
+
+    def delete(self, delId):
+        session = DBSession()
+        item_to_del = session.query(CustomerManage).filter_by(id=delId).first()
+        session.delete(item_to_del)
+        session.commit()
+        session.close()
+
+    def update(self, updateId, customer):
+        if not isinstance(customer, CustomerManage):
+            raise TypeError('The parameter customer is not instance of the CustomerManage instance')
+        session = DBSession()
+        item_to_update = session.query(CustomerManage).filter_by(id=updateId).first()
+        item_to_update.customID = customer.customID
+        item_to_update.customName = customer.customName
+        item_to_update.tel = customer.tel
+        item_to_update.addr = customer.addr
+        item_to_update.taxFileNO = customer.taxFileNO
+        item_to_update.bankOfDepsit = customer.bankOfDepsit
+        item_to_update.bankAccount = customer.bankAccount
+        item_to_update.fax = customer.fax
+        item_to_update.industryField = customer.industryField
+        item_to_update.companyNature = customer.companyNature
+        item_to_update.gasCategory = customer.gasCategory
+        item_to_update.consocationMode = customer.consocationMode
+        item_to_update.level = customer.level
+        item_to_update.contract = customer.contract
+        item_to_update.payCycle = customer.payCycle
+        item_to_update.companyCharge = customer.companyCharge
+        item_to_update.companyContact = customer.companyContact
+        item_to_update.customQualification = customer.customQualification
+        item_to_update.annualSales = customer.annualSales
+        session.commit()
+        session.close()
+
+    def queryAll(self):
+        session = DBSession()
+        queryAll = session.query(CustomerManage).all()
+        allCustomer = []
+        for item in queryAll:
+            customer_json = json.dumps(object2dict(item), cls=DateEncoder)
+            customer = json.loads(customer_json)
+            allCustomer.append(customer)
+        session.close()
+        return allCustomer
+
+
+# <- 客户管理表 End ->
+
+
+class Supplier(Base):
+    __tablename__ = 'BaseModels_supplier'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    supplierID = Column(String(128))
+    supplierName = Column(String(128))
+    tel = Column(String(128))
+    addr = Column(String(128))
+    companyChargeName = Column(String(128))
+    companyChargePosition = Column(String(128))
+    companyChargeTel = Column(String(128))
+    companyContactName = Column(String(128))
+    companyContactPosition = Column(String(128))
+    companyContactTel = Column(String(128))
+    customQualification = Column(String(128))
+    customTaxFileNO = Column(String(128))
+    customBankOfDepsit = Column(String(128))
+    customBankAccount = Column(String(128))
+    customContactName = Column(String(128))
+    customContactTel = Column(String(128))
+    purchaseCategory = Column(String(128))
+
+
+class SupplierDBUtils(object):
+    def add(self, supplier):
+        if not isinstance(supplier, Supplier):
+            raise TypeError('The supplier staff is not instance of the Supplier instance')
+        session = DBSession()
+        session.add(supplier)
+        session.commit()
+        session.close()
+
+    def delete(self, delId):
+        session = DBSession()
+        item_to_del = session.query(Supplier).filter_by(id=delId).first()
+        session.delete(item_to_del)
+        session.commit()
+        session.close()
+
+    def update(self, updateId, supplier):
+        if not isinstance(supplier, Supplier):
+            raise TypeError('The supplier staff is not instance of the Supplier instance')
+        session = DBSession()
+        item_to_update = session.query(Supplier).filter_by(id=updateId).first()
+        item_to_update.supplierID = supplier.supplierID
+        item_to_update.supplierName = supplier.supplierName
+        item_to_update.tel = supplier.tel
+        item_to_update.addr = supplier.addr
+        item_to_update.companyChargeName = supplier.companyChargeName
+        item_to_update.companyChargePosition = supplier.companyChargePosition
+        item_to_update.companyChargeTel = supplier.companyChargeTel
+        item_to_update.companyContactName = supplier.companyContactName
+        item_to_update.companyContactPosition = supplier.companyContactPosition
+        item_to_update.companyContactTel = supplier.companyContactTel
+        item_to_update.customQualification = supplier.customQualification
+        item_to_update.customTaxFileNO = supplier.customTaxFileNO
+        item_to_update.customBankOfDepsit = supplier.customBankOfDepsit
+        item_to_update.customBankAccount = supplier.customBankAccount
+        item_to_update.customContactName = supplier.customContactName
+        item_to_update.customContactTel = supplier.customContactTel
+        item_to_update.purchaseCategory = supplier.purchaseCategory
+        session.commit()
+        session.close()
+
+    def queryAll(self):
+        session = DBSession()
+        queryAll = session.query(Supplier).all()
+        allSuppliers = []
+        for item in queryAll:
+            supplier_json = json.dumps(object2dict(item), cls=DateEncoder)
+            supplier = json.loads(supplier_json)
+            allSuppliers.append(supplier)
+        session.close()
+        return allSuppliers
+
+
 # <- 公司人员管理表 Begin ->
 # 编号		staffID
 # 姓名		staffName
@@ -177,9 +360,135 @@ class GasManageDBUtils(object):
         allGas = []
         for item in queryAll:
             gas_json = json.dumps(object2dict(item), cls=DateEncoder)
-            staff = json.loads(gas_json)
-            allGas.append(staff)
+            gas = json.loads(gas_json)
+            allGas.append(gas)
         session.close()
         return allGas
 
 # <- 气体管理表 End ->
+
+
+# <- 拖车管理表 Begin ->
+# 车牌号		tractorID
+# 年检时间		annualInspectionTime
+# 保险时间		insuranceTime
+# 车架号		chassisNumber
+# 出厂时间		deliveryTime
+
+
+class TractorManage(Base):
+    __tablename__ = 'BaseModels_tractormanage'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    tractorID = Column(String(128))
+    annualInspectionTime = Column(Date)
+    insuranceTime = Column(Date)
+    chassisNumber = Column(String(128))
+    deliveryTime = Column(String(128))
+
+
+class TractorManageDBUtils(object):
+    def add(self, tractor):
+        if not isinstance(tractor, TractorManage):
+            raise TypeError('The parameter tractor is not instance of the TractorManage instance')
+        session = DBSession()
+        session.add(tractor)
+        session.commit()
+        session.close()
+
+    def delete(self, delId):
+        session = DBSession()
+        item_to_del = session.query(TractorManage).filter_by(id=delId).first()
+        session.delete(item_to_del)
+        session.commit()
+        session.close()
+
+    def update(self, updateId, tractor):
+        if not isinstance(tractor, TractorManage):
+            raise TypeError('The parameter tractor is not instance of the TractorManage instance')
+        session = DBSession()
+        item_to_update = session.query(TractorManage).filter_by(id=updateId).first()
+        item_to_update.tractorID = tractor.tractorID
+        item_to_update.annualInspectionTime = tractor.annualInspectionTime
+        item_to_update.insuranceTime = tractor.insuranceTime
+        item_to_update.chassisNumber = tractor.chassisNumber
+        item_to_update.deliveryTime = tractor.deliveryTime
+        session.commit()
+        session.close()
+
+    def queryAll(self):
+        session = DBSession()
+        queryAll = session.query(TractorManage).all()
+        allTractor = []
+        for item in queryAll:
+            tractor_json = json.dumps(object2dict(item), cls=DateEncoder)
+            tractor = json.loads(tractor_json)
+            allTractor.append(tractor)
+        session.close()
+        return allTractor
+
+
+# <- 拖车管理表 End ->
+
+
+# <- 挂车管理表 Begin ->
+# 挂车号		trailerID
+# 年检时间		annualInspectionTime
+# 保险时间		insuranceTime
+# 车架号		chassisNumber
+# 出厂时间		deliveryTime
+
+
+class TrailerManage(Base):
+    __tablename__ = 'BaseModels_trailermanage'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    trailerID = Column(String(128))
+    annualInspectionTime = Column(Date)
+    insuranceTime = Column(Date)
+    chassisNumber = Column(String(128))
+    deliveryTime = Column(String(128))
+
+
+class TrailerManageDBUtils(object):
+    def add(self, trailer):
+        if not isinstance(trailer, TrailerManage):
+            raise TypeError('The parameter trailer is not instance of the TrailerManage instance')
+        session = DBSession()
+        session.add(trailer)
+        session.commit()
+        session.close()
+
+    def delete(self, delId):
+        session = DBSession()
+        item_to_del = session.query(TrailerManage).filter_by(id=delId).first()
+        session.delete(item_to_del)
+        session.commit()
+        session.close()
+
+    def update(self, updateId, trailer):
+        if not isinstance(trailer, TrailerManage):
+            raise TypeError('The parameter tractor is not instance of the TractorManage instance')
+        session = DBSession()
+        item_to_update = session.query(TrailerManage).filter_by(id=updateId).first()
+        item_to_update.trailerID = trailer.trailerID
+        item_to_update.annualInspectionTime = trailer.annualInspectionTime
+        item_to_update.insuranceTime = trailer.insuranceTime
+        item_to_update.chassisNumber = trailer.chassisNumber
+        item_to_update.deliveryTime = trailer.deliveryTime
+        session.commit()
+        session.close()
+
+    def queryAll(self):
+        session = DBSession()
+        queryAll = session.query(TrailerManage).all()
+        allTrailer = []
+        for item in queryAll:
+            trailer_json = json.dumps(object2dict(item), cls=DateEncoder)
+            trailer = json.loads(trailer_json)
+            allTrailer.append(trailer)
+        session.close()
+        return allTrailer
+
+
+# <- 挂车管理表 End ->
