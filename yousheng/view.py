@@ -1,23 +1,19 @@
 from django.shortcuts import render
 import datetime
 import json
-from apps.BussinessModels.models import SalesList, VehicleMaintenanceManage, WastageManage, MaterialPurchase, CustomPaymentInfo
-from apps.BaseModels.BaseModelsORM.ORMViews import StaffManage, GasManage, CustomerManage,TrailerManage, Supplier, TractorManage
-from apps.BaseModels.BaseModelsORM.ORMViews import StaffManageDBUtils, GasManageDBUtils, CustomerManageDBUtils, TrailerManageDBUtils, SupplierDBUtils, TractorManageDBUtils
+from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManage, GasManage, CustomerManage,TrailerManage, Supplier, TractorManage
+from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManageDBUtils, GasManageDBUtils, CustomerManageDBUtils, TrailerManageDBUtils, SupplierDBUtils, TractorManageDBUtils
+from apps.BussinessModels.BussinessModelsORM.BussinessORMViews import SalesList, MaterialPurchase, VehicleMaintenanceManage, WastageManage, CustomPaymentInfo
+from apps.BussinessModels.BussinessModelsORM.BussinessORMViews import SalesListDBUtils, MaterialPurchaseDBUtils, VehicleMaintenanceManageDBUtils, WastageManageDBUtils, CustomPaymentInfoDBUtils
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.http import HttpResponse
 
 
-def json_default(value):
-    if isinstance(value, datetime.date):
-        return dict(year=value.year, month=value.month, day=value.day)
-    else:
-        return value.__dict__
-
-
-
-# print(json.dumps(CustomerManage.objects.get(id=1), default=json_default))
-
+# def json_default(value):
+#     if isinstance(value, datetime.date):
+#         return dict(year=value.year, month=value.month, day=value.day)
+#     else:
+#         return value.__dict__
 
 
 def index(request):
@@ -36,90 +32,81 @@ def carfixManage(request):
     return render(request,"carfixManage.html")
 
 
+# 公司人员管理
 def staffManage(request):
     ormUtils = StaffManageDBUtils()
     allStaffs = ormUtils.queryAll()
     return render(request, "staffManage.html", {'showData': json.dumps(allStaffs)})
 
 
+# 气体管理
 def gasManage(request):
     ormUtils = GasManageDBUtils()
     allGas = ormUtils.queryAll()
     return render(request, "gasManage.html", {'showData': json.dumps(allGas)})
 
 
+# 客户管理
 def customManage(request):
     ormUtils = CustomerManageDBUtils()
     allCustom = ormUtils.queryAll()
     return render(request, "customManage.html",  {'showData': json.dumps(allCustom)})
 
 
+# 挂车管理
 def trailerManage(request):
     ormUtils = TrailerManageDBUtils()
     allTrailer = ormUtils.queryAll()
     return render(request, "trailerManage.html", {'showData': json.dumps(allTrailer)})
 
 
+# 拖车管理
 def tractorManage(request):
     ormUtils = TractorManageDBUtils()
     allTractor = ormUtils.queryAll()
     return render(request, "tractorManage.html", {'showData': json.dumps(allTractor)})
 
 
+# 供应商管理
 def supplier(request):
     ormUtils = SupplierDBUtils()
     allSupplier = ormUtils.queryAll()
     return render(request, "supplier.html", {'showData': json.dumps(allSupplier)})
 
 
+# 销售单
 def salesList(request):
-    allSalesList = []
-    for salesList in SalesList.objects.all():
-        aa = json.dumps(salesList, default=json_default)
-        bb = json.loads(aa)
-        allSalesList.append(bb)
-
-    return render(request, "salesList.html" ,{'showData': json.dumps(allSalesList)})
+    ormUtils = SalesListDBUtils()
+    allSalesList = ormUtils.queryAll()
+    return render(request, "salesList.html", {'showData': json.dumps(allSalesList)})
 
 
-def vehicleMaintenanceManage(request):
-    allVehicleMaintenanceManage = []
-    for vehicleMaintenanceManage in VehicleMaintenanceManage.objects.all():
-        aa = json.dumps(vehicleMaintenanceManage, default=json_default)
-        bb = json.loads(aa)
-        allVehicleMaintenanceManage.append(bb)
-
-    return render(request, "vehicleMaintenanceManage.html" ,{'showData': json.dumps(allVehicleMaintenanceManage)})
-
-
-def wastageManage(request):
-    allWastageManage = []
-    for wastageManage in WastageManage.objects.all():
-        aa = json.dumps(wastageManage, default=json_default)
-        bb = json.loads(aa)
-        allWastageManage.append(bb)
-
-    return render(request, "wastageManage.html" ,{'showData': json.dumps(allWastageManage)})
-
-
+# 采购单
 def materialPurchase(request):
-    allmaterialPurchase = []
-    for materialpurchase in MaterialPurchase.objects.all():
-        aa = json.dumps(materialpurchase, default=json_default)
-        bb = json.loads(aa)
-        allmaterialPurchase.append(bb)
-
+    ormUtils = MaterialPurchaseDBUtils()
+    allmaterialPurchase = ormUtils.queryAll()
     return render(request, "materialPurchase.html", {'showData': json.dumps(allmaterialPurchase)})
 
 
-def customPaymentInfo(request):
-    allCustomPaymentInfo = []
-    for customPaymentInfo in CustomPaymentInfo.objects.all():
-        aa = json.dumps(customPaymentInfo, default=json_default)
-        bb = json.loads(aa)
-        allCustomPaymentInfo.append(bb)
+# 车辆维修安排(统计)
+def vehicleMaintenanceManage(request):
+    ormUtils = VehicleMaintenanceManageDBUtils()
+    allVehicleMaintenanceManage = ormUtils.queryAll()
+    return render(request, "vehicleMaintenanceManage.html", {'showData': json.dumps(allVehicleMaintenanceManage)})
 
-    return render(request, "customPaymentInfo.html" ,{'showData': json.dumps(allCustomPaymentInfo)})
+
+# 损耗校验
+def wastageManage(request):
+    ormUtils = WastageManageDBUtils()
+    allWastageManage =  ormUtils.queryAll()
+    return render(request, "wastageManage.html", {'showData': json.dumps(allWastageManage)})
+
+
+# 客户充值信息
+def customPaymentInfo(request):
+    ormUtils = CustomPaymentInfoDBUtils()
+    allCustomPaymentInfo = ormUtils.queryAll()
+    return render(request, "customPaymentInfo.html",{'showData': json.dumps(allCustomPaymentInfo)})
 
 
 @csrf_exempt
@@ -282,7 +269,6 @@ def editTractorManage(request):
         return HttpResponse("OK")
 
 
-
 @csrf_exempt
 def editSupplier(request):
     mode = request.POST.get('oper')
@@ -329,123 +315,171 @@ def editSupplier(request):
         return HttpResponse("OK")
 
 
-
 @csrf_exempt
 def editSalesList(request):
-    mode = request.POST.get('oper', '')
+    mode = request.POST.get('oper')
+
+    editId = request.POST.get('id')
+    salesListID = request.POST.get('salesListID')
+    customName = request.POST.get('customName')
+    customID = request.POST.get('customID')
+    purchaseID = request.POST.get('purchaseID')
+    category = request.POST.get('category')
+    tractorID = request.POST.get('tractorID')
+    trailerID = request.POST.get('trailerID')
+    driverName = request.POST.get('driverName')
+    supercargo = request.POST.get('supercargo')
+    count = request.POST.get('count')
+    unitPrice = request.POST.get('unitPrice')
+    mileage = request.POST.get('mileage')
+    date = request.POST.get('date')
+    comment = request.POST.get('comment')
+    isInvoiced = request.POST.get('isInvoiced')
+    isStoraged = request.POST.get('isStoraged')
+
+    salesList = SalesList(salesListID=salesListID, customName=customName, customID=customID,
+                          purchaseID=purchaseID, category=category, tractorID=tractorID, trailerID=trailerID,
+                          driverName=driverName, supercargo=supercargo, count=count, unitPrice=unitPrice,
+                          mileage=mileage, date=date, comment=comment, isInvoiced=isInvoiced, isStoraged=isStoraged)
+
+    editDBSalesList = SalesListDBUtils()
+
     if mode == 'add':
-        salesListID = request.POST.get('salesListID')
-        customName = request.POST.get('customName')
-        customID = request.POST.get('customID')
-        purchaseID = request.POST.get('purchaseID')
-        category = request.POST.get('category')
-        tractorID = request.POST.get('tractorID')
-        trailerID = request.POST.get('trailerID')
-        driverName = request.POST.get('driverName')
-        supercargo = request.POST.get('supercargo')
-        count = request.POST.get('count')
-        unitPrice = request.POST.get('unitPrice')
-        mileage = request.POST.get('mileage')
-        date = request.POST.get('date')
-        comment = request.POST.get('comment')
-        isInvoiced = request.POST.get('isInvoiced')
-        isStoraged = request.POST.get('isStoraged')
+        editDBSalesList.add(salesList)
+        return HttpResponse("OK")
 
-        salesList = SalesList(salesListID=salesListID, customName=customName,customID=customID,
-                              purchaseID=purchaseID,category=category,tractorID=tractorID,trailerID=trailerID,
-                              driverName=driverName,supercargo=supercargo,count=count,unitPrice=unitPrice,
-                              mileage=mileage,date=date,comment=comment,isInvoiced=isInvoiced,isStoraged=isStoraged
-                            )
+    if mode == 'del' and editId:
+        editDBSalesList.delete(editId)
+        return HttpResponse("OK")
 
-        salesList.save()
+    if mode == 'edit' and editId:
+        editDBSalesList.update(editId, salesList)
+        return HttpResponse("OK")
 
-    # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
-    # 待修改
-    return HttpResponse("OK")
+
+@csrf_exempt
+def editMaterialPurchaseManage(request):
+    mode = request.POST.get('oper')
+
+    editId = request.POST.get('id')
+    purchaseID = request.POST.get('purchaseID')
+    supplierName = request.POST.get('supplierName')
+    category = request.POST.get('category')
+    tractorID = request.POST.get('tractorID')
+    trailerID = request.POST.get('trailerID')
+    driverName = request.POST.get('driverName')
+    supercargo = request.POST.get('supercargo')
+    count = request.POST.get('count')
+    unitPrice = request.POST.get('unitPrice')
+    mileage = request.POST.get('mileage')
+    date = request.POST.get('date')
+    isStoraged = request.POST.get('isStoraged')
+
+    materialPurchase = MaterialPurchase(purchaseID=purchaseID, supplierName=supplierName,
+                                              category=category, tractorID=tractorID,
+                                              trailerID=trailerID, driverName=driverName,
+                                              supercargo=supercargo, count=count,
+                                              unitPrice=unitPrice, mileage=mileage,
+                                              date=date, isStoraged=isStoraged)
+
+    editDBMaterialPurchase = MaterialPurchaseDBUtils()
+
+    if mode == 'add':
+        editDBMaterialPurchase.add(materialPurchase)
+        return HttpResponse("OK")
+
+    if mode == 'del' and editId:
+        editDBMaterialPurchase.delete(editId)
+        return HttpResponse("OK")
+
+    if mode == 'edit' and editId:
+        editDBMaterialPurchase.update(editId, materialPurchase)
+        return HttpResponse("OK")
 
 
 @csrf_exempt
 def editVehicleMaintenanceManage(request):
-    mode = request.POST.get('oper', '')
+    mode = request.POST.get('oper')
+
+    editId = request.POST.get('id')
+    vehicleType = request.POST.get('vehicleType')
+    vehicleID = request.POST.get('vehicleID')
+    maintenanceDate = request.POST.get('maintenanceDate')
+    maintenanceItems = request.POST.get('maintenanceItems')
+    maintenanceCost = request.POST.get('maintenanceCost')
+    maintenanceComment = request.POST.get('maintenanceComment')
+
+    vehicleMaintenanceManage = VehicleMaintenanceManage(vehicleType=vehicleType, vehicleID=vehicleID,
+                                                        maintenanceDate=maintenanceDate,
+                                                        maintenanceItems=maintenanceItems,
+                                                        maintenanceCost=maintenanceCost,
+                                                        maintenanceComment=maintenanceComment)
+
+    editDBVehicleMaintenanceManage = VehicleMaintenanceManageDBUtils()
+
     if mode == 'add':
-        vehicleType= request.POST.get('vehicleType')
-        vehicleID = request.POST.get('vehicleID')
-        maintenanceDate = request.POST.get('maintenanceDate')
-        maintenanceItems = request.POST.get('maintenanceItems')
-        maintenanceCost = request.POST.get('maintenanceCost')
-        maintenanceComment = request.POST.get('maintenanceComment')
+        editDBVehicleMaintenanceManage.add(vehicleMaintenanceManage)
+        return HttpResponse("OK")
 
-        vehicleMaintenanceManage = VehicleMaintenanceManage(vehicleType=vehicleType, vehicleID=vehicleID, maintenanceDate=maintenanceDate,
-                                maintenanceItems=maintenanceItems, maintenanceCost=maintenanceCost,maintenanceComment=maintenanceComment)
+    if mode == 'del' and editId:
+        editDBVehicleMaintenanceManage.delete(editId)
+        return HttpResponse("OK")
 
-        vehicleMaintenanceManage.save()
+    if mode == 'edit' and editId:
+        editDBVehicleMaintenanceManage.update(editId, vehicleMaintenanceManage)
+        return HttpResponse("OK")
 
-    # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
-    # 待修改
-    return HttpResponse("OK")
 
 @csrf_exempt
 def editWastageManage(request):
-    mode = request.POST.get('oper', '')
+    mode = request.POST.get('oper')
+
+    editId = request.POST.get('id')
+    trailerID = request.POST.get('trailerID')
+    wastageCount = request.POST.get('wastageCount')
+
+    wastageManage = WastageManage(trailerID=trailerID, wastageCount=wastageCount)
+
+    editDBWastageManage = WastageManageDBUtils()
+
     if mode == 'add':
-        trailerID= request.POST.get('trailerID')
-        wastageCount = request.POST.get('wastageCount')
+        editDBWastageManage.add(wastageManage)
+        return HttpResponse("OK")
 
-        wastageManage = WastageManage(trailerID=trailerID, wastageCount=wastageCount)
+    if mode == 'del' and editId:
+        editDBWastageManage.delete(editId)
+        return HttpResponse("OK")
 
-        wastageManage.save()
+    if mode == 'edit' and editId:
+        editDBWastageManage.update(editId, wastageManage)
+        return HttpResponse("OK")
 
-    # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
-    # 待修改
-    return HttpResponse("OK")
-
-@csrf_exempt
-def editmaterialPurchaseManage(request):
-    mode = request.POST.get('oper', '')
-    if mode == 'add':
-        purchaseID= request.POST.get('purchaseID')
-        supplierName= request.POST.get('supplierName')
-        category = request.POST.get('category')
-        tractorID = request.POST.get('tractorID')
-        trailerID = request.POST.get('trailerID')
-        driverName= request.POST.get('driverName')
-        supercargo = request.POST.get('supercargo')
-        count = request.POST.get('count')
-        unitPrice = request.POST.get('unitPrice')
-        mileage = request.POST.get('mileage')
-        date = request.POST.get('date')
-        isStoraged = request.POST.get('isStoraged')
-
-        materialPurchaseManage = MaterialPurchase(purchaseID=purchaseID,supplierName=supplierName,
-                                                  category=category,tractorID=tractorID,
-                                                  trailerID=trailerID,driverName=driverName,
-                                                  supercargo=supercargo,count=count,
-                                                  unitPrice=unitPrice,mileage=mileage,
-                                                  date=date,isStoraged=isStoraged)
-
-
-        materialPurchaseManage.save()
-
-    # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
-    # 待修改
-    return HttpResponse("OK")
 
 @csrf_exempt
 def editCustomPaymentInfo(request):
-    mode = request.POST.get('oper', '')
+    mode = request.POST.get('oper')
+
+    editId = request.POST.get('id')
+    customName = request.POST.get('customName')
+    payTime = request.POST.get('payTime')
+    payAmount = request.POST.get('payAmount')
+    balance = request.POST.get('balance')
+
+    customPaymentInfo = CustomPaymentInfo(customName=customName, payTime=payTime, payAmount=payAmount, balance=balance)
+
+    editDBCustomPaymentInfo = CustomPaymentInfoDBUtils()
+
     if mode == 'add':
-        customName= request.POST.get('customName')
-        payTime = request.POST.get('payTime')
-        payAmount= request.POST.get('payAmount')
-        balance = request.POST.get('balance')
+        editDBCustomPaymentInfo.add(customPaymentInfo)
+        return HttpResponse("OK")
 
-        customPaymentInfo = CustomPaymentInfo(customName=customName, payTime=payTime,payAmount=payAmount,balance=balance)
+    if mode == 'del' and editId:
+        editDBCustomPaymentInfo.delete(editId)
+        return HttpResponse("OK")
 
-        customPaymentInfo.save()
-
-    # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
-    # 待修改
-    return HttpResponse("OK")
+    if mode == 'edit' and editId:
+        editDBCustomPaymentInfo.update(editId, customPaymentInfo)
+        return HttpResponse("OK")
 
 # def monthWastage(request):
 #     return render(request,"monthWastage.html")
