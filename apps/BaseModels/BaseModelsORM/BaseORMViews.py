@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 """
 ---------------------------------------------
-    File  Name : ORMViews
+    File  Name : BaseORMViews
     Author : agony
     Date : 2018/7/29
-    Description: 
+    Description: 基础数据的ORM models
 ---------------------------------------------
 """
 import datetime
@@ -110,7 +110,8 @@ class CustomerManage(Base):
 
 
 class CustomerManageDBUtils(object):
-    def add(self, customer):
+    @classmethod
+    def add(cls, customer):
         if not isinstance(customer, CustomerManage):
             raise TypeError('The parameter customer is not instance of the CustomerManage instance')
         session = DBSession()
@@ -118,14 +119,16 @@ class CustomerManageDBUtils(object):
         session.commit()
         session.close()
 
-    def delete(self, delId):
+    @classmethod
+    def delete(cls, delId):
         session = DBSession()
         item_to_del = session.query(CustomerManage).filter_by(id=delId).first()
         session.delete(item_to_del)
         session.commit()
         session.close()
 
-    def update(self, updateId, customer):
+    @classmethod
+    def update(cls, updateId, customer):
         if not isinstance(customer, CustomerManage):
             raise TypeError('The parameter customer is not instance of the CustomerManage instance')
         session = DBSession()
@@ -152,7 +155,8 @@ class CustomerManageDBUtils(object):
         session.commit()
         session.close()
 
-    def queryAll(self):
+    @classmethod
+    def queryAll(cls):
         session = DBSession()
         queryAll = session.query(CustomerManage).all()
         allCustomer = []
@@ -191,7 +195,8 @@ class Supplier(Base):
 
 
 class SupplierDBUtils(object):
-    def add(self, supplier):
+    @classmethod
+    def add(cls, supplier):
         if not isinstance(supplier, Supplier):
             raise TypeError('The supplier staff is not instance of the Supplier instance')
         session = DBSession()
@@ -199,14 +204,16 @@ class SupplierDBUtils(object):
         session.commit()
         session.close()
 
-    def delete(self, delId):
+    @classmethod
+    def delete(cls, delId):
         session = DBSession()
         item_to_del = session.query(Supplier).filter_by(id=delId).first()
         session.delete(item_to_del)
         session.commit()
         session.close()
 
-    def update(self, updateId, supplier):
+    @classmethod
+    def update(cls, updateId, supplier):
         if not isinstance(supplier, Supplier):
             raise TypeError('The supplier staff is not instance of the Supplier instance')
         session = DBSession()
@@ -231,7 +238,8 @@ class SupplierDBUtils(object):
         session.commit()
         session.close()
 
-    def queryAll(self):
+    @classmethod
+    def queryAll(cls):
         session = DBSession()
         queryAll = session.query(Supplier).all()
         allSuppliers = []
@@ -270,7 +278,8 @@ class StaffManage(Base):
 
 # StaffManage 数据库操作类
 class StaffManageDBUtils(object):
-    def add(self, staff):
+    @classmethod
+    def add(cls, staff):
         if not isinstance(staff, StaffManage):
             raise TypeError('The parameter staff is not instance of the StaffManage instance')
         session = DBSession()
@@ -278,14 +287,16 @@ class StaffManageDBUtils(object):
         session.commit()
         session.close()
 
-    def delete(self, delId):
+    @classmethod
+    def delete(cls, delId):
         session = DBSession()
         item_to_del = session.query(StaffManage).filter_by(id=delId).first()
         session.delete(item_to_del)
         session.commit()
         session.close()
 
-    def update(self, updateId, staff):
+    @classmethod
+    def update(cls, updateId, staff):
         if not isinstance(staff, StaffManage):
             raise TypeError('The parameter staff is not instance of the StaffManage instance')
         session = DBSession()
@@ -301,7 +312,8 @@ class StaffManageDBUtils(object):
         session.commit()
         session.close()
 
-    def queryAll(self):
+    @classmethod
+    def queryAll(cls):
         session = DBSession()
         queryAll = session.query(StaffManage).all()
         allStaffs = []
@@ -329,7 +341,8 @@ class GasManage(Base):
 
 
 class GasManageDBUtils(object):
-    def add(self, gas):
+    @classmethod
+    def add(cls, gas):
         if not isinstance(gas, GasManage):
             raise TypeError('The parameter gas is not instance of the GasManage instance')
         session = DBSession()
@@ -337,14 +350,16 @@ class GasManageDBUtils(object):
         session.commit()
         session.close()
 
-    def delete(self, delId):
+    @classmethod
+    def delete(cls, delId):
         session = DBSession()
         item_to_del = session.query(GasManage).filter_by(id=delId).first()
         session.delete(item_to_del)
         session.commit()
         session.close()
 
-    def update(self, updateId, gas):
+    @classmethod
+    def update(cls, updateId, gas):
         if not isinstance(gas, GasManage):
             raise TypeError('The parameter gas is not instance of the GasManage instance')
         session = DBSession()
@@ -354,7 +369,8 @@ class GasManageDBUtils(object):
         session.commit()
         session.close()
 
-    def queryAll(self):
+    @classmethod
+    def queryAll(cls):
         session = DBSession()
         queryAll = session.query(GasManage).all()
         allGas = []
@@ -388,7 +404,8 @@ class TractorManage(Base):
 
 
 class TractorManageDBUtils(object):
-    def add(self, tractor):
+    @classmethod
+    def add(cls, tractor):
         if not isinstance(tractor, TractorManage):
             raise TypeError('The parameter tractor is not instance of the TractorManage instance')
         session = DBSession()
@@ -396,14 +413,16 @@ class TractorManageDBUtils(object):
         session.commit()
         session.close()
 
-    def delete(self, delId):
+    @classmethod
+    def delete(cls, delId):
         session = DBSession()
         item_to_del = session.query(TractorManage).filter_by(id=delId).first()
         session.delete(item_to_del)
         session.commit()
         session.close()
 
-    def update(self, updateId, tractor):
+    @classmethod
+    def update(cls, updateId, tractor):
         if not isinstance(tractor, TractorManage):
             raise TypeError('The parameter tractor is not instance of the TractorManage instance')
         session = DBSession()
@@ -416,7 +435,8 @@ class TractorManageDBUtils(object):
         session.commit()
         session.close()
 
-    def queryAll(self):
+    @classmethod
+    def queryAll(cls):
         session = DBSession()
         queryAll = session.query(TractorManage).all()
         allTractor = []
@@ -451,7 +471,8 @@ class TrailerManage(Base):
 
 
 class TrailerManageDBUtils(object):
-    def add(self, trailer):
+    @classmethod
+    def add(cls, trailer):
         if not isinstance(trailer, TrailerManage):
             raise TypeError('The parameter trailer is not instance of the TrailerManage instance')
         session = DBSession()
@@ -459,14 +480,16 @@ class TrailerManageDBUtils(object):
         session.commit()
         session.close()
 
-    def delete(self, delId):
+    @classmethod
+    def delete(cls, delId):
         session = DBSession()
         item_to_del = session.query(TrailerManage).filter_by(id=delId).first()
         session.delete(item_to_del)
         session.commit()
         session.close()
 
-    def update(self, updateId, trailer):
+    @classmethod
+    def update(cls, updateId, trailer):
         if not isinstance(trailer, TrailerManage):
             raise TypeError('The parameter tractor is not instance of the TractorManage instance')
         session = DBSession()
@@ -479,7 +502,8 @@ class TrailerManageDBUtils(object):
         session.commit()
         session.close()
 
-    def queryAll(self):
+    @classmethod
+    def queryAll(cls):
         session = DBSession()
         queryAll = session.query(TrailerManage).all()
         allTrailer = []
@@ -510,7 +534,8 @@ class User(Base):
 
 
 class UserDBUtils(object):
-    def add(self, user):
+    @classmethod
+    def add(cls, user):
         if not isinstance(user, User):
             raise TypeError('The parameter user is not instance of the User instance')
         session = DBSession()
@@ -518,14 +543,16 @@ class UserDBUtils(object):
         session.commit()
         session.close()
 
-    def delete(self, delId):
+    @classmethod
+    def delete(cls, delId):
         session = DBSession()
         item_to_del = session.query(User).filter_by(id=delId).first()
         session.delete(item_to_del)
         session.commit()
         session.close()
 
-    def update(self, updateId, user):
+    @classmethod
+    def update(cls, updateId, user):
         if not isinstance(user, User):
             raise TypeError('The parameter user is not instance of the User instance')
         session = DBSession()
@@ -536,7 +563,8 @@ class UserDBUtils(object):
         session.commit()
         session.close()
 
-    def queryAll(self):
+    @classmethod
+    def queryAll(cls):
         session = DBSession()
         queryAll = session.query(User).all()
         allUsers = []

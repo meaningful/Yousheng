@@ -1,5 +1,5 @@
 from django.shortcuts import render
-import datetime
+from apps.AppUtils import EncodeUtils
 import json
 from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManage, GasManage, CustomerManage,TrailerManage, Supplier, TractorManage, User
 from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManageDBUtils, GasManageDBUtils, CustomerManageDBUtils, TrailerManageDBUtils, SupplierDBUtils, TractorManageDBUtils, UserDBUtils
@@ -34,79 +34,74 @@ def carfixManage(request):
 
 # 公司人员管理
 def staffManage(request):
-    ormUtils = StaffManageDBUtils()
-    allStaffs = ormUtils.queryAll()
+    allStaffs = StaffManageDBUtils.queryAll()
     return render(request, "staffManage.html", {'showData': json.dumps(allStaffs)})
 
 
 # 气体管理
 def gasManage(request):
-    ormUtils = GasManageDBUtils()
-    allGas = ormUtils.queryAll()
+    allGas = GasManageDBUtils.queryAll()
     return render(request, "gasManage.html", {'showData': json.dumps(allGas)})
 
 
 # 客户管理
 def customManage(request):
-    ormUtils = CustomerManageDBUtils()
-    allCustom = ormUtils.queryAll()
+    allCustom = CustomerManageDBUtils.queryAll()
     return render(request, "customManage.html",  {'showData': json.dumps(allCustom)})
 
 
 # 挂车管理
 def trailerManage(request):
-    ormUtils = TrailerManageDBUtils()
-    allTrailer = ormUtils.queryAll()
+    allTrailer = TrailerManageDBUtils.queryAll()
     return render(request, "trailerManage.html", {'showData': json.dumps(allTrailer)})
 
 
 # 拖车管理
 def tractorManage(request):
-    ormUtils = TractorManageDBUtils()
-    allTractor = ormUtils.queryAll()
+    allTractor = TractorManageDBUtils.queryAll()
     return render(request, "tractorManage.html", {'showData': json.dumps(allTractor)})
 
 
 # 供应商管理
 def supplier(request):
-    ormUtils = SupplierDBUtils()
-    allSupplier = ormUtils.queryAll()
+    allSupplier = SupplierDBUtils.queryAll()
     return render(request, "supplier.html", {'showData': json.dumps(allSupplier)})
 
 
 # 销售单
 def salesList(request):
-    ormUtils = SalesListDBUtils()
-    allSalesList = ormUtils.queryAll()
+    allSalesList = SalesListDBUtils.queryAll()
     return render(request, "salesList.html", {'showData': json.dumps(allSalesList)})
 
 
 # 采购单
 def materialPurchase(request):
-    ormUtils = MaterialPurchaseDBUtils()
-    allmaterialPurchase = ormUtils.queryAll()
+    allmaterialPurchase = MaterialPurchaseDBUtils.queryAll()
     return render(request, "materialPurchase.html", {'showData': json.dumps(allmaterialPurchase)})
 
 
 # 车辆维修安排(统计)
 def vehicleMaintenanceManage(request):
-    ormUtils = VehicleMaintenanceManageDBUtils()
-    allVehicleMaintenanceManage = ormUtils.queryAll()
+    allVehicleMaintenanceManage = VehicleMaintenanceManageDBUtils.queryAll()
     return render(request, "vehicleMaintenanceManage.html", {'showData': json.dumps(allVehicleMaintenanceManage)})
 
 
 # 损耗校验
 def wastageManage(request):
-    ormUtils = WastageManageDBUtils()
-    allWastageManage =  ormUtils.queryAll()
+    allWastageManage = WastageManageDBUtils.queryAll()
     return render(request, "wastageManage.html", {'showData': json.dumps(allWastageManage)})
 
 
 # 客户充值信息
 def customPaymentInfo(request):
-    ormUtils = CustomPaymentInfoDBUtils()
-    allCustomPaymentInfo = ormUtils.queryAll()
-    return render(request, "customPaymentInfo.html",{'showData': json.dumps(allCustomPaymentInfo)})
+    allCustomPaymentInfo = CustomPaymentInfoDBUtils.queryAll()
+    return render(request, "customPaymentInfo.html", {'showData': json.dumps(allCustomPaymentInfo)})
+
+
+# 用户管理
+def userManage(request):
+    allUsers = UserDBUtils.queryAll()
+    return render(request, "userManage.html", {'showData': json.dumps(allUsers)})
 
 
 @csrf_exempt
@@ -140,18 +135,16 @@ def editCustomManage(request):
                         companyCharge=companyCharge, companyContact=companyContact,
                         customQualification=customQualification, annualSales=annualSales)
 
-    editCustomDBUtils = CustomerManageDBUtils()
-
     if mode == 'add':
-        editCustomDBUtils.add(custom)
+        CustomerManageDBUtils.add(custom)
         return HttpResponse("OK")
 
     if mode == 'del' and editId:
-        editCustomDBUtils.delete(editId)
+        CustomerManageDBUtils.delete(editId)
         return HttpResponse("OK")
 
     if mode == 'edit' and editId:
-        editCustomDBUtils.update(editId, custom)
+        CustomerManageDBUtils.update(editId, custom)
         return HttpResponse("OK")
 
 
@@ -172,20 +165,16 @@ def editStaffManage(request):
     staff = StaffManage(staffID=staffID, staffName=staffName, idNumber=idNumber, hiredate=hiredate,
                         position=position, photo=photo, resume=resume, category=category)
 
-    editDBStaffUtils = StaffManageDBUtils()
-
     if mode == 'add':
-        editDBStaffUtils.add(staff)
-    # return 这里有问题需要修改，这里应该返回一个httpresponse对象，但是还不确定这里该返回一个怎样的httpresponse对象
-    # 待修改
+        StaffManageDBUtils.add(staff)
         return HttpResponse("OK")
 
     if mode == 'del' and editId:
-        editDBStaffUtils.delete(editId)
+        StaffManageDBUtils.delete(editId)
         return HttpResponse("OK")
 
     if mode == 'edit' and editId:
-        editDBStaffUtils.update(editId, staff)
+        StaffManageDBUtils.update(editId, staff)
         return HttpResponse("OK")
 
 
@@ -198,18 +187,17 @@ def editGasManage(request):
     gasName = request.POST.get('gasName')
 
     gas = GasManage(gasID=gasID, gasName=gasName)
-    editDBGasUtils = GasManageDBUtils()
 
     if mode == 'add':
-        editDBGasUtils.add(gas)
+        GasManageDBUtils.add(gas)
         return HttpResponse("OK")
 
     if mode == 'del' and editId:
-        editDBGasUtils.delete(editId)
+        GasManageDBUtils.delete(editId)
         return HttpResponse("OK")
 
     if mode == 'edit' and editId:
-        editDBGasUtils.update(editId, gas)
+        GasManageDBUtils.update(editId, gas)
         return HttpResponse("OK")
 
 
@@ -226,18 +214,17 @@ def editTrailerManage(request):
 
     trailer = TrailerManage(trailerID=trailerID, annualInspectionTime=annualInspectionTime, insuranceTime=insuranceTime,
                             chassisNumber=chassisNumber, deliveryTime=deliveryTime)
-    editDBTrailerUtils = TrailerManageDBUtils()
 
     if mode == 'add':
-        editDBTrailerUtils.add(trailer)
+        TrailerManageDBUtils.add(trailer)
         return HttpResponse("OK")
 
     if mode == 'del' and editId:
-        editDBTrailerUtils.delete(editId)
+        TrailerManageDBUtils.delete(editId)
         return HttpResponse("OK")
 
     if mode == 'edit' and editId:
-        editDBTrailerUtils.update(editId, trailer)
+        TrailerManageDBUtils.update(editId, trailer)
         return HttpResponse("OK")
 
 
@@ -254,18 +241,17 @@ def editTractorManage(request):
 
     tractor = TractorManage(tractorID=tractorID, annualInspectionTime=annualInspectionTime, insuranceTime=insuranceTime,
                             chassisNumber=chassisNumber, deliveryTime=deliveryTime)
-    editDBTractorUtils = TractorManageDBUtils()
 
     if mode == 'add':
-        editDBTractorUtils.add(tractor)
+        TractorManageDBUtils.add(tractor)
         return HttpResponse("OK")
 
     if mode == 'del' and editId:
-        editDBTractorUtils.delete(editId)
+        TractorManageDBUtils.delete(editId)
         return HttpResponse("OK")
 
     if mode == 'edit' and editId:
-        editDBTractorUtils.update(editId, tractor)
+        TractorManageDBUtils.update(editId, tractor)
         return HttpResponse("OK")
 
 
@@ -300,18 +286,17 @@ def editSupplier(request):
                         customBankOfDepsit=customBankOfDepsit, customBankAccount=customBankAccount,
                         customContactName=customContactName, customContactTel=customContactTel,
                         purchaseCategory=purchaseCategory)
-    editDBSupplierUtils = SupplierDBUtils()
 
     if mode == 'add':
-        editDBSupplierUtils.add(supplier)
+        SupplierDBUtils.add(supplier)
         return HttpResponse("OK")
 
     if mode == 'del' and editId:
-        editDBSupplierUtils.delete(editId)
+        SupplierDBUtils.delete(editId)
         return HttpResponse("OK")
 
     if mode == 'edit' and editId:
-        editDBSupplierUtils.update(editId, supplier)
+        SupplierDBUtils.update(editId, supplier)
         return HttpResponse("OK")
 
 
@@ -342,18 +327,16 @@ def editSalesList(request):
                           driverName=driverName, supercargo=supercargo, count=count, unitPrice=unitPrice,
                           mileage=mileage, date=date, comment=comment, isInvoiced=isInvoiced, isStoraged=isStoraged)
 
-    editDBSalesList = SalesListDBUtils()
-
     if mode == 'add':
-        editDBSalesList.add(salesList)
+        SalesListDBUtils.add(salesList)
         return HttpResponse("OK")
 
     if mode == 'del' and editId:
-        editDBSalesList.delete(editId)
+        SalesListDBUtils.delete(editId)
         return HttpResponse("OK")
 
     if mode == 'edit' and editId:
-        editDBSalesList.update(editId, salesList)
+        SalesListDBUtils.update(editId, salesList)
         return HttpResponse("OK")
 
 
@@ -382,18 +365,16 @@ def editMaterialPurchaseManage(request):
                                               unitPrice=unitPrice, mileage=mileage,
                                               date=date, isStoraged=isStoraged)
 
-    editDBMaterialPurchase = MaterialPurchaseDBUtils()
-
     if mode == 'add':
-        editDBMaterialPurchase.add(materialPurchase)
+        MaterialPurchaseDBUtils.add(materialPurchase)
         return HttpResponse("OK")
 
     if mode == 'del' and editId:
-        editDBMaterialPurchase.delete(editId)
+        MaterialPurchaseDBUtils.delete(editId)
         return HttpResponse("OK")
 
     if mode == 'edit' and editId:
-        editDBMaterialPurchase.update(editId, materialPurchase)
+        MaterialPurchaseDBUtils.update(editId, materialPurchase)
         return HttpResponse("OK")
 
 
@@ -415,18 +396,16 @@ def editVehicleMaintenanceManage(request):
                                                         maintenanceCost=maintenanceCost,
                                                         maintenanceComment=maintenanceComment)
 
-    editDBVehicleMaintenanceManage = VehicleMaintenanceManageDBUtils()
-
     if mode == 'add':
-        editDBVehicleMaintenanceManage.add(vehicleMaintenanceManage)
+        VehicleMaintenanceManageDBUtils.add(vehicleMaintenanceManage)
         return HttpResponse("OK")
 
     if mode == 'del' and editId:
-        editDBVehicleMaintenanceManage.delete(editId)
+        VehicleMaintenanceManageDBUtils.delete(editId)
         return HttpResponse("OK")
 
     if mode == 'edit' and editId:
-        editDBVehicleMaintenanceManage.update(editId, vehicleMaintenanceManage)
+        VehicleMaintenanceManageDBUtils.update(editId, vehicleMaintenanceManage)
         return HttpResponse("OK")
 
 
@@ -440,18 +419,16 @@ def editWastageManage(request):
 
     wastageManage = WastageManage(trailerID=trailerID, wastageCount=wastageCount)
 
-    editDBWastageManage = WastageManageDBUtils()
-
     if mode == 'add':
-        editDBWastageManage.add(wastageManage)
+        WastageManageDBUtils.add(wastageManage)
         return HttpResponse("OK")
 
     if mode == 'del' and editId:
-        editDBWastageManage.delete(editId)
+        WastageManageDBUtils.delete(editId)
         return HttpResponse("OK")
 
     if mode == 'edit' and editId:
-        editDBWastageManage.update(editId, wastageManage)
+        WastageManageDBUtils.update(editId, wastageManage)
         return HttpResponse("OK")
 
 
@@ -467,18 +444,16 @@ def editCustomPaymentInfo(request):
 
     customPaymentInfo = CustomPaymentInfo(customName=customName, payTime=payTime, payAmount=payAmount, balance=balance)
 
-    editDBCustomPaymentInfo = CustomPaymentInfoDBUtils()
-
     if mode == 'add':
-        editDBCustomPaymentInfo.add(customPaymentInfo)
+        CustomPaymentInfoDBUtils.add(customPaymentInfo)
         return HttpResponse("OK")
 
     if mode == 'del' and editId:
-        editDBCustomPaymentInfo.delete(editId)
+        CustomPaymentInfoDBUtils.delete(editId)
         return HttpResponse("OK")
 
     if mode == 'edit' and editId:
-        editDBCustomPaymentInfo.update(editId, customPaymentInfo)
+        CustomPaymentInfoDBUtils.update(editId, customPaymentInfo)
         return HttpResponse("OK")
 
 # def monthWastage(request):
@@ -486,13 +461,6 @@ def editCustomPaymentInfo(request):
 #
 # def saleform(request):
 #     return render(request,"saleform.html")
-
-
-# 用户管理
-def userManage(request):
-    ormUtils = UserDBUtils()
-    allUsers = ormUtils.queryAll()
-    return render(request, "userManage.html", {'showData': json.dumps(allUsers)})
 
 
 @csrf_exempt
@@ -504,17 +472,16 @@ def editUser(request):
     userPassword = request.POST.get('userPassword')
     userLevel = request.POST.get('userLevel')
 
-    user = User(userName=userName, userPassword=userPassword,userLevel=userLevel)
-    editDBUtils = UserDBUtils()
+    user = User(userName=userName, userPassword=EncodeUtils.encode(userPassword), userLevel=userLevel)
 
     if mode == 'add':
-        editDBUtils.add(user)
+        UserDBUtils.add(user)
         return HttpResponse("OK")
 
     if mode == 'del' and editId:
-        editDBUtils.delete(editId)
+        UserDBUtils.delete(editId)
         return HttpResponse("OK")
 
     if mode == 'edit' and editId:
-        editDBUtils.update(editId, user)
+        UserDBUtils.update(editId, user)
         return HttpResponse("OK")

@@ -92,7 +92,8 @@ class SalesList(Base):
 
 
 class SalesListDBUtils(object):
-    def add(self, salesList):
+    @classmethod
+    def add(cls, salesList):
         if not isinstance(salesList, SalesList):
             raise TypeError('The parameter salesList is not instance of the SalesList instance')
         session = DBSession()
@@ -100,14 +101,16 @@ class SalesListDBUtils(object):
         session.commit()
         session.close()
 
-    def delete(self, delId):
+    @classmethod
+    def delete(cls, delId):
         session = DBSession()
         item_to_del = session.query(SalesList).filter_by(id=delId).first()
         session.delete(item_to_del)
         session.commit()
         session.close()
 
-    def update(self, updateId, salesList):
+    @classmethod
+    def update(cls, updateId, salesList):
         if not isinstance(salesList, SalesList):
             raise TypeError('The parameter salesList is not instance of the CustomerManage instance')
         session = DBSession()
@@ -133,7 +136,8 @@ class SalesListDBUtils(object):
         session.commit()
         session.close()
 
-    def queryAll(self):
+    @classmethod
+    def queryAll(cls):
         session = DBSession()
         queryAll = session.query(SalesList).all()
         allSalesList = []
@@ -181,7 +185,8 @@ class MaterialPurchase(Base):
 
 
 class MaterialPurchaseDBUtils(object):
-    def add(self, materialPurchase):
+    @classmethod
+    def add(cls, materialPurchase):
         if not isinstance(materialPurchase, MaterialPurchase):
             raise TypeError('The parameter materialPurchase is not instance of the MaterialPurchase instance')
         session = DBSession()
@@ -189,14 +194,16 @@ class MaterialPurchaseDBUtils(object):
         session.commit()
         session.close()
 
-    def delete(self, delId):
+    @classmethod
+    def delete(cls, delId):
         session = DBSession()
         item_to_del = session.query(MaterialPurchase).filter_by(id=delId).first()
         session.delete(item_to_del)
         session.commit()
         session.close()
 
-    def update(self, updateId, materialPurchase):
+    @classmethod
+    def update(cls, updateId, materialPurchase):
         if not isinstance(materialPurchase, MaterialPurchase):
             raise TypeError('The parameter materialPurchase is not instance of the MaterialPurchase instance')
         session = DBSession()
@@ -218,7 +225,8 @@ class MaterialPurchaseDBUtils(object):
         session.commit()
         session.close()
 
-    def queryAll(self):
+    @classmethod
+    def queryAll(cls):
         session = DBSession()
         queryAll = session.query(MaterialPurchase).all()
         allMaterialPurchase = []
@@ -260,7 +268,8 @@ class VehicleMaintenanceManage(Base):
 
 
 class VehicleMaintenanceManageDBUtils(object):
-    def add(self, vehicleMaintenanceManage):
+    @classmethod
+    def add(cls, vehicleMaintenanceManage):
         if not isinstance(vehicleMaintenanceManage, VehicleMaintenanceManage):
             raise TypeError('The parameter vehicleMaintenanceManage is not instance of the '
                             'VehicleMaintenanceManage instance')
@@ -269,14 +278,16 @@ class VehicleMaintenanceManageDBUtils(object):
         session.commit()
         session.close()
 
-    def delete(self, delId):
+    @classmethod
+    def delete(cls, delId):
         session = DBSession()
         item_to_del = session.query(VehicleMaintenanceManage).filter_by(id=delId).first()
         session.delete(item_to_del)
         session.commit()
         session.close()
 
-    def update(self, updateId, vehicleMaintenanceManage):
+    @classmethod
+    def update(cls, updateId, vehicleMaintenanceManage):
         if not isinstance(vehicleMaintenanceManage, VehicleMaintenanceManage):
             raise TypeError('The parameter vehicleMaintenanceManage is not instance of the '
                             'VehicleMaintenanceManage instance')
@@ -297,7 +308,8 @@ class VehicleMaintenanceManageDBUtils(object):
         session.commit()
         session.close()
 
-    def queryAll(self):
+    @classmethod
+    def queryAll(cls):
         session = DBSession()
         queryAll = session.query(VehicleMaintenanceManage).all()
         allVehicleMaintenanceManage = []
@@ -326,7 +338,8 @@ class WastageManage(Base):
 
 
 class WastageManageDBUtils(object):
-    def add(self, wastageManage):
+    @classmethod
+    def add(cls, wastageManage):
         if not isinstance(wastageManage, WastageManage):
             raise TypeError('The parameter wastageManage is not instance of the WastageManage instance')
         session = DBSession()
@@ -334,14 +347,16 @@ class WastageManageDBUtils(object):
         session.commit()
         session.close()
 
-    def delete(self, delId):
+    @classmethod
+    def delete(cls, delId):
         session = DBSession()
         item_to_del = session.query(WastageManage).filter_by(id=delId).first()
         session.delete(item_to_del)
         session.commit()
         session.close()
 
-    def update(self, updateId, wastageManage):
+    @classmethod
+    def update(cls, updateId, wastageManage):
         if not isinstance(wastageManage, WastageManage):
             raise TypeError('The parameter wastageManage is not instance of the WastageManage instance')
         session = DBSession()
@@ -353,7 +368,8 @@ class WastageManageDBUtils(object):
         session.commit()
         session.close()
 
-    def queryAll(self):
+    @classmethod
+    def queryAll(cls):
         session = DBSession()
         queryAll = session.query(WastageManage).all()
         allWastageManage = []
@@ -386,7 +402,8 @@ class CustomPaymentInfo(Base):
 
 
 class CustomPaymentInfoDBUtils(object):
-    def add(self, customPaymentInfo):
+    @classmethod
+    def add(cls, customPaymentInfo):
         if not isinstance(customPaymentInfo, CustomPaymentInfo):
             raise TypeError('The parameter customPaymentInfo is not instance of the CustomPaymentInfo instance')
         session = DBSession()
@@ -394,14 +411,16 @@ class CustomPaymentInfoDBUtils(object):
         session.commit()
         session.close()
 
-    def delete(self, delId):
+    @classmethod
+    def delete(cls, delId):
         session = DBSession()
         item_to_del = session.query(CustomPaymentInfo).filter_by(id=delId).first()
         session.delete(item_to_del)
         session.commit()
         session.close()
 
-    def update(self, updateId, customPaymentInfo):
+    @classmethod
+    def update(cls, updateId, customPaymentInfo):
         if not isinstance(customPaymentInfo, CustomPaymentInfo):
             raise TypeError('The parameter customPaymentInfo is not instance of the CustomPaymentInfo instance')
         session = DBSession()
@@ -415,7 +434,8 @@ class CustomPaymentInfoDBUtils(object):
         session.commit()
         session.close()
 
-    def queryAll(self):
+    @classmethod
+    def queryAll(cls):
         session = DBSession()
         queryAll = session.query(CustomPaymentInfo).all()
         allCustomPaymentInfo = []
