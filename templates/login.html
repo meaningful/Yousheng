@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+</head>
+<body>
+    <form action="/" method="post">
+        {% csrf_token %}
+        <label for="userName">用户名：</label>
+        <input id="userName" type="text" name="userName" value="{{ userName }}"><br/>
+        <label for="userPassword">密码：</label>
+        <input id="userPassword" type="password" name="userPassword" value="{{ userPassword }}"><br/>
+        <input type="submit" value="登录">
+
+        {{ error }}
+    </form>
+</body>
+</html>
+
+

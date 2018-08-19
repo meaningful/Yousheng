@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from apps.AppUtils import EncodeUtils
+from apps.AppUtils import EncodeUtils, LoginUtils
 import json
 from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManage, GasManage, CustomerManage,TrailerManage, Supplier, TractorManage, User
 from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManageDBUtils, GasManageDBUtils, CustomerManageDBUtils, TrailerManageDBUtils, SupplierDBUtils, TractorManageDBUtils, UserDBUtils
@@ -15,9 +15,25 @@ from django.http import HttpResponse
 #     else:
 #         return value.__dict__
 
-
 def index(request):
-    return render(request, "index.html")
+    if request.method == 'GET':
+        return render(request, "login.html")
+    elif request.method == 'POST':
+        userName = request.POST.get('userName')
+        userPassword = request.POST.get('userPassword')
+        user = LoginUtils.doLogin(userName, userPassword)
+        if user:
+            # request.session["user_name"] = userName
+            userLevel = user.userLevel
+            # request.session["user_level"] = userLevel
+            context = {
+                'userName': userName,
+                'userLevel': userLevel
+            }
+            return render(request, "index.html", context=context)
+        else:
+            return render(request, "login.html", context={'error': '用户名或密码不正确!'})
+
 
 
 def homePage(request):
@@ -29,7 +45,7 @@ def unfound(request):
 
 
 def carfixManage(request):
-    return render(request,"carfixManage.html")
+    return render(request, "carfixManage.html")
 
 
 # 公司人员管理

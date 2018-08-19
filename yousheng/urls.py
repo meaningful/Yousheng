@@ -21,7 +21,7 @@ from . import view
 
 urlpatterns = [
     url('admin/', admin.site.urls),
-    url(r'^$',view.index),
+    url(r'^$', view.index),
     url(r'^homePage.html$', view.homePage),
     url(r'^carfixManage.html$', view.carfixManage),
     url(r'^customManage.html$', view.customManage),
@@ -53,4 +53,4 @@ urlpatterns = [
     url(r'^editUser', view.editUser)
 ]
 
-urlpatterns += static(settings.STATIC_URL , document_root=settings.STATIC_ROOTS)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOTS)
