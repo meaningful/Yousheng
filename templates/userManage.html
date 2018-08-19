@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>用户管理</title>
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="{% static "css/bootstrap.min14ed.css" %}?v=3.3.6" rel="stylesheet">
+    <link href="{% static "css/font-awesome.min93e3.css" %}?v=4.4.0" rel="stylesheet">
+    <link href="{% static "css/animate.min.css" %}" rel="stylesheet">
+    <link href="{% static "css/style.min862f.css" %}?v=4.1.0" rel="stylesheet">
+    <link href="{% static "css/plugins/jqgrid/ui.jqgridffe4.css" %}?0820" rel="stylesheet">
+</head>
+<body>
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <!-- 用户管理 -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>用户管理</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="jqGrid_wrapper">
+                            <table id="table_list_2"></table>
+                            <div id="pager_list_2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static "js/jquery.min.js" %}?v=2.1.4"></script>
+    <script src="{% static "js/bootstrap.min.js" %}?v=3.3.6"></script>
+    <script src="{% static "js/plugins/peity/jquery.peity.min.js" %}"></script>
+    <script src="{% static "js/plugins/jqgrid/i18n/grid.locale-cnffe4.js" %}?0820"></script>
+    <script src="{% static "js/plugins/jqgrid/jquery.jqGrid.minffe4.js" %}?0820"></script>
+
+<script type="text/javascript">
+        function InitCustomerManageGrid(parameters) {
+           $.jgrid.defaults.styleUI="Bootstrap";
+           var mydata = {{ showData|safe }};
+
+           $("#table_list_2").jqGrid(
+            {  data:mydata,datatype:"local",height:450,autowidth:true,shrinkToFit:true,rowNum:20,rowList:[10,20,30],
+                 colNames:["用户名","用户密码" ,"用户级别"],
+                 colModel:[
+                    {name:"userName",index:"userName",editable:true,width:100,sortable:false},
+                    {name:"userPassword",index:"userPassword",editable:true,width:100,sortable:false},
+                    {name:"userLevel",index:"userLevel",editable:true,width:100,sortable:false}],
+                pager:"#pager_list_2",viewrecords:true,caption:"用户管理",add:true,edit:true,addtext:"Add",edittext:"Edit",hidegrid:false,editurl:"./editUser",
+            });
+
+           $("#table_list_2").jqGrid("navGrid","#pager_list_2",{edit:true,add:true,del:true,search:true},{height:200,reloadAfterSubmit:true});
+           $(window).bind("resize",function(){var width=$(".jqGrid_wrapper").width();$("#table_list_2").setGridWidth(width)}) ;
+
+        };
+
+         $(document).ready(function(){InitCustomerManageGrid();}) ;
+
+
+    </script>
+
+</body>
+</html>

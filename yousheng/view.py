@@ -1,8 +1,8 @@
 from django.shortcuts import render
 import datetime
 import json
-from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManage, GasManage, CustomerManage,TrailerManage, Supplier, TractorManage
-from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManageDBUtils, GasManageDBUtils, CustomerManageDBUtils, TrailerManageDBUtils, SupplierDBUtils, TractorManageDBUtils
+from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManage, GasManage, CustomerManage,TrailerManage, Supplier, TractorManage, User
+from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManageDBUtils, GasManageDBUtils, CustomerManageDBUtils, TrailerManageDBUtils, SupplierDBUtils, TractorManageDBUtils, UserDBUtils
 from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesList, MaterialPurchase, VehicleMaintenanceManage, WastageManage, CustomPaymentInfo
 from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesListDBUtils, MaterialPurchaseDBUtils, VehicleMaintenanceManageDBUtils, WastageManageDBUtils, CustomPaymentInfoDBUtils
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
@@ -486,3 +486,35 @@ def editCustomPaymentInfo(request):
 #
 # def saleform(request):
 #     return render(request,"saleform.html")
+
+
+# 用户管理
+def userManage(request):
+    ormUtils = UserDBUtils()
+    allUsers = ormUtils.queryAll()
+    return render(request, "userManage.html", {'showData': json.dumps(allUsers)})
+
+
+@csrf_exempt
+def editUser(request):
+    mode = request.POST.get('oper')
+
+    editId = request.POST.get('id')
+    userName = request.POST.get('userName')
+    userPassword = request.POST.get('userPassword')
+    userLevel = request.POST.get('userLevel')
+
+    user = User(userName=userName, userPassword=userPassword,userLevel=userLevel)
+    editDBUtils = UserDBUtils()
+
+    if mode == 'add':
+        editDBUtils.add(user)
+        return HttpResponse("OK")
+
+    if mode == 'del' and editId:
+        editDBUtils.delete(editId)
+        return HttpResponse("OK")
+
+    if mode == 'edit' and editId:
+        editDBUtils.update(editId, user)
+        return HttpResponse("OK")

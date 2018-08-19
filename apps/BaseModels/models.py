@@ -170,11 +170,13 @@ class StaffManage(models.Model):
 # <- 用户管理表 Begin ->
 # 用户名		userName
 # 密码		userPassword
+# 用户权限级别 userLevel
 
 
 class UserManage(models.Model):
     userName = models.CharField(max_length=100)
-    userPassword = models.CharField(max_length=100)
+    userPassword = models.CharField(max_length=256)
+    userLevel = models.CharField(max_length=100)
 
 # <- 用户管理表 End ->
 

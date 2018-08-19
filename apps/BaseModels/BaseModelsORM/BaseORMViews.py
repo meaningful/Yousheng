@@ -492,3 +492,59 @@ class TrailerManageDBUtils(object):
 
 
 # <- 挂车管理表 End ->
+
+
+# <- 用户管理表 Begin ->
+# 用户名		userName
+# 密码		userPassword
+# 用户权限级别 userLevel
+
+
+class User(Base):
+    __tablename__ = 'Yousheng_users'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    userName = Column(String(128))
+    userPassword = Column(String(256))
+    userLevel = Column(String(128))
+
+
+class UserDBUtils(object):
+    def add(self, user):
+        if not isinstance(user, User):
+            raise TypeError('The parameter user is not instance of the User instance')
+        session = DBSession()
+        session.add(user)
+        session.commit()
+        session.close()
+
+    def delete(self, delId):
+        session = DBSession()
+        item_to_del = session.query(User).filter_by(id=delId).first()
+        session.delete(item_to_del)
+        session.commit()
+        session.close()
+
+    def update(self, updateId, user):
+        if not isinstance(user, User):
+            raise TypeError('The parameter user is not instance of the User instance')
+        session = DBSession()
+        item_to_update = session.query(User).filter_by(id=updateId).first()
+        item_to_update.userName = user.userName
+        item_to_update.userPassword = user.userPassword
+        item_to_update.userLevel = user.userLevel
+        session.commit()
+        session.close()
+
+    def queryAll(self):
+        session = DBSession()
+        queryAll = session.query(User).all()
+        allUsers = []
+        for item in queryAll:
+            user_json = json.dumps(object2dict(item), cls=DateEncoder)
+            user = json.loads(user_json)
+            allUsers.append(user)
+        session.close()
+        return allUsers
+
+# <- 用户管理表 end ->

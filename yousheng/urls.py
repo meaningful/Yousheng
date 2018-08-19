@@ -49,6 +49,8 @@ urlpatterns = [
     url(r'^editWastageManage', view.editWastageManage),
     url(r'^customPaymentInfo', view.customPaymentInfo),
     url(r'^editCustomPaymentInfo', view.editCustomPaymentInfo),
+    url(r'^userManage', view.userManage),
+    url(r'^editUser', view.editUser)
 ]
 
 urlpatterns += static(settings.STATIC_URL , document_root=settings.STATIC_ROOTS)
