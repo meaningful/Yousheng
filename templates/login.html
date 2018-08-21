@@ -3,19 +3,24 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>登录</title>
+    <title>有盛内部管理系统</title>
+    <link href="{% static "css/login-index.css" %}" rel="stylesheet">
+
 </head>
 <body>
-    <form action="/" method="post">
-        {% csrf_token %}
-        <label for="userName">用户名：</label>
-        <input id="userName" type="text" name="userName" value="{{ userName }}"><br/>
-        <label for="userPassword">密码：</label>
-        <input id="userPassword" type="password" name="userPassword" value="{{ userPassword }}"><br/>
-        <input type="submit" value="登录">
+    <div id="login">
+        <h1>有盛内部管理系统</h1>
+        <form action="/" method="post">
+            {% csrf_token %}
+            <input id="userName" type="text" required="required" placeholder="用户名" name="userName" value="{{ userName }}"/>
+            <input id="userPassword" type="password" required="required" placeholder="密码" name="userPassword" value="{{ userPassword }}"/>
+            <button class="but" type="submit">登录</button>
+            <p id="error">{{ error }}</p>
+        </form>
+    </div>
 
-        {{ error }}
-    </form>
+    <div class="pull-right"><p>&copy; 2018-2019 YouSheng</p></div>
+
 </body>
 </html>
 
