@@ -23,9 +23,9 @@ def index(request):
         userPassword = request.POST.get('userPassword')
         user = LoginUtils.doLogin(userName, userPassword)
         if user:
-            # request.session["user_name"] = userName
+            request.session["user_name"] = userName
             userLevel = user.userLevel
-            # request.session["user_level"] = userLevel
+            request.session["user_level"] = userLevel
             context = {
                 'userName': userName,
                 'userLevel': userLevel
@@ -33,7 +33,6 @@ def index(request):
             return render(request, "index.html", context=context)
         else:
             return render(request, "login.html", context={'error': '用户名或密码不正确!'})
-
 
 
 def homePage(request):
