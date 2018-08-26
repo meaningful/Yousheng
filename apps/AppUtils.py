@@ -32,8 +32,3 @@ class LoginUtils(object):
         else:
             return None
 
-
-
-
-
-

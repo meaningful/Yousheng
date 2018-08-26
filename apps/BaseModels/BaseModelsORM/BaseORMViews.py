@@ -578,11 +578,9 @@ class UserDBUtils(object):
     @classmethod
     def isUserExist(cls, name, password):
         session = DBSession()
-        # 这里存在一个疑问待解决：查询字符串不区分大小写，大小写敏感问题，暂时不确定是mysql的问题还是ORM框架的问题，现在先在代码层面进行规避
         user = session.query(User).filter(User.userName == name, User.userPassword == password).one_or_none()
-        # 进行二次判断(这里只需要对name进行判断，因为password为hash加密后的数据，在这里不会涉及大小写敏感问题)，规避大小写敏感问题
         session.close()
-        if user and user.userName == name:
+        if user:
             return user
         else:
             return None
