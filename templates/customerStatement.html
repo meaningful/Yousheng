@@ -1,0 +1,113 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>客户对账单</title>
+    <link href="{% static "css/table_style.css" %}" rel="stylesheet">
+</head>
+<body>
+<div class="div_head_left">
+    <p>武汉友盛气体有限责任有限公司 &nbsp; &nbsp; &nbsp; WUHAN&nbsp; YOUSHENG &nbsp; &nbsp; GASES CO.LTD</P>
+    <p>武汉市洪山区创意天地&nbsp; 4-703</P>
+    <p>电话:(86)(27)84237146 &nbsp; 传真:(86)(27)84660813 &nbsp; &nbsp; Tel:(86)(27)84237146 &nbsp; Fax:(86)(27)84660813</P>
+</div>
+<hr class="hr">
+
+<table align="center" border='1' width=80% cellpadding='5' cellspacing='0'>
+    {#    <tr>#}
+    {#        <td colspan='4' align='middle'>客户对账单</td>#}
+    {#    </tr>#}
+
+    <tr>
+        <td width="15%">收件人（To）</td>
+        <td width="25%">张三</td>
+        <td width="15%">发件人（From）</td>
+        <td width="25%">李四</td>
+    </tr>
+
+    <tr>
+        <td width="15%">公司（Company）</td>
+        <td width="25%">武汉XX</td>
+        <td width="15%">公司（Company）</td>
+        <td width="25%">友盛</td>
+    </tr>
+    <tr>
+        <td width="15%">传真（Fax）</td>
+        <td width="25%">xxx</td>
+        <td width="15%">电话（Tel）</td>
+        <td width="25%">xxx</td>
+    </tr>
+    <tr>
+        <td width="15%">电话（Tel）</td>
+        <td width="25%">xxxx</td>
+        <td width="15%">日期（Date）</td>
+        <td width="25%">2018-08-28</td>
+    </tr>
+
+</table>
+<h1 align="center">2018年8月份天一液体结算明细</h1>
+
+
+<table id="list_tab" align="center" border='1' width=80% cellpadding='5' cellspacing='0'>
+    <tr>
+        <td width="10%" rowspan="2">序号</td>
+        <td width="10%" rowspan="2">品名</td>
+        <td width="10%" rowspan="2">日期</td>
+        <td width="10%" rowspan="2">车号</td>
+        <td width="20%" colspan=2 align="center">数量</td>
+        <td width="10%" rowspan="2">单价（元/m<sup>3</sup>）</td>
+        <td width="10%" rowspan="2">合计（元）</td>
+        <td width="10%" rowspan="2">备注</td>
+    </tr>
+    <tr>
+        <td width="10%">T</td>
+        <td width="10%">m<sup>3</sup></td>
+    </tr>
+{#    {% for r,l in xx_dict.items %}#}
+{#　　<li>{{k}}-{{row}}</li>#}
+{#    TODO：遍历数据生成数据行#}
+{#    {% endfor %}#}
+    <tr>
+        <td>1.1</td>
+        <td>1.2</td>
+        <td>1.3</td>
+        <td>1.4</td>
+        <td>1.5</td>
+        <td>1.6</td>
+        <td>1.7</td>
+        <td>1.8</td>
+        <td>1.9</td>
+    </tr>
+
+    <tr>
+        <td width="10%" rowspan="2">合计</td>
+        <td width="10%"></td>
+        <td width="10%"></td>
+        <td width="10%"></td>
+        <td width="10%">666</td>
+        <td width="10%">999</td>
+        <td width="10%"></td>
+        <td width="10%"></td>
+        <td width="10%"></td>
+    </tr>
+    <tr>
+        <td width="10%" colspan="8">九十九万九千九百九十九</td>
+    </tr>
+
+</table>
+<div class="div_footer_left">
+    <p class="p_bottom_lr">贵公司签字 &nbsp; 盖章确认如下：</P>
+    <br>
+    <p>签字：<input type="text"></P>
+    <p>日期：<input type="text"></P>
+</div>
+
+<div class="div_footer_right">
+    <p class="p_bottom_lr">武汉友盛气体有限责任有限公司</P>
+    <p>编制：<input type="text"></P>
+    <p>审核：<input type="text"></P>
+    <p>日期：<input type="text"></P>
+</div>
+</body>
+</html>

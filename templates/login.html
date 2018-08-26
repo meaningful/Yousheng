@@ -3,13 +3,13 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>有盛内部管理系统</title>
+    <title>友盛内部管理系统</title>
     <link href="{% static "css/login-index.css" %}" rel="stylesheet">
 
 </head>
 <body>
     <div id="login">
-        <h1>有盛内部管理系统</h1>
+        <h1>友盛内部管理系统</h1>
         <form action="/" method="post">
             {% csrf_token %}
             <input id="userName" type="text" required="required" placeholder="用户名" name="userName" value="{{ userName }}"/>

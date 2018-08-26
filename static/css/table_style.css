@@ -1,0 +1,40 @@
+
+.div_head_left {
+    position: relative;
+    margin-left: 10%;
+    margin-bottom: 2%;
+}
+
+.hr {
+    position: relative;
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-bottom: 1%;
+}
+
+.div_footer_left {
+    float: left;
+    position: absolute;
+    margin-left: 10%;
+    margin-bottom: 2%;
+}
+
+.div_footer_right {
+    float: right;
+    position: relative;
+    margin-right: 15%;
+}
+
+.p_bottom_l {
+    margin-top: 50px;
+}
+
+.p_bottom_lr {
+    margin-top: 30px;
+}
+
+input {
+    border: 0;
+    border-bottom: 1px solid #000;
+}
