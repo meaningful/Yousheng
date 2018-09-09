@@ -226,9 +226,10 @@ def editTrailerManage(request):
     insuranceTime = request.POST.get('insuranceTime')
     chassisNumber = request.POST.get('chassisNumber')
     deliveryTime = request.POST.get('deliveryTime')
+    currentBalance  =request.POST.get('currentBalance')
 
     trailer = TrailerManage(trailerID=trailerID, annualInspectionTime=annualInspectionTime, insuranceTime=insuranceTime,
-                            chassisNumber=chassisNumber, deliveryTime=deliveryTime)
+                            chassisNumber=chassisNumber, deliveryTime=deliveryTime, currentBalance=currentBalance)
 
     if mode == 'add':
         TrailerManageDBUtils.add(trailer)
@@ -332,7 +333,8 @@ def editSalesList(request):
     count = request.POST.get('count')
     unitPrice = request.POST.get('unitPrice')
     mileage = request.POST.get('mileage')
-    date = request.POST.get('date')
+    orderDate = request.POST.get('orderDate')
+    storageDate = request.POST.get('storageDate')
     comment = request.POST.get('comment')
     isInvoiced = request.POST.get('isInvoiced')
     isStoraged = request.POST.get('isStoraged')
@@ -340,7 +342,7 @@ def editSalesList(request):
     salesList = SalesList(salesListID=salesListID, customName=customName, customID=customID,
                           purchaseID=purchaseID, category=category, tractorID=tractorID, trailerID=trailerID,
                           driverName=driverName, supercargo=supercargo, count=count, unitPrice=unitPrice,
-                          mileage=mileage, date=date, comment=comment, isInvoiced=isInvoiced, isStoraged=isStoraged)
+                          mileage=mileage, orderDate=orderDate, storageDate=storageDate, comment=comment, isInvoiced=isInvoiced, isStoraged=isStoraged)
 
     if mode == 'add':
         SalesListDBUtils.add(salesList)
@@ -370,15 +372,16 @@ def editMaterialPurchaseManage(request):
     count = request.POST.get('count')
     unitPrice = request.POST.get('unitPrice')
     mileage = request.POST.get('mileage')
-    date = request.POST.get('date')
+    orderDate = request.POST.get('orderDate')
+    storageDate = request.POST.get('storageDate')
     isStoraged = request.POST.get('isStoraged')
 
     materialPurchase = MaterialPurchase(purchaseID=purchaseID, supplierName=supplierName,
                                               category=category, tractorID=tractorID,
                                               trailerID=trailerID, driverName=driverName,
                                               supercargo=supercargo, count=count,
-                                              unitPrice=unitPrice, mileage=mileage,
-                                              date=date, isStoraged=isStoraged)
+                                              unitPrice=unitPrice, mileage=mileage, orderDate=orderDate,
+                                              storageDate=storageDate, isStoraged=isStoraged)
 
     if mode == 'add':
         MaterialPurchaseDBUtils.add(materialPurchase)
