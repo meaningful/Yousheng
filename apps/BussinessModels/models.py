@@ -26,7 +26,8 @@ import apps.BaseModels.models
 # 数量		count
 # 单价		unitPrice
 # 码表数		mileage
-# 日期		date
+# 下单日期	orderDate
+# 入库日期   storageDate
 # 本单是否入库（是/否）	未入库采购单可修改 ， 已入库采购单只能浏览不能修改。【分支业务：超级管理员可更改已入库的采购单信息，不能删除】	isStoraged
 
 
@@ -41,7 +42,8 @@ class MaterialPurchase(models.Model):
     count = models.CharField(max_length=100)
     unitPrice = models.CharField(max_length=100)
     mileage = models.CharField(max_length=100)
-    date = models.DateField()
+    orderDate = models.DateField()
+    storageDate = models.DateField()
     isStoraged = models.CharField(max_length=100)
 
 # salesList【销售单】
@@ -59,7 +61,8 @@ class MaterialPurchase(models.Model):
 # 单位 【非表字段， 只是页面展示的显示】	吨/立方米
 # 单价		unitPrice
 # 码表公里数		mileage
-# 日期		date
+# 下单日期	orderDate
+# 入库日期   storageDate
 # 备注		comment
 # 是否已开发票（是/否）		isInvoiced
 # 本单是否入库（是/否）	未入库销售单可修改 ， 已入库销售单只能浏览不能修改。【分支业务：超级管理员可更改已入库的销售单信息 ， 不能删除】	isStoraged
@@ -78,7 +81,8 @@ class SalesList(models.Model):
     count = models.CharField(max_length=100)
     unitPrice = models.CharField(max_length=100)
     mileage = models.CharField(max_length=100)
-    date = models.DateField()
+    orderDate = models.DateField()
+    storageDate = models.DateField()
     comment = models.CharField(max_length=100)
     isInvoiced = models.CharField(max_length=100)
     isStoraged = models.CharField(max_length=100)

@@ -47,8 +47,8 @@
 
            $("#table_list_2").jqGrid(
             {  data:mydata,datatype:"local",height:450,autowidth:true,shrinkToFit:true,rowNum:20,rowList:[10,20,30],
-                 colNames:["销售单编号","客户名称","客户编号","采购单编号","品种","拖车号","挂车号","司机","押运员","数量 ",
-                 "单价","码表公里数","日期","备注","是否已开发票","本单是否入库"],
+                 colNames:["销售单编号","客户名称","客户编号","采购单编号","品种","拖车号","挂车号","司机","押运员","数量(默认显示挂车余量)",
+                 "单价","码表公里数","下单日期","备注","是否已开发票","本单是否入库"],
                  colModel:[
                     {name:"salesListID",index:"salesListID",editable:true,width:100,sortable:false},
                     {name:"customName",index:"customName",editable:true,width:100,sortable:false},

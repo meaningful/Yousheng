@@ -47,7 +47,7 @@
 
            $("#table_list_2").jqGrid(
             {  data:mydata,datatype:"local",height:450,autowidth:true,shrinkToFit:true,rowNum:20,rowList:[10,20,30],
-                 colNames:["挂车号","损耗量（吨）"],
+                 colNames:["挂车号","损耗量[默认值为现余量]（吨）"],
                  colModel:[
                     {name:"trailerID",index:"trailerID",editable:true,width:100,sortable:false},
                     {name:"wastageCount",index:"wastageCount",editable:true,width:100,sortable:false},
