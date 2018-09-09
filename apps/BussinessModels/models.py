@@ -11,9 +11,9 @@ import apps.BaseModels.models
 
 
 
-class TestModle(models.Model):
-    testFiled = models.CharField(max_length=100, default="1")
-    testFiled2 = models.CharField(max_length=100, default="1")
+# class TestModle(models.Model):
+#     testFiled = models.CharField(max_length=100, default="1")
+#     testFiled2 = models.CharField(max_length=100, default="1")
 
 # materialPurchase 【采购单表】
 # 采购单编号	时间日期+流水ID	purchaseID
@@ -64,32 +64,33 @@ class MaterialPurchase(models.Model):
 # 是否已开发票（是/否）		isInvoiced
 # 本单是否入库（是/否）	未入库销售单可修改 ， 已入库销售单只能浏览不能修改。【分支业务：超级管理员可更改已入库的销售单信息 ， 不能删除】	isStoraged
 
+
 class SalesList(models.Model):
-    # salesListID = models.CharField(max_length=100)
-    #customName = models.CharField(max_length=100,default="")
-    # customID = models.CharField(max_length=100)
-    # purchaseID = models.CharField(max_length=100)
-    # category = models.CharField(max_length=100)
-    # tractorID = models.CharField(max_length=100)
-    # trailerID = models.CharField(max_length=100)
-    # driverName = models.CharField(max_length=100)
-    # supercargo = models.CharField(max_length=100)
-    # count = models.CharField(max_length=100)
-    # unitPrice = models.CharField(max_length=100)
-    # mileage = models.CharField(max_length=100)
-    # date = models.DateField()
-    # comment = models.CharField(max_length=100)
-    #isInvoiced = models.CharField(max_length=100)
-    # isStoraged = models.CharField(max_length=100)
     salesListID = models.CharField(max_length=100)
-    custom = models.ForeignKey(CustomerManage, on_delete=models.CASCADE,default='')
-    purchaseID = models.ForeignKey(MaterialPurchase, default='',on_delete=models.CASCADE)
-    #category = models.ForeignKey(GasManage,on_delete=models.CASCADE,default='')
-    tractor = models.ForeignKey(TractorManage, on_delete=models.CASCADE,default='')
-    trailer = models.ForeignKey(TrailerManage, on_delete=models.CASCADE,default='')
-    @property
-    def customID(self):
-        return self.custom.customID
+    customName = models.CharField(max_length=100)
+    customID = models.CharField(max_length=100)
+    purchaseID = models.CharField(max_length=100)
+    category = models.CharField(max_length=100)
+    tractorID = models.CharField(max_length=100)
+    trailerID = models.CharField(max_length=100)
+    driverName = models.CharField(max_length=100)
+    supercargo = models.CharField(max_length=100)
+    count = models.CharField(max_length=100)
+    unitPrice = models.CharField(max_length=100)
+    mileage = models.CharField(max_length=100)
+    date = models.DateField()
+    comment = models.CharField(max_length=100)
+    isInvoiced = models.CharField(max_length=100)
+    isStoraged = models.CharField(max_length=100)
+    # salesListID = models.CharField(max_length=100)
+    # custom = models.ForeignKey(CustomerManage, on_delete=models.CASCADE,default='')
+    # purchaseID = models.ForeignKey(MaterialPurchase, default='',on_delete=models.CASCADE)
+    # #category = models.ForeignKey(GasManage,on_delete=models.CASCADE,default='')
+    # tractor = models.ForeignKey(TractorManage, on_delete=models.CASCADE,default='')
+    # trailer = models.ForeignKey(TrailerManage, on_delete=models.CASCADE,default='')
+    # @property
+    # def customID(self):
+    #     return self.custom.customID
 
 
 

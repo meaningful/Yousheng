@@ -468,6 +468,7 @@ class TrailerManage(Base):
     insuranceTime = Column(Date)
     chassisNumber = Column(String(128))
     deliveryTime = Column(String(128))
+    currentBalance = Column(String(128))
 
 
 class TrailerManageDBUtils(object):

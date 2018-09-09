@@ -131,6 +131,7 @@ class TractorManage(models.Model):
 # 保险时间		insuranceTime
 # 车架号		chassisNumber
 # 出厂时间		deliveryTime
+# 现余量 currentBalance （现余量=该挂车对应采购单数量之和 - 该挂车对应销售单数量之和 - 该挂车损耗校验之和）
 
 
 class TrailerManage(models.Model):
@@ -139,6 +140,7 @@ class TrailerManage(models.Model):
     insuranceTime = models.DateField()
     chassisNumber = models.CharField(max_length=100)
     deliveryTime = models.CharField(max_length=100)
+    currentBalance = models.CharField(max_length=100)
 
 # <- 挂车管理表 End ->
 

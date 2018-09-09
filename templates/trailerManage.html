@@ -47,13 +47,14 @@
 
            $("#table_list_2").jqGrid(
             {  data:mydata,datatype:"local",height:450,autowidth:true,shrinkToFit:true,rowNum:20,rowList:[10,20,30],
-                 colNames:["挂车号","年检时间","保险时间","车架号","出厂时间"],
+                 colNames:["挂车号","年检时间","保险时间","车架号","出厂时间","现余量"],
                  colModel:[
                     {name:"trailerID",index:"trailerID",editable:true,width:100,sortable:false},
                     {name:"annualInspectionTime",index:"annualInspectionTime",editable:true,width:100,sorttype:"date",formatter:"date"},
                     {name:"insuranceTime",index:"insuranceTime",editable:true,width:100,sorttype:"date",formatter:"date"},
                     {name:"chassisNumber",index:"chassisNumber",editable:true,width:100,sortable:false},
-                    {name:"deliveryTime",index:"deliveryTime",editable:true,width:100,sorttype:"date",formatter:"date"}],
+                    {name:"deliveryTime",index:"deliveryTime",editable:true,width:100,sorttype:"date",formatter:"date"},
+                    {name:"currentBalance",index:"currentBalance",editable:true,width:100,sortable:false}],
                 pager:"#pager_list_2",viewrecords:true,caption:"挂车管理",add:true,edit:true,addtext:"Add",edittext:"Edit",hidegrid:false,editurl:"./editTrailerManage",
             });
 
