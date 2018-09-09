@@ -130,7 +130,8 @@ class SalesListDBUtils(object):
         item_to_update.count = salesList.count
         item_to_update.unitPrice = salesList.unitPrice
         item_to_update.mileage = salesList.mileage
-        item_to_update.date = salesList.date
+        item_to_update.orderDate = salesList.orderDate
+        item_to_update.storageDate = salesList.storageDate
         item_to_update.comment = salesList.comment
         item_to_update.isInvoiced = salesList.isInvoiced
         item_to_update.sStoraged = salesList.isStoraged
@@ -223,7 +224,8 @@ class MaterialPurchaseDBUtils(object):
         item_to_update.count = materialPurchase.count
         item_to_update.unitPrice = materialPurchase.unitPrice
         item_to_update.mileage = materialPurchase.mileage
-        item_to_update.date = materialPurchase.date
+        item_to_update.orderDate = materialPurchase.orderDate
+        item_to_update.storageDate = materialPurchase.storageDate
         item_to_update.isStoraged = materialPurchase.isStoraged
 
         session.commit()

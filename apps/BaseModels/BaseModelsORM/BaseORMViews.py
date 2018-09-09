@@ -500,6 +500,7 @@ class TrailerManageDBUtils(object):
         item_to_update.insuranceTime = trailer.insuranceTime
         item_to_update.chassisNumber = trailer.chassisNumber
         item_to_update.deliveryTime = trailer.deliveryTime
+        item_to_update.currentBalance = trailer.currentBalance
         session.commit()
         session.close()
 
