@@ -47,21 +47,23 @@
 
            $("#table_list_2").jqGrid(
             {  data:mydata,datatype:"local",height:450,autowidth:true,shrinkToFit:true,rowNum:20,rowList:[10,20,30],
-                 colNames:["编号","姓名","身份证号","入职时间","职务","照片","人员简历","人员类别"],
+                 colNames:["编号","姓名","身份证号","入职时间(格式:2018-01-01)","职务","照片","人员简历","人员类别"],
                  colModel:[
-                    {name:"staffID",index:"staffID",editable:true,width:100,sortable:false},
+                    {name:"staffID",index:"staffID",editable:true,width:120,sortable:false},
                     {name:"staffName",index:"staffName",editable:true,width:100,sortable:false},
-                    {name:"idNumber",index:"idNumber",editable:true,width:100,sortable:false},
+                    {name:"idNumber",index:"idNumber",editable:true,width:100,sortable:false,editoptions:{maxlength: 18}},
                     {name:"hiredate",index:"hiredate",editable:true,width:100,sorttype:"date",formatter:"date"},
-                    {name:"position",index:"position",editable:true,width:100},
-                    {name:"photo",index:"photo",editable:true,width:100,sortable:false},
-                    {name:"resume",index:"resume",editable:true,width:100,sortable:false},
-                    {name:"category",index:"category",editable:true,width:80,align:"right",sortable:false}
-                    ],
+                    {name:"position",index:"position",editable:true,width:100,edittype:"select",editoptions:{value:{"职务1":"职务1", "职务2":"职务2", "职务3":"职务3"}}},
+                    {name:"photo",index:"photo",editable:true,width:100,sortable:false,search:false},
+                    {name:"resume",index:"resume",editable:true,width:100,sortable:false,search:false},
+                    {name:"category",index:"category",editable:true,width:80,align:"right",sortable:false,edittype:"select",editoptions:{value:{"办公室":"办公室","司机":"司机","押运员":"押运员",}}}],
                 pager:"#pager_list_2",viewrecords:true,caption:"公司人员管理",add:true,edit:true,addtext:"Add",edittext:"Edit",hidegrid:false,editurl:"./editStaffManage",
             });
 
-           $("#table_list_2").jqGrid("navGrid","#pager_list_2",{edit:true,add:true,del:true,search:true},{height:200,reloadAfterSubmit:true});
+           $("#table_list_2").jqGrid("navGrid","#pager_list_2",
+               {edit:true,add:true,del:true,search:true},
+               {modal:true, jqModal:true },
+               {reloadAfterSubmit:true, closeAfterEdit:true,closeAfterAdd:true});
            $(window).bind("resize",function(){var width=$(".jqGrid_wrapper").width();$("#table_list_2").setGridWidth(width)}) ;
 
         };

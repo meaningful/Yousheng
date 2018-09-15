@@ -151,6 +151,20 @@ class SalesListDBUtils(object):
         session.close()
         return allSalesList
 
+    @classmethod
+    def getCount(cls):
+        session = DBSession()
+        allCount = session.query(SalesList).count()
+        session.close()
+        return allCount
+
+    @classmethod
+    def getSalesListIDByEditId(cls, editId):
+        session = DBSession()
+        item = session.query(SalesList).filter_by(id=editId).first()
+        session.close()
+        return item.salesListID
+
 # <- 销售单 End ->
 
 
@@ -242,6 +256,20 @@ class MaterialPurchaseDBUtils(object):
             allMaterialPurchase.append(materialPurchase)
         session.close()
         return allMaterialPurchase
+
+    @classmethod
+    def getCount(cls):
+        session = DBSession()
+        allCount = session.query(MaterialPurchase).count()
+        session.close()
+        return allCount
+
+    @classmethod
+    def getPurchaseIDByEditId(cls, editId):
+        session = DBSession()
+        item = session.query(MaterialPurchase).filter_by(id=editId).first()
+        session.close()
+        return item.purchaseID
 
 
 # <- 采购单 End ->
@@ -454,3 +482,6 @@ class CustomPaymentInfoDBUtils(object):
 
 
 # <- 客户充值信息 End ->
+
+
+

@@ -54,7 +54,9 @@
                 pager:"#pager_list_2",viewrecords:true,caption:"气体管理",add:true,edit:true,addtext:"Add",edittext:"Edit",hidegrid:false,editurl:"./editGasManage",
             });
 
-           $("#table_list_2").jqGrid("navGrid","#pager_list_2",{edit:true,add:true,del:true,search:true},{height:200,reloadAfterSubmit:true});
+           $("#table_list_2").jqGrid("navGrid","#pager_list_2",{edit:true,add:true,del:true,search:true},
+               {modal:true, jqModal:true},
+               {reloadAfterSubmit:true, closeAfterEdit:true,closeAfterAdd:true});
            $(window).bind("resize",function(){var width=$(".jqGrid_wrapper").width();$("#table_list_2").setGridWidth(width)}) ;
 
         };

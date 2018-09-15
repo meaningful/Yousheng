@@ -41,6 +41,42 @@
     <script src="{% static "js/plugins/jqgrid/jquery.jqGrid.minffe4.js" %}?0820"></script>
 
 <script type="text/javascript">
+
+        function decodeUnicode(str) {
+            str = str.replace(/\\/g, "%");
+            return unescape(str);
+        }
+
+
+        // 查询所有挂车号
+        function getTrailerIDs() {
+
+			var allTrailer = "";
+			var i;
+			$.ajax({
+				type : "get",
+				async : false,
+				url : "./getTrailerIDs",
+                dataType:"json",
+				success : function(result){
+                    var item = result.allTrailerIDs;
+                    var data = item.substring(1,item.length-1)
+                    var str = data.replace(/\"/g, "")
+                    var strArr = str.split(",")
+                    for (i=0;i< strArr.length ;i++ ) {
+                        var str_item = decodeUnicode($.trim(strArr[i]))
+                        if(i!= strArr.length -1){
+                            allTrailer += str_item+":"+str_item+";";
+                        }else {
+                            allTrailer += str_item+":"+str_item;
+                        }
+                    }
+
+				}
+			});
+			return allTrailer;
+        }
+
         function InitCustomerManageGrid(parameters) {
            $.jgrid.defaults.styleUI="Bootstrap";
            var mydata = {{ showData|safe }};
@@ -49,13 +85,15 @@
             {  data:mydata,datatype:"local",height:450,autowidth:true,shrinkToFit:true,rowNum:20,rowList:[10,20,30],
                  colNames:["挂车号","损耗量[默认值为现余量]（吨）"],
                  colModel:[
-                    {name:"trailerID",index:"trailerID",editable:true,width:100,sortable:false},
+                    {name:"trailerID",index:"trailerID",editable:true,width:100,sortable:false,edittype:"select", editoptions:{value:getTrailerIDs()}},
                     {name:"wastageCount",index:"wastageCount",editable:true,width:100,sortable:false},
                  ],
                 pager:"#pager_list_2",viewrecords:true,caption:"损耗校验",add:true,edit:true,addtext:"Add",edittext:"Edit",hidegrid:false,editurl:"./editWastageManage",
             });
 
-           $("#table_list_2").jqGrid("navGrid","#pager_list_2",{edit:true,add:true,del:true,search:true},{height:200,reloadAfterSubmit:true});
+           $("#table_list_2").jqGrid("navGrid","#pager_list_2",{edit:true,add:true,del:true,search:true},
+               {modal:true, jqModal:true },
+               {reloadAfterSubmit:true, closeAfterEdit:true,closeAfterAdd:true});
            $(window).bind("resize",function(){var width=$(".jqGrid_wrapper").width();$("#table_list_2").setGridWidth(width)}) ;
 
         };

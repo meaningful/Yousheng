@@ -278,6 +278,10 @@ class StaffManage(Base):
 
 # StaffManage 数据库操作类
 class StaffManageDBUtils(object):
+
+    STAFF_CATEGORY_DRIVER = "司机"
+    STAFF_CATEGORY_SUPERCARGO = "押运员"
+
     @classmethod
     def add(cls, staff):
         if not isinstance(staff, StaffManage):
@@ -323,6 +327,20 @@ class StaffManageDBUtils(object):
             allStaffs.append(staff)
         session.close()
         return allStaffs
+
+    # 根据人员category查询
+    @classmethod
+    def queryAllByCategory(cls, category):
+        session = DBSession()
+        queryAllByCategory = session.query(StaffManage).filter(StaffManage.category == category).all()
+        allStaffCatagory = []
+        for item in queryAllByCategory:
+            staff_json = json.dumps(object2dict(item), cls=DateEncoder)
+            staff = json.loads(staff_json)
+            allStaffCatagory.append(staff)
+            session.close()
+        return allStaffCatagory
+
 
 # <- 公司人员管理表 End ->
 

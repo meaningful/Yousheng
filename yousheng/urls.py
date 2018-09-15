@@ -50,7 +50,15 @@ urlpatterns = [
     url(r'^customPaymentInfo', view.customPaymentInfo),
     url(r'^editCustomPaymentInfo', view.editCustomPaymentInfo),
     url(r'^userManage', view.userManage),
-    url(r'^editUser', view.editUser)
+    url(r'^editUser', view.editUser),
+    url(r'^getAllCustomNames', view.getAllCustomNames),
+    url(r'^getAllSupplierNames', view.getAllSupplierNames),
+    url(r'^getAllGasName', view.getAllGasName),
+    url(r'^getAllTractorIDs', view.getAllTractorIDs),
+    url(r'^getTrailerIDs', view.getTrailerIDs),
+    url(r'^getAllDriverNames', view.getAllDriverNames),
+    url(r'^getAllSupercargoNames', view.getAllSupercargoNames),
+
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOTS)

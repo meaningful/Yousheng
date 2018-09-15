@@ -54,7 +54,7 @@
 
            $("#table_list_2").jqGrid(
             {  data:mydata,datatype:"local",height:450,autowidth:true,shrinkToFit:true,rowNum:20,rowList:[10,20,30],
-                 colNames:["客户编号","名称","电话","地址","税号","开户行","账号","传真","所属行业","公司性质","合作类型	【直供， 共建，中间站]","等级","合同","付款周期","公司负责人","公司联系人","客户资质","年销售额"],
+                 colNames:["客户编号","名称(单位名称+简称)","电话","地址","税号","开户行","账号","传真","所属行业","公司性质","合作类型(直供/共建/中间站)","等级","合同号","付款周期","公司负责人","公司联系人","客户资质","年销售额"],
                  colModel:[
                     {name:"customID",index:"customID",editable:true,width:100,sortable:false},
                     {name:"customName",index:"customName",editable:true,width:100,sortable:false},
@@ -66,7 +66,7 @@
                     {name:"fax",index:"fax",editable:true,width:80,align:"right",sorttype:"float"},
                     {name:"industryField",index:"industryField",editable:true,width:100,sortable:false},
                     {name:"companyNature",index:"companyNature",editable:true,width:80,align:"right",sorttype:"float"},
-                    {name:"consocationMode",index:"consocationMode",editable:true,width:90,sorttype:"date"},
+                    {name:"consocationMode",index:"consocationMode",editable:true,width:90,sorttype:"date",edittype:"select",editoptions:{value:{"直供":"直供", "共建":"共建", "中间站":"中间站"}}},
                     {name:"level",index:"level",editable:true,width:100,sortable:false},
                     {name:"contract",index:"contract",editable:true,width:80,align:"right",sorttype:"float",formatter:"number"},
                     {name:"payCycle",index:"payCycle",editable:true,width:100,sorttype:"date",formatter:"date"},
@@ -77,7 +77,9 @@
                 pager:"#pager_list_2",viewrecords:true,caption:"客户管理",add:true,edit:true,addtext:"Add",edittext:"Edit",hidegrid:false,editurl:"./editCustomManage",
             });
 
-           $("#table_list_2").jqGrid("navGrid","#pager_list_2",{edit:true,add:true,del:true,search:true},{height:200,reloadAfterSubmit:true});
+           $("#table_list_2").jqGrid("navGrid","#pager_list_2",{edit:true,add:true,del:true,search:true},
+               {modal:true, jqModal:true},
+               {reloadAfterSubmit:true, closeAfterEdit:true,closeAfterAdd:true});
            $(window).bind("resize",function(){var width=$(".jqGrid_wrapper").width();$("#table_list_2").setGridWidth(width)}) ;
 
         };

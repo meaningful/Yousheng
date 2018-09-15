@@ -47,17 +47,19 @@
 
            $("#table_list_2").jqGrid(
             {  data:mydata,datatype:"local",height:450,autowidth:true,shrinkToFit:true,rowNum:20,rowList:[10,20,30],
-                 colNames:["客户名","缴费时间","缴费金额","余额"],
+                 colNames:["客户名","缴费时间(格式:2018-01-01)","缴费金额(元)","余额(元)"],
                  colModel:[
                     {name:"customName",index:"customName",editable:true,width:100,sortable:false},
                     {name:"payTime",index:"payTime",editable:true,width:100,sorttype:"date",formatter:"date"},
                     {name:"payAmount",index:"payAmount",editable:true,width:100,sortable:false},
-                    {name:"balance",index:"balance",editable:true,width:100,sortable:false},
+                    {name:"balance",index:"balance",editable:false,width:100,sortable:false},
                  ],
                 pager:"#pager_list_2",viewrecords:true,caption:"客户充值信息",add:true,edit:true,addtext:"Add",edittext:"Edit",hidegrid:false,editurl:"./editCustomPaymentInfo",
             });
 
-           $("#table_list_2").jqGrid("navGrid","#pager_list_2",{edit:true,add:true,del:true,search:true},{height:200,reloadAfterSubmit:true});
+           $("#table_list_2").jqGrid("navGrid","#pager_list_2",{edit:true,add:true,del:true,search:true},
+               {modal:true, jqModal:true },
+               {reloadAfterSubmit:true, closeAfterEdit:true,closeAfterAdd:true});
            $(window).bind("resize",function(){var width=$(".jqGrid_wrapper").width();$("#table_list_2").setGridWidth(width)}) ;
 
         };

@@ -10,7 +10,14 @@
 """
 import hashlib
 from apps.BaseModels.BaseModelsORM.BaseORMViews import UserDBUtils
+from time import strftime, localtime
 
+_year = strftime("%Y", localtime())
+_mon = strftime("%m", localtime())
+_day = strftime("%d", localtime())
+_hour = strftime("%H", localtime())
+_min = strftime("%M", localtime())
+_sec = strftime("%S", localtime())
 
 class EncodeUtils(object):
     # Hash 加密字符串
@@ -31,4 +38,13 @@ class LoginUtils(object):
             return user
         else:
             return None
+
+
+# 日期时间工具类
+class DateUtils(object):
+
+    @classmethod
+    def get_current_time(cls):
+        return _year + _mon + _day + _hour + _min + _sec
+
 

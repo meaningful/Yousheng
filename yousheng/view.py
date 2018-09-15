@@ -6,7 +6,8 @@ from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManageDBUtils, GasMa
 from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesList, MaterialPurchase, VehicleMaintenanceManage, WastageManage, CustomPaymentInfo
 from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesListDBUtils, MaterialPurchaseDBUtils, VehicleMaintenanceManageDBUtils, WastageManageDBUtils, CustomPaymentInfoDBUtils
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+from apps.BusinessUtils import ViewModelsDBUtils
 
 
 # def json_default(value):
@@ -183,6 +184,7 @@ def editStaffManage(request):
     if mode == 'add':
         StaffManageDBUtils.add(staff)
         return HttpResponse("OK")
+        # return render(request, "staffManage.html", {'status': 200})
 
     if mode == 'del' and editId:
         StaffManageDBUtils.delete(editId)
@@ -205,7 +207,9 @@ def editGasManage(request):
 
     if mode == 'add':
         GasManageDBUtils.add(gas)
-        return HttpResponse("OK")
+        allGas = GasManageDBUtils.queryAll()
+        return render(request, "gasManage.html", {'showData': json.dumps(allGas)})
+        # return HttpResponse("OK")
 
     if mode == 'del' and editId:
         GasManageDBUtils.delete(editId)
@@ -321,7 +325,7 @@ def editSalesList(request):
     mode = request.POST.get('oper')
 
     editId = request.POST.get('id')
-    salesListID = request.POST.get('salesListID')
+    # salesListID = request.POST.get('salesListID')
     customName = request.POST.get('customName')
     customID = request.POST.get('customID')
     purchaseID = request.POST.get('purchaseID')
@@ -339,12 +343,14 @@ def editSalesList(request):
     isInvoiced = request.POST.get('isInvoiced')
     isStoraged = request.POST.get('isStoraged')
 
-    salesList = SalesList(salesListID=salesListID, customName=customName, customID=customID,
-                          purchaseID=purchaseID, category=category, tractorID=tractorID, trailerID=trailerID,
-                          driverName=driverName, supercargo=supercargo, count=count, unitPrice=unitPrice,
-                          mileage=mileage, orderDate=orderDate, storageDate=storageDate, comment=comment, isInvoiced=isInvoiced, isStoraged=isStoraged)
-
     if mode == 'add':
+        salesListID = ViewModelsDBUtils.generated_serial_number_for_salelist()
+        salesList = SalesList(salesListID=salesListID, customName=customName, customID=customID,
+                              purchaseID=purchaseID, category=category, tractorID=tractorID, trailerID=trailerID,
+                              driverName=driverName, supercargo=supercargo, count=count, unitPrice=unitPrice,
+                              mileage=mileage, orderDate=orderDate, storageDate=storageDate, comment=comment,
+                              isInvoiced=isInvoiced, isStoraged=isStoraged)
+
         SalesListDBUtils.add(salesList)
         return HttpResponse("OK")
 
@@ -353,6 +359,12 @@ def editSalesList(request):
         return HttpResponse("OK")
 
     if mode == 'edit' and editId:
+        salesListID = SalesListDBUtils.getSalesListIDByEditId(editId)
+        salesList = SalesList(salesListID=salesListID, customName=customName, customID=customID,
+                              purchaseID=purchaseID, category=category, tractorID=tractorID, trailerID=trailerID,
+                              driverName=driverName, supercargo=supercargo, count=count, unitPrice=unitPrice,
+                              mileage=mileage, orderDate=orderDate, storageDate=storageDate, comment=comment,
+                              isInvoiced=isInvoiced, isStoraged=isStoraged)
         SalesListDBUtils.update(editId, salesList)
         return HttpResponse("OK")
 
@@ -362,7 +374,7 @@ def editMaterialPurchaseManage(request):
     mode = request.POST.get('oper')
 
     editId = request.POST.get('id')
-    purchaseID = request.POST.get('purchaseID')
+    # purchaseID = request.POST.get('purchaseID')
     supplierName = request.POST.get('supplierName')
     category = request.POST.get('category')
     tractorID = request.POST.get('tractorID')
@@ -376,14 +388,16 @@ def editMaterialPurchaseManage(request):
     storageDate = request.POST.get('storageDate')
     isStoraged = request.POST.get('isStoraged')
 
-    materialPurchase = MaterialPurchase(purchaseID=purchaseID, supplierName=supplierName,
-                                              category=category, tractorID=tractorID,
-                                              trailerID=trailerID, driverName=driverName,
-                                              supercargo=supercargo, count=count,
-                                              unitPrice=unitPrice, mileage=mileage, orderDate=orderDate,
-                                              storageDate=storageDate, isStoraged=isStoraged)
-
     if mode == 'add':
+        # 采购单编号后台生成，不可编辑，保证唯一性
+        # Add 时创建编号
+        purchaseID = ViewModelsDBUtils.generated_serial_number_for_material_purchase()
+        materialPurchase = MaterialPurchase(purchaseID=purchaseID, supplierName=supplierName,
+                                            category=category, tractorID=tractorID,
+                                            trailerID=trailerID, driverName=driverName,
+                                            supercargo=supercargo, count=count,
+                                            unitPrice=unitPrice, mileage=mileage, orderDate=orderDate,
+                                            storageDate=storageDate, isStoraged=isStoraged)
         MaterialPurchaseDBUtils.add(materialPurchase)
         return HttpResponse("OK")
 
@@ -392,6 +406,15 @@ def editMaterialPurchaseManage(request):
         return HttpResponse("OK")
 
     if mode == 'edit' and editId:
+        # 采购单编号后台生成，不可编辑，保证唯一性
+        # Update 时根据 editId 查询编号
+        purchaseID = MaterialPurchaseDBUtils.getPurchaseIDByEditId(editId)
+        materialPurchase = MaterialPurchase(purchaseID=purchaseID, supplierName=supplierName,
+                                            category=category, tractorID=tractorID,
+                                            trailerID=trailerID, driverName=driverName,
+                                            supercargo=supercargo, count=count,
+                                            unitPrice=unitPrice, mileage=mileage, orderDate=orderDate,
+                                            storageDate=storageDate, isStoraged=isStoraged)
         MaterialPurchaseDBUtils.update(editId, materialPurchase)
         return HttpResponse("OK")
 
@@ -503,3 +526,51 @@ def editUser(request):
     if mode == 'edit' and editId:
         UserDBUtils.update(editId, user)
         return HttpResponse("OK")
+
+
+# -------- For Business begin--------- #
+# 查询所有客户名称
+@csrf_exempt
+def getAllCustomNames(request):
+    allCustomNames = ViewModelsDBUtils.getAllCustomNames()
+    return JsonResponse({"allCustomNames": allCustomNames})
+
+
+# 查询所有供货商名称
+@csrf_exempt
+def getAllSupplierNames(request):
+    allSupplierNames = ViewModelsDBUtils.getAllSupplierNames()
+    return JsonResponse({"allSupplierNames": allSupplierNames})
+
+# 查询所有品种（气体种类）名称
+@csrf_exempt
+def getAllGasName(request):
+    allGasNames = ViewModelsDBUtils.getAllGasName()
+    return JsonResponse({"allGasNames": allGasNames})
+
+# 查询所有拖车的拖车号
+@csrf_exempt
+def getAllTractorIDs(request):
+    allTractorIDs = ViewModelsDBUtils.getAllTractorIDs()
+    return JsonResponse({"allTractorIDs": allTractorIDs})
+
+# 查询所有挂车号
+@csrf_exempt
+def getTrailerIDs(request):
+    allTrailerIDs = ViewModelsDBUtils.getTrailerIDs()
+    return JsonResponse({"allTrailerIDs": allTrailerIDs})
+
+# 查询所有司机名称
+@csrf_exempt
+def getAllDriverNames(request):
+    allDriverNames = ViewModelsDBUtils.getAllDriverNames()
+    return JsonResponse({"allDriverNames": allDriverNames})
+
+# 查询所有押运员名称
+@csrf_exempt
+def getAllSupercargoNames(request):
+    allSupercargoNames = ViewModelsDBUtils.getAllSupercargoNames()
+    return JsonResponse({"allSupercargoNames": allSupercargoNames})
+
+
+# -------- For Business end--------- #
