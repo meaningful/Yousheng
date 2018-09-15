@@ -536,11 +536,18 @@ def getAllCustomNames(request):
     return JsonResponse({"allCustomNames": allCustomNames})
 
 
+# 查询所有客户编号
+@csrf_exempt
+def getAllCustomIDs(request):
+    allCustomIDs = ViewModelsDBUtils.getAllCustomIDs()
+    return JsonResponse({"allCustomIDs": allCustomIDs})
+
 # 查询所有供货商名称
 @csrf_exempt
 def getAllSupplierNames(request):
     allSupplierNames = ViewModelsDBUtils.getAllSupplierNames()
     return JsonResponse({"allSupplierNames": allSupplierNames})
+
 
 # 查询所有品种（气体种类）名称
 @csrf_exempt
@@ -548,11 +555,13 @@ def getAllGasName(request):
     allGasNames = ViewModelsDBUtils.getAllGasName()
     return JsonResponse({"allGasNames": allGasNames})
 
+
 # 查询所有拖车的拖车号
 @csrf_exempt
 def getAllTractorIDs(request):
     allTractorIDs = ViewModelsDBUtils.getAllTractorIDs()
     return JsonResponse({"allTractorIDs": allTractorIDs})
+
 
 # 查询所有挂车号
 @csrf_exempt
@@ -560,11 +569,13 @@ def getTrailerIDs(request):
     allTrailerIDs = ViewModelsDBUtils.getTrailerIDs()
     return JsonResponse({"allTrailerIDs": allTrailerIDs})
 
+
 # 查询所有司机名称
 @csrf_exempt
 def getAllDriverNames(request):
     allDriverNames = ViewModelsDBUtils.getAllDriverNames()
     return JsonResponse({"allDriverNames": allDriverNames})
+
 
 # 查询所有押运员名称
 @csrf_exempt

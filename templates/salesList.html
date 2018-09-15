@@ -60,6 +60,34 @@
             //return listid + ":" +listid
         //}
 
+           // 查询所有气体种类
+        function getAllGasCategory(){
+            var allGasCategory = ""
+            var i = ""
+            $.ajax({
+				type : "get",
+				async : false,
+				url : "./getAllGasName",
+                dataType:"json",
+				success : function(result){
+                    var item = result.allGasNames;
+                    var data = item.substring(1,item.length-1)
+                    var str = data.replace(/\"/g, "")
+                    var strArr = str.split(",")
+                    for (i=0;i< strArr.length ;i++ ) {
+                        var str_item = decodeUnicode($.trim(strArr[i]))
+                        if(i!= strArr.length -1){
+                            allGasCategory += str_item+":"+str_item+";";
+                        }else {
+                            allGasCategory += str_item+":"+str_item;
+                        }
+                    }
+
+				}
+			});
+			return allGasCategory;
+        }
+
         // 查询所有客户名称
         function getAllCustomNames() {
             var allCustomNames = ""
@@ -86,6 +114,62 @@
 				}
 			});
 			return allCustomNames;
+        }
+
+        // 查询所有客户编号
+        function getAllCustomIDs() {
+            var allCustomIDs = ""
+            var i = ""
+            $.ajax({
+				type : "get",
+				async : false,
+				url : "./getAllCustomIDs",
+                dataType:"json",
+				success : function(result){
+                    var item = result.allCustomIDs;
+                    var data = item.substring(1,item.length-1)
+                    var str = data.replace(/\"/g, "")
+                    var strArr = str.split(",")
+                    for (i=0;i< strArr.length ;i++ ) {
+                        var str_item = decodeUnicode($.trim(strArr[i]))
+                        if(i!= strArr.length -1){
+                            allCustomIDs += str_item+":"+str_item+";";
+                        }else {
+                            allCustomIDs += str_item+":"+str_item;
+                        }
+                    }
+
+				}
+			});
+			return allCustomIDs;
+        }
+
+        // 查询所有拖车的拖车号
+        function getAllTractorIDs(){
+            var allTractorIDs = ""
+            var i = ""
+            $.ajax({
+				type : "get",
+				async : false,
+				url : "./getAllTractorIDs",
+                dataType:"json",
+				success : function(result){
+                    var item = result.allTractorIDs;
+                    var data = item.substring(1,item.length-1)
+                    var str = data.replace(/\"/g, "")
+                    var strArr = str.split(",")
+                    for (i=0;i< strArr.length ;i++ ) {
+                        var str_item = decodeUnicode($.trim(strArr[i]))
+                        if(i!= strArr.length -1){
+                            allTractorIDs += str_item+":"+str_item+";";
+                        }else {
+                            allTractorIDs += str_item+":"+str_item;
+                        }
+                    }
+
+				}
+			});
+			return allTractorIDs;
         }
 
         // 查询所有挂车号
@@ -116,6 +200,56 @@
 			});
 			return allTrailer;
         }
+
+        // 查询所有司机名称
+        function getAllDriverNames(){
+            var allDriverNames = ""
+            var i = ""
+            $.ajax({
+				type : "get",
+				async : false,
+				url : "./getAllDriverNames",
+                dataType:"json",
+				success : function(result){
+                    var item = result.allDriverNames;
+                    for (i=0;i< item.length ;i++ ) {
+                        var str_item = decodeUnicode($.trim(item[i]))
+                        if(i!= item.length -1){
+                            allDriverNames += str_item+":"+str_item+";";
+                        }else {
+                            allDriverNames += str_item+":"+str_item;
+                        }
+                    }
+
+				}
+			});
+			return allDriverNames;
+        }
+
+         // 查询所有押运员名称
+        function getAllSupercargoNames(){
+            var allSupercargoNames = ""
+            var i = ""
+            $.ajax({
+				type : "get",
+				async : false,
+				url : "./getAllSupercargoNames",
+                dataType:"json",
+				success : function(result){
+                    var item = result.allSupercargoNames;
+                    for (i=0;i< item.length ;i++ ) {
+                        var str_item = decodeUnicode($.trim(item[i]))
+                        if(i!= item.length -1){
+                            allSupercargoNames += str_item+":"+str_item+";";
+                        }else {
+                            allSupercargoNames += str_item+":"+str_item;
+                        }
+                    }
+
+				}
+			});
+			return allSupercargoNames;
+        }
     
     
         function InitCustomerManageGrid(parameters) {
@@ -129,21 +263,21 @@
                  colModel:[
                     {name:"salesListID",index:"salesListID",editable:false,width:100,sortable:false},
                     {name:"customName",index:"customName",editable:true,width:100,sortable:false,edittype:"select", editoptions:{value:getAllCustomNames()}},
-                    {name:"customID",index:"customID",editable:true,width:100,sortable:false},
+                    {name:"customID",index:"customID",editable:true,width:100,sortable:false,edittype:"select", editoptions:{value:getAllCustomIDs()}},
                     {name:"purchaseID",index:"purchaseID",editable:true,width:100},
-                    {name:"category",index:"category",editable:true,width:100,sortable:false},
-                    {name:"tractorID",index:"tractorID",editable:true,width:100,sortable:false},
+                    {name:"category",index:"category",editable:true,width:100,sortable:false,edittype:"select", editoptions:{value:getAllGasCategory()}},
+                    {name:"tractorID",index:"tractorID",editable:true,width:100,sortable:false,edittype:"select", editoptions:{value:getAllTractorIDs()}},
                     {name:"trailerID",index:"trailerID",editable:true,width:100,sortable:false,edittype:"select", editoptions:{value:getTrailerIDs()}},
-                    {name:"driverName",index:"driverName",editable:true,width:100,sortable:false},
-                    {name:"supercargo",index:"supercargo",editable:true,width:100},
+                    {name:"driverName",index:"driverName",editable:true,width:100,sortable:false,edittype:"select", editoptions:{value:getAllDriverNames()}},
+                    {name:"supercargo",index:"supercargo",editable:true,width:100,edittype:"select", editoptions:{value:getAllSupercargoNames()}},
                     {name:"count",index:"count",editable:true,width:100,sortable:false},
                     {name:"unitPrice",index:"unitPrice",editable:true,width:100,sortable:false},
                     {name:"mileage",index:"mileage",editable:true,width:100,sortable:false},
                     {name:"orderDate",index:"orderDate",editable:true,width:100,sorttype:"date",formatter:"date"},
                     {name:"storageDate",index:"storageDate",editable:true,width:100,sorttype:"date",formatter:"date"},
                     {name:"comment",index:"comment",editable:true,width:100,sortable:false},
-                    {name:"isInvoiced",index:"isInvoiced",editable:true,width:100,sortable:false},
-                    {name:"isStoraged",index:"isStoraged",editable:true,width:100,sortable:false}],
+                    {name:"isInvoiced",index:"isInvoiced",editable:true,width:100,sortable:false,edittype:"select",editoptions:{value:{"是":"是","否":"否"}}},
+                    {name:"isStoraged",index:"isStoraged",editable:true,width:100,sortable:false,edittype:"select",editoptions:{value:{"是":"是","否":"否"}}}],
                 pager:"#pager_list_2",viewrecords:true,caption:"销售单",add:true,edit:true,addtext:"Add",edittext:"Edit",hidegrid:false,editurl:"./editSalesList",
             });
 

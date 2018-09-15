@@ -52,6 +52,7 @@ urlpatterns = [
     url(r'^userManage', view.userManage),
     url(r'^editUser', view.editUser),
     url(r'^getAllCustomNames', view.getAllCustomNames),
+    url(r'^getAllCustomIDs', view.getAllCustomIDs),
     url(r'^getAllSupplierNames', view.getAllSupplierNames),
     url(r'^getAllGasName', view.getAllGasName),
     url(r'^getAllTractorIDs', view.getAllTractorIDs),
