@@ -98,7 +98,6 @@ class CustomerManage(Base):
     fax = Column(String(128))
     industryField = Column(String(128))
     companyNature = Column(String(128))
-    gasCategory = Column(String(128))
     consocationMode = Column(String(128))
     level = Column(String(128))
     contract = Column(String(128))
@@ -116,8 +115,11 @@ class CustomerManageDBUtils(object):
             raise TypeError('The parameter customer is not instance of the CustomerManage instance')
         session = DBSession()
         session.add(customer)
+        session.flush()
+        new_item_id = customer.id
         session.commit()
         session.close()
+        return new_item_id
 
     @classmethod
     def delete(cls, delId):
@@ -143,7 +145,7 @@ class CustomerManageDBUtils(object):
         item_to_update.fax = customer.fax
         item_to_update.industryField = customer.industryField
         item_to_update.companyNature = customer.companyNature
-        item_to_update.gasCategory = customer.gasCategory
+        # item_to_update.gasCategory = customer.gasCategory
         item_to_update.consocationMode = customer.consocationMode
         item_to_update.level = customer.level
         item_to_update.contract = customer.contract
@@ -198,11 +200,14 @@ class SupplierDBUtils(object):
     @classmethod
     def add(cls, supplier):
         if not isinstance(supplier, Supplier):
-            raise TypeError('The supplier staff is not instance of the Supplier instance')
+            raise TypeError('The parameter supplier is not instance of the Supplier instance')
         session = DBSession()
         session.add(supplier)
+        session.flush()
+        new_item_id = supplier.id
         session.commit()
         session.close()
+        return new_item_id
 
     @classmethod
     def delete(cls, delId):
@@ -215,7 +220,7 @@ class SupplierDBUtils(object):
     @classmethod
     def update(cls, updateId, supplier):
         if not isinstance(supplier, Supplier):
-            raise TypeError('The supplier staff is not instance of the Supplier instance')
+            raise TypeError('The parameter supplier  is not instance of the Supplier instance')
         session = DBSession()
         item_to_update = session.query(Supplier).filter_by(id=updateId).first()
         item_to_update.supplierID = supplier.supplierID
@@ -288,8 +293,11 @@ class StaffManageDBUtils(object):
             raise TypeError('The parameter staff is not instance of the StaffManage instance')
         session = DBSession()
         session.add(staff)
+        session.flush()
+        new_item_id = staff.id
         session.commit()
         session.close()
+        return new_item_id
 
     @classmethod
     def delete(cls, delId):
@@ -365,8 +373,11 @@ class GasManageDBUtils(object):
             raise TypeError('The parameter gas is not instance of the GasManage instance')
         session = DBSession()
         session.add(gas)
+        session.flush()
+        new_item_id = gas.id
         session.commit()
         session.close()
+        return new_item_id
 
     @classmethod
     def delete(cls, delId):
@@ -401,13 +412,13 @@ class GasManageDBUtils(object):
 
 # <- 气体管理表 End ->
 
-
 # <- 拖车管理表 Begin ->
 # 车牌号		tractorID
 # 年检时间		annualInspectionTime
 # 保险时间		insuranceTime
 # 车架号		chassisNumber
 # 出厂时间		deliveryTime
+# 初始码表数    initMileage
 
 
 class TractorManage(Base):
@@ -419,6 +430,7 @@ class TractorManage(Base):
     insuranceTime = Column(Date)
     chassisNumber = Column(String(128))
     deliveryTime = Column(String(128))
+    initMileage = Column(String(128))
 
 
 class TractorManageDBUtils(object):
@@ -428,8 +440,11 @@ class TractorManageDBUtils(object):
             raise TypeError('The parameter tractor is not instance of the TractorManage instance')
         session = DBSession()
         session.add(tractor)
+        session.flush()
+        new_item_id = tractor.id
         session.commit()
         session.close()
+        return new_item_id
 
     @classmethod
     def delete(cls, delId):
@@ -496,8 +511,11 @@ class TrailerManageDBUtils(object):
             raise TypeError('The parameter trailer is not instance of the TrailerManage instance')
         session = DBSession()
         session.add(trailer)
+        session.flush()
+        new_item_id = trailer.id
         session.commit()
         session.close()
+        return new_item_id
 
     @classmethod
     def delete(cls, delId):
@@ -560,8 +578,11 @@ class UserDBUtils(object):
             raise TypeError('The parameter user is not instance of the User instance')
         session = DBSession()
         session.add(user)
+        session.flush()
+        new_item_id = user.id
         session.commit()
         session.close()
+        return new_item_id
 
     @classmethod
     def delete(cls, delId):

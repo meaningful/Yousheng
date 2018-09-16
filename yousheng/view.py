@@ -152,8 +152,8 @@ def editCustomManage(request):
                         customQualification=customQualification, annualSales=annualSales)
 
     if mode == 'add':
-        CustomerManageDBUtils.add(custom)
-        return HttpResponse("OK")
+        newID = CustomerManageDBUtils.add(custom)
+        return JsonResponse({'new_id': newID})
 
     if mode == 'del' and editId:
         CustomerManageDBUtils.delete(editId)
@@ -182,9 +182,8 @@ def editStaffManage(request):
                         position=position, photo=photo, resume=resume, category=category)
 
     if mode == 'add':
-        StaffManageDBUtils.add(staff)
-        return HttpResponse("OK")
-        # return render(request, "staffManage.html", {'status': 200})
+        newID = StaffManageDBUtils.add(staff)
+        return JsonResponse({'new_id': newID})
 
     if mode == 'del' and editId:
         StaffManageDBUtils.delete(editId)
@@ -206,10 +205,8 @@ def editGasManage(request):
     gas = GasManage(gasID=gasID, gasName=gasName)
 
     if mode == 'add':
-        GasManageDBUtils.add(gas)
-        allGas = GasManageDBUtils.queryAll()
-        return render(request, "gasManage.html", {'showData': json.dumps(allGas)})
-        # return HttpResponse("OK")
+        newID = GasManageDBUtils.add(gas)
+        return JsonResponse({'new_id': newID})
 
     if mode == 'del' and editId:
         GasManageDBUtils.delete(editId)
@@ -236,8 +233,8 @@ def editTrailerManage(request):
                             chassisNumber=chassisNumber, deliveryTime=deliveryTime, currentBalance=currentBalance)
 
     if mode == 'add':
-        TrailerManageDBUtils.add(trailer)
-        return HttpResponse("OK")
+        newID = TrailerManageDBUtils.add(trailer)
+        return JsonResponse({'new_id': newID})
 
     if mode == 'del' and editId:
         TrailerManageDBUtils.delete(editId)
@@ -258,13 +255,14 @@ def editTractorManage(request):
     insuranceTime = request.POST.get('insuranceTime')
     chassisNumber = request.POST.get('chassisNumber')
     deliveryTime = request.POST.get('deliveryTime')
+    initMileage = request.POST.get('initMileage')
 
     tractor = TractorManage(tractorID=tractorID, annualInspectionTime=annualInspectionTime, insuranceTime=insuranceTime,
-                            chassisNumber=chassisNumber, deliveryTime=deliveryTime)
+                            chassisNumber=chassisNumber, deliveryTime=deliveryTime, initMileage=initMileage)
 
     if mode == 'add':
-        TractorManageDBUtils.add(tractor)
-        return HttpResponse("OK")
+        newID = TractorManageDBUtils.add(tractor)
+        return JsonResponse({'new_id': newID})
 
     if mode == 'del' and editId:
         TractorManageDBUtils.delete(editId)
@@ -308,8 +306,8 @@ def editSupplier(request):
                         purchaseCategory=purchaseCategory)
 
     if mode == 'add':
-        SupplierDBUtils.add(supplier)
-        return HttpResponse("OK")
+        newID = SupplierDBUtils.add(supplier)
+        return JsonResponse({'new_id': newID})
 
     if mode == 'del' and editId:
         SupplierDBUtils.delete(editId)
@@ -516,8 +514,8 @@ def editUser(request):
     user = User(userName=userName, userPassword=EncodeUtils.encode(userPassword), userLevel=userLevel)
 
     if mode == 'add':
-        UserDBUtils.add(user)
-        return HttpResponse("OK")
+        newID = UserDBUtils.add(user)
+        return JsonResponse({'new_id': newID})
 
     if mode == 'del' and editId:
         UserDBUtils.delete(editId)

@@ -38,7 +38,6 @@ class CustomerManage(models.Model):
     fax = models.CharField(max_length=100)
     industryField = models.CharField(max_length=100)
     companyNature = models.CharField(max_length=100)
-    gasCategory = models.CharField(max_length=100)
     consocationMode = models.CharField(max_length=100)
     level = models.CharField(max_length=100)
     contract = models.CharField(max_length=100)
@@ -113,6 +112,7 @@ class GasManage(models.Model):
 # 保险时间		insuranceTime
 # 车架号		chassisNumber
 # 出厂时间		deliveryTime
+# 初始码表数    initMileage
 
 
 class TractorManage(models.Model):
@@ -121,6 +121,7 @@ class TractorManage(models.Model):
     insuranceTime = models.DateField()
     chassisNumber = models.CharField(max_length=100)
     deliveryTime = models.CharField(max_length=100)
+    initMileage = models.CharField(max_length=100)
 
 # <- 拖车管理表 End ->
 
