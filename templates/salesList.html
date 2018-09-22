@@ -52,7 +52,6 @@
     var jobj_allDriverNames = ""
     var jobj_allSupercargoNames = ""
 
-
     function decodeUnicode(str) {
         str = str.replace(/\\/g, "%");
         return unescape(str);
@@ -87,17 +86,6 @@
         return jobj_allData;
     }
 
-    //销售单编号：根据当前时间和随机数生成流水号
-    //function getSaleListID() {
-    //const now = new Date()
-    //let month = now.getMonth() + 1
-    //let day = now.getDate()
-    //let hour = now.getHours()
-    //let minutes = now.getMinutes()
-    // let seconds = now.getSeconds()
-    // var listid= now.getFullYear().toString() + month.toString() + day + hour + minutes + seconds + (Math.round(Math.random() * 89 + 100)).toString()
-    //return listid + ":" +listid
-    //}
 
     function getAllSelectItemDataForSaleList() {
         $.ajax({
@@ -157,7 +145,17 @@
                 colNames: ["销售单编号(日期时间+流水号)", "客户名称", "客户编号", "采购单编号", "品种", "拖车号", "挂车号", "司机", "押运员", "数量(吨/立方米)(默认显示挂车余量)",
                     "单价", "码表公里数", "下单日期(格式:2018-01-01)", "入库日期(格式:2018-01-01)", "备注", "是否已开发票", "本单是否入库"],
                 colModel: [
-                    {name: "salesListID", index: "salesListID", editable: false, width: 100, sortable: false},
+                    {
+                        name: "salesListID",
+                        index: "salesListID",
+                        editable: true,
+                        width: 100,
+                        sortable: false,
+                        edittype: "select",
+                        editoptions: {
+                            dataUrl: "./generatedSerialNumberForSaleList"
+                        }
+                    },
                     {
                         name: "customName",
                         index: "customName",
@@ -297,6 +295,7 @@
                     if (response.status == "200") {
                         var newItem = JSON.parse(response.responseText)
                         alert("添加成功!")
+
                         return [true, "", newItem.new_id.toString()]
 
                     } else {
@@ -305,8 +304,11 @@
                     }
                 }
             },
-            {},
-            {});
+            {}
+            ,
+            {}
+        )
+        ;
         $(window).bind("resize", function () {
             var width = $(".jqGrid_wrapper").width();
             $("#table_list_2").setGridWidth(width)

@@ -135,7 +135,17 @@
                 rowList: [10, 20, 30],
                 colNames: ["采购单编号", "供货商", "品种(气体种类)", "拖车号", "挂车号", "司机", "押运员", "采购数量", "单价", "码表数", "下单日期(格式:2018-01-01)", "入库日期(格式:2018-01-01)", "是否入库"],
                 colModel: [
-                    {name: "purchaseID", index: "purchaseID", editable: false, width: 100, sortable: false},
+                    {
+                        name: "purchaseID",
+                        index: "purchaseID",
+                        editable: true,
+                        width: 100,
+                        sortable: false,
+                        edittype: "select",
+                        editoptions: {
+                            dataUrl: "./generatedSerialNumberForMaterialPurchase"
+                        }
+                    },
                     {
                         name: "supplierName",
                         index: "supplierName",

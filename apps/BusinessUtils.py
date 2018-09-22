@@ -9,32 +9,44 @@
 ---------------------------------------------
 """
 import json
-from apps.BaseModels.BaseModelsORM.BaseORMViews import CustomerManageDBUtils, SupplierDBUtils, GasManageDBUtils, \
-    TrailerManageDBUtils, TractorManageDBUtils, StaffManageDBUtils, BaseViewUtils
+from apps.BaseModels.BaseModelsORM.BaseORMViews import GasManageDBUtils, StaffManageDBUtils, BaseViewUtils
 from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesListDBUtils, MaterialPurchaseDBUtils
-from apps.AppUtils import DateUtils
+import datetime
 
 
 class ViewModelsDBUtils(object):
+    # 获取当天日期，格式：2018-09-22
+    @classmethod
+    def getToday(cls):
+        return datetime.datetime.now().strftime('%Y-%m-%d')
+
+    # 获取下单日期为当天的销售单总数，用于生成销售单编号
+    @classmethod
+    def getSalesListCountToday(cls):
+        return SalesListDBUtils.getCountToday(ViewModelsDBUtils.getToday())
+
+    # 获取下单日期为当天的采购单总数，用于生成采购单编号
+    @classmethod
+    def getMaterialPurchaseCountToday(cls):
+        return MaterialPurchaseDBUtils.getCountToday(ViewModelsDBUtils.getToday())
 
     # 生成销售单编号(日期时间+6位流水index)
     @classmethod
     def generated_serial_number_for_salelist(cls):
-        int_count_salelist = SalesListDBUtils.getCount() + 1
-        str_count_salelist = str(int_count_salelist)
-        return DateUtils.get_current_time() + str_count_salelist.zfill(6)
+        int_count_today_salelist = ViewModelsDBUtils.getSalesListCountToday() + 1
+        str_count_today_salelist = str(int_count_today_salelist)
+        return ViewModelsDBUtils.getToday().replace("-", "") + str_count_today_salelist.zfill(6)
 
     # 生成采购单编号(日期时间+6位流水index)
     @classmethod
     def generated_serial_number_for_material_purchase(cls):
-        int_count_salelist = MaterialPurchaseDBUtils.getCount() + 1
+        int_count_salelist = ViewModelsDBUtils.getMaterialPurchaseCountToday() + 1
         str_count_salelist = str(int_count_salelist)
-        return DateUtils.get_current_time() + str_count_salelist.zfill(6)
+        return ViewModelsDBUtils.getToday().replace("-", "") + str_count_salelist.zfill(6)
 
     # 查询所有客户名称
     @classmethod
     def getAllCustomNames(cls, allCustom):
-        # allCustom = CustomerManageDBUtils.queryAll()
         allCustomNames = []
         if allCustom:
             for custom in allCustom:
@@ -45,7 +57,6 @@ class ViewModelsDBUtils(object):
     # 查询所有客户编号
     @classmethod
     def getAllCustomIDs(cls, allCustom):
-        # allCustom = CustomerManageDBUtils.queryAll()
         allCustomIDs = []
         if allCustom:
             for custom in allCustom:
@@ -56,7 +67,6 @@ class ViewModelsDBUtils(object):
     # 查询所有供货商名称
     @classmethod
     def getAllSupplierNames(cls, allSupplier):
-        # allSupplier = SupplierDBUtils.queryAll()
         allSupplierNames = []
         if allSupplier:
             for supplier in allSupplier:
@@ -143,7 +153,6 @@ class SelectItemDataUtils(object):
                 "allDriverNames": allDriverNames,
                 "allSupercargoNames": allSupercargoNames
                 }
-
 
     # 获取采购单 Select item 的数据
     @classmethod

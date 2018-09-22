@@ -1,10 +1,14 @@
 from django.shortcuts import render
 from apps.AppUtils import EncodeUtils, LoginUtils
 import json
-from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManage, GasManage, CustomerManage, TrailerManage, Supplier, TractorManage, User
-from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManageDBUtils, GasManageDBUtils, CustomerManageDBUtils, TrailerManageDBUtils, SupplierDBUtils, TractorManageDBUtils, UserDBUtils
-from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesList, MaterialPurchase, VehicleMaintenanceManage, WastageManage, CustomPaymentInfo
-from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesListDBUtils, MaterialPurchaseDBUtils, VehicleMaintenanceManageDBUtils, WastageManageDBUtils, CustomPaymentInfoDBUtils
+from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManage, GasManage, CustomerManage, TrailerManage, Supplier, \
+    TractorManage, User
+from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManageDBUtils, GasManageDBUtils, CustomerManageDBUtils, \
+    TrailerManageDBUtils, SupplierDBUtils, TractorManageDBUtils, UserDBUtils
+from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesList, MaterialPurchase, \
+    VehicleMaintenanceManage, WastageManage, CustomPaymentInfo
+from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesListDBUtils, MaterialPurchaseDBUtils, \
+    VehicleMaintenanceManageDBUtils, WastageManageDBUtils, CustomPaymentInfoDBUtils
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
 from apps.BusinessUtils import ViewModelsDBUtils, SelectItemDataUtils
@@ -578,17 +582,29 @@ def editUser(request):
 # def getAllSupplierNames(request):
 #     allSupplierNames = ViewModelsDBUtils.getAllSupplierNames()
 #     return JsonResponse({"allSupplierNames": allSupplierNames})
-#
-#
+
+
 # 获取所有品种（气体种类）名称
 @csrf_exempt
 def getAllGasName(request):
     allGasNames = SelectItemDataUtils.getAllGasNames()
     return JsonResponse({"allGasNames": allGasNames})
 
+# 生成销售单的编号
+@csrf_exempt
+def generatedSerialNumberForSaleList(request):
+    serialNo = ViewModelsDBUtils.generated_serial_number_for_salelist()
+    strOption = "<select> <option value=" + serialNo + ">" + serialNo + "</option> </select>"
+    return HttpResponse(strOption)
 
-#
-#
+# 生成采购单编号
+@csrf_exempt
+def generatedSerialNumberForMaterialPurchase(request):
+    serialNo = ViewModelsDBUtils.generated_serial_number_for_material_purchase()
+    strOption = "<select> <option value=" + serialNo + ">" + serialNo + "</option> </select>"
+    return HttpResponse(strOption)
+
+
 # # 查询所有拖车的拖车号
 # @csrf_exempt
 # def getAllTractorIDs(request):

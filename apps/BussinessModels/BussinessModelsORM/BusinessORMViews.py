@@ -198,6 +198,13 @@ class SalesListDBUtils(object):
         return allCount
 
     @classmethod
+    def getCountToday(cls, today):
+        session = DBSession()
+        allCount = session.query(SalesList).filter(SalesList.orderDate == today).count()
+        session.close()
+        return allCount
+
+    @classmethod
     def getSalesListIDByEditId(cls, editId):
         session = DBSession()
         item = session.query(SalesList).filter_by(id=editId).first()
@@ -335,6 +342,13 @@ class MaterialPurchaseDBUtils(object):
     def getCount(cls):
         session = DBSession()
         allCount = session.query(MaterialPurchase).count()
+        session.close()
+        return allCount
+
+    @classmethod
+    def getCountToday(cls, today):
+        session = DBSession()
+        allCount = session.query(MaterialPurchase).filter(MaterialPurchase.orderDate == today).count()
         session.close()
         return allCount
 
@@ -564,3 +578,6 @@ class CustomPaymentInfoDBUtils(object):
         return allCustomPaymentInfo
 
 # <- 客户充值信息 End ->
+
+# count = SalesListDBUtils.getCountToday()
+# print(count)
