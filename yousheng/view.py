@@ -1,14 +1,10 @@
 from django.shortcuts import render
 from apps.AppUtils import EncodeUtils, LoginUtils
 import json
-from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManage, GasManage, CustomerManage, TrailerManage, Supplier, \
-    TractorManage, User
-from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManageDBUtils, GasManageDBUtils, CustomerManageDBUtils, \
-    TrailerManageDBUtils, SupplierDBUtils, TractorManageDBUtils, UserDBUtils
-from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesList, MaterialPurchase, \
-    VehicleMaintenanceManage, WastageManage, CustomPaymentInfo
-from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesListDBUtils, MaterialPurchaseDBUtils, \
-    VehicleMaintenanceManageDBUtils, WastageManageDBUtils, CustomPaymentInfoDBUtils
+from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManage, GasManage, CustomerManage, TrailerManage, Supplier,TractorManage, User
+from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManageDBUtils, GasManageDBUtils, CustomerManageDBUtils, TrailerManageDBUtils, SupplierDBUtils, TractorManageDBUtils, UserDBUtils
+from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesList, MaterialPurchase, VehicleMaintenanceManage, WastageManage, CustomPaymentInfo
+from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesListDBUtils, MaterialPurchaseDBUtils, VehicleMaintenanceManageDBUtils, WastageManageDBUtils, CustomPaymentInfoDBUtils
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
 from apps.BusinessUtils import ViewModelsDBUtils, SelectItemDataUtils
