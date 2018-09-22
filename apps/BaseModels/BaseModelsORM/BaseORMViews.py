@@ -47,6 +47,7 @@ def object2dict(obj):
         del d['_sa_instance_state']
     return d
 
+
 # def dict2object(d):
 #     # convert dict to object
 #     if '__class__' in d:
@@ -283,7 +284,6 @@ class StaffManage(Base):
 
 # StaffManage 数据库操作类
 class StaffManageDBUtils(object):
-
     STAFF_CATEGORY_DRIVER = "司机"
     STAFF_CATEGORY_SUPERCARGO = "押运员"
 
@@ -409,6 +409,7 @@ class GasManageDBUtils(object):
             allGas.append(gas)
         session.close()
         return allGas
+
 
 # <- 气体管理表 End ->
 
@@ -628,3 +629,126 @@ class UserDBUtils(object):
 
 
 # <- 用户管理表 end ->
+
+
+class BaseViewUtils(object):
+
+    # 查询销售单 Select item 的数据
+    @classmethod
+    def getAllSelectItemDataForSaleList(cls):
+
+        session = DBSession()
+
+        queryAllCustom = session.query(CustomerManage).all()
+        allCustomer = []
+        for item in queryAllCustom:
+            customer_json = json.dumps(object2dict(item), cls=DateEncoder)
+            customer = json.loads(customer_json)
+            allCustomer.append(customer)
+
+        queryAllGas = session.query(GasManage).all()
+        allGas = []
+        for item in queryAllGas:
+            gas_json = json.dumps(object2dict(item), cls=DateEncoder)
+            gas = json.loads(gas_json)
+            allGas.append(gas)
+
+        queryAllTractor = session.query(TractorManage).all()
+        allTractor = []
+        for item in queryAllTractor:
+            tractor_json = json.dumps(object2dict(item), cls=DateEncoder)
+            tractor = json.loads(tractor_json)
+            allTractor.append(tractor)
+
+        queryAllTrailer = session.query(TrailerManage).all()
+        allTrailer = []
+        for item in queryAllTrailer:
+            trailer_json = json.dumps(object2dict(item), cls=DateEncoder)
+            trailer = json.loads(trailer_json)
+            allTrailer.append(trailer)
+
+        queryAllDrivers = session.query(StaffManage).filter(
+            StaffManage.category == StaffManageDBUtils.STAFF_CATEGORY_DRIVER).all()
+        allDrivers = []
+        for item in queryAllDrivers:
+            driver_json = json.dumps(object2dict(item), cls=DateEncoder)
+            driver = json.loads(driver_json)
+            allDrivers.append(driver)
+
+        queryAllSupercargo = session.query(StaffManage).filter(
+            StaffManage.category == StaffManageDBUtils.STAFF_CATEGORY_SUPERCARGO).all()
+        allSupercargo = []
+        for item in queryAllSupercargo:
+            supercargo_json = json.dumps(object2dict(item), cls=DateEncoder)
+            supercargo = json.loads(supercargo_json)
+            allSupercargo.append(supercargo)
+
+        session.close()
+
+        return {"allCustomer": allCustomer,
+                "allGas": allGas,
+                "allTractor": allTractor,
+                "allTrailer": allTrailer,
+                "allDrivers": allDrivers,
+                "allSupercargo": allSupercargo
+                }
+
+    # 查询采购单 Select item 的数据
+    @classmethod
+    def getAllSelectItemDataForMaterialPurchase(cls):
+
+        session = DBSession()
+
+        queryAllSuppliers = session.query(Supplier).all()
+        allSuppliers = []
+        for item in queryAllSuppliers:
+            supplier_json = json.dumps(object2dict(item), cls=DateEncoder)
+            supplier = json.loads(supplier_json)
+            allSuppliers.append(supplier)
+
+        queryAllGas = session.query(GasManage).all()
+        allGas = []
+        for item in queryAllGas:
+            gas_json = json.dumps(object2dict(item), cls=DateEncoder)
+            gas = json.loads(gas_json)
+            allGas.append(gas)
+
+        queryAllTractor = session.query(TractorManage).all()
+        allTractor = []
+        for item in queryAllTractor:
+            tractor_json = json.dumps(object2dict(item), cls=DateEncoder)
+            tractor = json.loads(tractor_json)
+            allTractor.append(tractor)
+
+        queryAllTrailer = session.query(TrailerManage).all()
+        allTrailer = []
+        for item in queryAllTrailer:
+            trailer_json = json.dumps(object2dict(item), cls=DateEncoder)
+            trailer = json.loads(trailer_json)
+            allTrailer.append(trailer)
+
+        queryAllDrivers = session.query(StaffManage).filter(
+            StaffManage.category == StaffManageDBUtils.STAFF_CATEGORY_DRIVER).all()
+        allDrivers = []
+        for item in queryAllDrivers:
+            driver_json = json.dumps(object2dict(item), cls=DateEncoder)
+            driver = json.loads(driver_json)
+            allDrivers.append(driver)
+
+        queryAllSupercargo = session.query(StaffManage).filter(
+            StaffManage.category == StaffManageDBUtils.STAFF_CATEGORY_SUPERCARGO).all()
+        allSupercargo = []
+        for item in queryAllSupercargo:
+            supercargo_json = json.dumps(object2dict(item), cls=DateEncoder)
+            supercargo = json.loads(supercargo_json)
+            allSupercargo.append(supercargo)
+
+        session.close()
+
+        return {"allSuppliers": allSuppliers,
+                "allGas": allGas,
+                "allTractor": allTractor,
+                "allTrailer": allTrailer,
+                "allDrivers": allDrivers,
+                "allSupercargo": allSupercargo
+                }

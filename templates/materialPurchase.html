@@ -4,255 +4,281 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
     <title>销售单</title>
 
-    <link rel="shortcut icon" href="favicon.ico"> <link href="{% static "css/bootstrap.min14ed.css" %}?v=3.3.6" rel="stylesheet">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="{% static "css/bootstrap.min14ed.css" %}?v=3.3.6" rel="stylesheet">
     <link href="{% static "css/font-awesome.min93e3.css" %}?v=4.4.0" rel="stylesheet">
     <link href="{% static "css/animate.min.css" %}" rel="stylesheet">
     <link href="{% static "css/style.min862f.css" %}?v=4.1.0" rel="stylesheet">
     <link href="{% static "css/plugins/jqgrid/ui.jqgridffe4.css" %}?0820" rel="stylesheet">
 </head>
 <body>
-    <div class="wrapper wrapper-content animated fadeInRight">
-        <!-- 采购单 -->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>采购单</h5>
-                    </div>
-                    <div class="ibox-content">
-                        <div class="jqGrid_wrapper">
-                            <table id="table_list_2"></table>
-                            <div id="pager_list_2"></div>
-                        </div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <!-- 采购单 -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>采购单</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="jqGrid_wrapper">
+                        <table id="table_list_2"></table>
+                        <div id="pager_list_2"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <script src="{% static "js/jquery.min.js" %}?v=2.1.4"></script>
-    <script src="{% static "js/bootstrap.min.js" %}?v=3.3.6"></script>
-    <script src="{% static "js/plugins/peity/jquery.peity.min.js" %}"></script>
-    <script src="{% static "js/plugins/jqgrid/i18n/grid.locale-cnffe4.js" %}?0820"></script>
-    <script src="{% static "js/plugins/jqgrid/jquery.jqGrid.minffe4.js" %}?0820"></script>
+<script src="{% static "js/jquery.min.js" %}?v=2.1.4"></script>
+<script src="{% static "js/bootstrap.min.js" %}?v=3.3.6"></script>
+<script src="{% static "js/plugins/peity/jquery.peity.min.js" %}"></script>
+<script src="{% static "js/plugins/jqgrid/i18n/grid.locale-cnffe4.js" %}?0820"></script>
+<script src="{% static "js/plugins/jqgrid/jquery.jqGrid.minffe4.js" %}?0820"></script>
 
 <script type="text/javascript">
+    var str_YesOrNO = '{ "否": "否", "是": "是" }';
+    var jobj_YesOrNO = JSON.parse(str_YesOrNO);
+    var jobj_allSupplierNames = ""
+    var jobj_allGasCategory = ""
+    var jobj_allTractorIDs = ""
+    var jobj_allTrailerIDs = ""
+    var jobj_allDriverNames = ""
+    var jobj_allSupercargoNames = ""
 
-        function decodeUnicode(str) {
-            str = str.replace(/\\/g, "%");
-            return unescape(str);
+    function decodeUnicode(str) {
+        str = str.replace(/\\/g, "%");
+        return unescape(str);
+    }
+
+    function handleDataWithReplace(item) {
+        var jobj_allData = ""
+        var data = item.substring(1, item.length - 1);
+        var str = data.replace(/\"/g, "")
+        var strArr = str.split(",")
+        for (var i = 0; i < strArr.length; i++) {
+            var str_item = decodeUnicode($.trim(strArr[i]))
+            if (i != strArr.length - 1) {
+                jobj_allData += str_item + ":" + str_item + ";";
+            } else {
+                jobj_allData += str_item + ":" + str_item;
+            }
         }
-         //采购单编号：根据当前时间和随机数生成流水号
-        //function getPurchaseListID() {
-            //const now = new Date()
-           // let month = now.getMonth() + 1
-            //let day = now.getDate()
-            //let hour = now.getHours()
-           // let minutes = now.getMinutes()
-           // let seconds = now.getSeconds()
-            //var listid= now.getFullYear().toString() + month.toString() + day + hour + minutes + seconds + (Math.round(Math.random() * 89 + 100)).toString()
-           // return listid + ":" +listid
-        //}
+        return jobj_allData
+    }
 
-        // 查询所有供货商名称
-        function getAllSupplierNames() {
-            var allSupplierNames = ""
-            var i = ""
-            $.ajax({
-				type : "get",
-				async : false,
-				url : "./getAllSupplierNames",
-                dataType:"json",
-				success : function(result){
-                    var item = result.allSupplierNames;
-                    var data = item.substring(1,item.length-1)
-                    var str = data.replace(/\"/g, "")
-                    var strArr = str.split(",")
-                    for (i=0;i< strArr.length ;i++ ) {
-                        var str_item = decodeUnicode($.trim(strArr[i]))
-                        if(i!= strArr.length -1){
-                            allSupplierNames += str_item+":"+str_item+";";
-                        }else {
-                            allSupplierNames += str_item+":"+str_item;
-                        }
-                    }
-
-				}
-			});
-			return allSupplierNames;
+    function handleData(item) {
+        var jobj_allData = ""
+        for (var i = 0; i < item.length; i++) {
+            var str_item = decodeUnicode($.trim(item[i]))
+            if (i != item.length - 1) {
+                jobj_allData += str_item + ":" + str_item + ";";
+            } else {
+                jobj_allData += str_item + ":" + str_item;
+            }
         }
+        return jobj_allData;
+    }
 
-        // 查询所有气体种类
-        function getAllGasCategory(){
-            var allGasCategory = ""
-            var i = ""
-            $.ajax({
-				type : "get",
-				async : false,
-				url : "./getAllGasName",
-                dataType:"json",
-				success : function(result){
-                    var item = result.allGasNames;
-                    var data = item.substring(1,item.length-1)
-                    var str = data.replace(/\"/g, "")
-                    var strArr = str.split(",")
-                    for (i=0;i< strArr.length ;i++ ) {
-                        var str_item = decodeUnicode($.trim(strArr[i]))
-                        if(i!= strArr.length -1){
-                            allGasCategory += str_item+":"+str_item+";";
-                        }else {
-                            allGasCategory += str_item+":"+str_item;
-                        }
-                    }
 
-				}
-			});
-			return allGasCategory;
-        }
+    function getAllSelectItemDataforMaterialPurchase() {
+        $.ajax({
+            type: "get",
+            async: false,
+            url: "./getAllSelectItemDataForMaterialPurchase",
+            dataType: "json",
+            success: function (result) {
+                // 解析所有供货商名称
+                var item_allSupplierNames = result.allSupplierNames;
+                jobj_allSupplierNames = handleDataWithReplace(item_allSupplierNames);
 
-        // 查询所有拖车的拖车号
-        function getAllTractorIDs(){
-            var allTractorIDs = ""
-            var i = ""
-            $.ajax({
-				type : "get",
-				async : false,
-				url : "./getAllTractorIDs",
-                dataType:"json",
-				success : function(result){
-                    var item = result.allTractorIDs;
-                    var data = item.substring(1,item.length-1)
-                    var str = data.replace(/\"/g, "")
-                    var strArr = str.split(",")
-                    for (i=0;i< strArr.length ;i++ ) {
-                        var str_item = decodeUnicode($.trim(strArr[i]))
-                        if(i!= strArr.length -1){
-                            allTractorIDs += str_item+":"+str_item+";";
-                        }else {
-                            allTractorIDs += str_item+":"+str_item;
-                        }
-                    }
+                // 解析气体种类
+                var item_allGasCategory = result.allGasNames;
+                jobj_allGasCategory = handleDataWithReplace(item_allGasCategory);
 
-				}
-			});
-			return allTractorIDs;
-        }
+                // 解析所有拖车的拖车号
+                var item_allTractorIDs = result.allTractorIDs;
+                jobj_allTractorIDs = handleDataWithReplace(item_allTractorIDs);
 
-        // 查询所有挂车的挂车号
-        function getTrailerIDs(){
-            var allTrailerIDs = ""
-            var i = ""
-            $.ajax({
-				type : "get",
-				async : false,
-				url : "./getTrailerIDs",
-                dataType:"json",
-				success : function(result){
-                    var item = result.allTrailerIDs;
-                    var data = item.substring(1,item.length-1)
-                    var str = data.replace(/\"/g, "")
-                    var strArr = str.split(",")
-                    for (i=0;i< strArr.length ;i++ ) {
-                        var str_item = decodeUnicode($.trim(strArr[i]))
-                        if(i!= strArr.length -1){
-                            allTrailerIDs += str_item+":"+str_item+";";
-                        }else {
-                            allTrailerIDs += str_item+":"+str_item;
-                        }
-                    }
+                // 解析所有挂车的挂车号
+                var item_allTrailerIDs = result.allTrailerIDs;
+                jobj_allTrailerIDs = handleDataWithReplace(item_allTrailerIDs);
 
-				}
-			});
-			return allTrailerIDs;
-        }
+                // 解析所有司机名称
+                var item_allDriverNames = result.allDriverNames;
+                jobj_allDriverNames = handleData(item_allDriverNames);
 
-        // 查询所有司机名称
-        function getAllDriverNames(){
-            var allDriverNames = ""
-            var i = ""
-            $.ajax({
-				type : "get",
-				async : false,
-				url : "./getAllDriverNames",
-                dataType:"json",
-				success : function(result){
-                    var item = result.allDriverNames;
-                    for (i=0;i< item.length ;i++ ) {
-                        var str_item = decodeUnicode($.trim(item[i]))
-                        if(i!= item.length -1){
-                            allDriverNames += str_item+":"+str_item+";";
-                        }else {
-                            allDriverNames += str_item+":"+str_item;
-                        }
-                    }
+                // 解析所有押运员名称
+                var item_allSupercargoNames = result.allSupercargoNames;
+                jobj_allSupercargoNames = handleData(item_allSupercargoNames);
 
-				}
-			});
-			return allDriverNames;
-        }
+            }
+        });
+    }
 
-        // 查询所有押运员名称
-        function getAllSupercargoNames(){
-            var allSupercargoNames = ""
-            var i = ""
-            $.ajax({
-				type : "get",
-				async : false,
-				url : "./getAllSupercargoNames",
-                dataType:"json",
-				success : function(result){
-                    var item = result.allSupercargoNames;
-                    for (i=0;i< item.length ;i++ ) {
-                        var str_item = decodeUnicode($.trim(item[i]))
-                        if(i!= item.length -1){
-                            allSupercargoNames += str_item+":"+str_item+";";
-                        }else {
-                            allSupercargoNames += str_item+":"+str_item;
-                        }
-                    }
+    function InitCustomerManageGrid(parameters) {
+        getAllSelectItemDataforMaterialPurchase();
 
-				}
-			});
-			return allSupercargoNames;
-        }
-
-        function InitCustomerManageGrid(parameters) {
-           $.jgrid.defaults.styleUI="Bootstrap";
-           var mydata = {{ showData|safe }};
-
-           $("#table_list_2").jqGrid(
-            {  data:mydata,datatype:"local",height:450,autowidth:true,shrinkToFit:true,rowNum:20,rowList:[10,20,30],
-                 colNames:["采购单编号","供货商","品种(气体种类)","拖车号","挂车号","司机","押运员","采购数量","单价","码表数","下单日期(格式:2018-01-01)","入库日期(格式:2018-01-01)","是否入库"],
-                 colModel:[
-                    {name:"purchaseID",index:"purchaseID",editable:false,width:100,sortable:false},
-                    {name:"supplierName",index:"supplierName",editable:true,width:100,sortable:false,edittype:"select", editoptions:{value:getAllSupplierNames()}},
-                    {name:"category",index:"category",editable:true,width:100,sortable:false,edittype:"select", editoptions:{value:getAllGasCategory()}},
-                    {name:"tractorID",index:"tractorID",editable:true,width:100,sortable:false,edittype:"select", editoptions:{value:getAllTractorIDs()}},
-                    {name:"trailerID",index:"trailerID",editable:true,width:100,edittype:"select", editoptions:{value:getTrailerIDs()}},
-                    {name:"driverName",index:"driverName",editable:true,width:100,sortable:false,edittype:"select", editoptions:{value:getAllDriverNames()}},
-                    {name:"supercargo",index:"supercargo",editable:true,width:100,edittype:"select", editoptions:{value:getAllSupercargoNames()}},
-                    {name:"count",index:"count",editable:true,width:100,sortable:false},
-                    {name:"unitPrice",index:"unitPrice",editable:true,width:100,sortable:false},
-                    {name:"mileage",index:"mileage",editable:true,width:100,sortable:false},
-                    {name:"orderDate",index:"orderDate",editable:true,width:100,sorttype:"date",formatter:"date"},
-                    {name:"storageDate",index:"storageDate",editable:true,width:100,sorttype:"date",formatter:"date"},
-                    {name:"isStoraged",index:"isStoraged",editable:true,width:100,sortable:false,edittype:"select",editoptions:{value:{"否":"否","是":"是"}}}],
-                pager:"#pager_list_2",viewrecords:true,caption:"采购单",add:true,edit:true,addtext:"Add",edittext:"Edit",hidegrid:false,editurl:"./editMaterialPurchaseManage",
+        $.jgrid.defaults.styleUI = "Bootstrap";
+        var mydata = {{ showData|safe }};
+        $("#table_list_2").jqGrid(
+            {
+                data: mydata,
+                datatype: "local",
+                height: 450,
+                autowidth: true,
+                shrinkToFit: true,
+                rowNum: 20,
+                rowList: [10, 20, 30],
+                colNames: ["采购单编号", "供货商", "品种(气体种类)", "拖车号", "挂车号", "司机", "押运员", "采购数量", "单价", "码表数", "下单日期(格式:2018-01-01)", "入库日期(格式:2018-01-01)", "是否入库"],
+                colModel: [
+                    {name: "purchaseID", index: "purchaseID", editable: false, width: 100, sortable: false},
+                    {
+                        name: "supplierName",
+                        index: "supplierName",
+                        editable: true,
+                        width: 100,
+                        sortable: false,
+                        edittype: "select",
+                        editoptions: {value: jobj_allSupplierNames}
+                    },
+                    {
+                        name: "category",
+                        index: "category",
+                        editable: true,
+                        width: 100,
+                        sortable: false,
+                        edittype: "select",
+                        editoptions: {value: jobj_allGasCategory}
+                    },
+                    {
+                        name: "tractorID",
+                        index: "tractorID",
+                        editable: true,
+                        width: 100,
+                        sortable: false,
+                        edittype: "select",
+                        editoptions: {value: jobj_allTractorIDs}
+                    },
+                    {
+                        name: "trailerID",
+                        index: "trailerID",
+                        editable: true,
+                        width: 100,
+                        edittype: "select",
+                        editoptions: {value: jobj_allTrailerIDs}
+                    },
+                    {
+                        name: "driverName",
+                        index: "driverName",
+                        editable: true,
+                        width: 100,
+                        sortable: false,
+                        edittype: "select",
+                        editoptions: {value: jobj_allDriverNames}
+                    },
+                    {
+                        name: "supercargo",
+                        index: "supercargo",
+                        editable: true,
+                        width: 100,
+                        edittype: "select",
+                        editoptions: {value: jobj_allSupercargoNames}
+                    },
+                    {name: "count", index: "count", editable: true, width: 100, sortable: false},
+                    {name: "unitPrice", index: "unitPrice", editable: true, width: 100, sortable: false},
+                    {name: "mileage", index: "mileage", editable: true, width: 100, sortable: false},
+                    {
+                        name: "orderDate",
+                        index: "orderDate",
+                        editable: true,
+                        width: 100,
+                        sorttype: "date",
+                        formatter: "date"
+                    },
+                    {
+                        name: "storageDate",
+                        index: "storageDate",
+                        editable: true,
+                        width: 100,
+                        sorttype: "date",
+                        formatter: "date"
+                    },
+                    {
+                        name: "isStoraged",
+                        index: "isStoraged",
+                        editable: true,
+                        width: 100,
+                        sortable: false,
+                        edittype: "select",
+                        editoptions: {value: jobj_YesOrNO}
+                    }],
+                pager: "#pager_list_2",
+                viewrecords: true,
+                caption: "采购单",
+                add: true,
+                edit: true,
+                addtext: "Add",
+                edittext: "Edit",
+                hidegrid: false,
+                editurl: "./editMaterialPurchaseManage",
             });
 
-           $("#table_list_2").jqGrid("navGrid","#pager_list_2",{edit:true,add:true,del:true,search:true},{height:200,reloadAfterSubmit:true});
-           $(window).bind("resize",function(){var width=$(".jqGrid_wrapper").width();$("#table_list_2").setGridWidth(width)}) ;
+        $("#table_list_2").jqGrid("navGrid", "#pager_list_2", {edit: true, add: true, del: true, search: true},
 
-        };
+            {
+                modal: true,
+                jqModal: true,
+                reloadAfterSubmit: false,
+                closeAfterEdit: true,
 
-         $(document).ready(function(){InitCustomerManageGrid();}) ;
+                afterSubmit: function (response, postdata) {
+                    if (response.status == "200") {
+                        alert("修改成功!")
+                        return [true]
+                    } else {
+                        alert("修改失败!")
+                        return [false]
+                    }
+                }
+            },
+            {
+                modal: true,
+                jqModal: true,
+                reloadAfterSubmit: false,
+                closeAfterAdd: true,
+                afterSubmit: function (response, postdata) {
+                    console.log(response)
+                    if (response.status == "200") {
+                        var newItem = JSON.parse(response.responseText)
+
+                        alert("添加成功!")
+                        return [true, "", newItem.new_id.toString()]
+
+                    } else {
+                        alert("添加失败!")
+                        return [false]
+                    }
+                }
+            },
+            {},
+            {});
+        $(window).bind("resize", function () {
+            var width = $(".jqGrid_wrapper").width();
+            $("#table_list_2").setGridWidth(width)
+        });
+
+    };
+
+    $(document).ready(function () {
+        InitCustomerManageGrid();
+    });
 
 
-    </script>
+</script>
 
 </body>
 </html>

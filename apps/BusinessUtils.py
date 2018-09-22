@@ -9,9 +9,11 @@
 ---------------------------------------------
 """
 import json
-from apps.BaseModels.BaseModelsORM.BaseORMViews import CustomerManageDBUtils, SupplierDBUtils, GasManageDBUtils,TrailerManageDBUtils, TractorManageDBUtils, StaffManageDBUtils
-from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesListDBUtils,MaterialPurchaseDBUtils
+from apps.BaseModels.BaseModelsORM.BaseORMViews import CustomerManageDBUtils, SupplierDBUtils, GasManageDBUtils, \
+    TrailerManageDBUtils, TractorManageDBUtils, StaffManageDBUtils, BaseViewUtils
+from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesListDBUtils, MaterialPurchaseDBUtils
 from apps.AppUtils import DateUtils
+
 
 class ViewModelsDBUtils(object):
 
@@ -31,8 +33,8 @@ class ViewModelsDBUtils(object):
 
     # 查询所有客户名称
     @classmethod
-    def getAllCustomNames(cls):
-        allCustom = CustomerManageDBUtils.queryAll()
+    def getAllCustomNames(cls, allCustom):
+        # allCustom = CustomerManageDBUtils.queryAll()
         allCustomNames = []
         if allCustom:
             for custom in allCustom:
@@ -42,8 +44,8 @@ class ViewModelsDBUtils(object):
 
     # 查询所有客户编号
     @classmethod
-    def getAllCustomIDs(cls):
-        allCustom = CustomerManageDBUtils.queryAll()
+    def getAllCustomIDs(cls, allCustom):
+        # allCustom = CustomerManageDBUtils.queryAll()
         allCustomIDs = []
         if allCustom:
             for custom in allCustom:
@@ -53,8 +55,8 @@ class ViewModelsDBUtils(object):
 
     # 查询所有供货商名称
     @classmethod
-    def getAllSupplierNames(cls):
-        allSupplier = SupplierDBUtils.queryAll()
+    def getAllSupplierNames(cls, allSupplier):
+        # allSupplier = SupplierDBUtils.queryAll()
         allSupplierNames = []
         if allSupplier:
             for supplier in allSupplier:
@@ -64,8 +66,7 @@ class ViewModelsDBUtils(object):
 
     # 查询所有品种（气体种类）名称
     @classmethod
-    def getAllGasName(cls):
-        allGas = GasManageDBUtils.queryAll()
+    def getAllGasName(cls, allGas):
         allGasNames = []
         if allGas:
             for gas in allGas:
@@ -75,8 +76,7 @@ class ViewModelsDBUtils(object):
 
     # 查询所有拖车的拖车号
     @classmethod
-    def getAllTractorIDs(cls):
-        allTractor = TractorManageDBUtils.queryAll()
+    def getAllTractorIDs(cls, allTractor):
         allTractorIDs = []
         if allTractor:
             for tractor in allTractor:
@@ -86,8 +86,7 @@ class ViewModelsDBUtils(object):
 
     # 查询所有挂车的挂车号
     @classmethod
-    def getTrailerIDs(cls):
-        allTrailer = TrailerManageDBUtils.queryAll()
+    def getAllTrailerIDs(cls, allTrailer):
         allTrailerIDs = []
         if allTrailer:
             for trailer in allTrailer:
@@ -97,8 +96,7 @@ class ViewModelsDBUtils(object):
 
     # 根据人员category查询所有人员name
     @classmethod
-    def getAllStaffNamesByCategory(cls, category):
-        allStaff = StaffManageDBUtils.queryAllByCategory(category)
+    def getAllStaffNamesByCategory(cls, allStaff):
         allStaffNames = []
         if allStaff:
             for staff in allStaff:
@@ -117,9 +115,52 @@ class ViewModelsDBUtils(object):
         return ViewModelsDBUtils.getAllStaffNamesByCategory(StaffManageDBUtils.STAFF_CATEGORY_SUPERCARGO)
 
 
+class SelectItemDataUtils(object):
+    # 获取所有气体名称Select Item 的数据（供应商管理）
+    @classmethod
+    def getAllGasNames(cls):
+        allGas = GasManageDBUtils.queryAll()
+        return ViewModelsDBUtils.getAllGasName(allGas)
+
+    # 获取销售单 Select item 的数据
+    @classmethod
+    def getAllSelectItemDataForSaleList(cls):
+        allData = BaseViewUtils.getAllSelectItemDataForSaleList()
+
+        allCustomNames = ViewModelsDBUtils.getAllCustomNames(allData["allCustomer"])
+        allCustomIDs = ViewModelsDBUtils.getAllCustomIDs(allData["allCustomer"])
+        allGasNames = ViewModelsDBUtils.getAllGasName(allData["allGas"])
+        allTractorIDs = ViewModelsDBUtils.getAllTractorIDs(allData["allTractor"])
+        allTrailerIDs = ViewModelsDBUtils.getAllTrailerIDs(allData["allTrailer"])
+        allDriverNames = ViewModelsDBUtils.getAllStaffNamesByCategory(allData["allDrivers"])
+        allSupercargoNames = ViewModelsDBUtils.getAllStaffNamesByCategory(allData["allSupercargo"])
+
+        return {"allCustomNames": allCustomNames,
+                "allCustomIDs": allCustomIDs,
+                "allGasNames": allGasNames,
+                "allTractorIDs": allTractorIDs,
+                "allTrailerIDs": allTrailerIDs,
+                "allDriverNames": allDriverNames,
+                "allSupercargoNames": allSupercargoNames
+                }
 
 
+    # 获取采购单 Select item 的数据
+    @classmethod
+    def getAllSelectItemDataForMaterialPurchase(cls):
+        allData = BaseViewUtils.getAllSelectItemDataForMaterialPurchase()
 
+        allSupplierNames = ViewModelsDBUtils.getAllSupplierNames(allData["allSuppliers"])
+        allGasNames = ViewModelsDBUtils.getAllGasName(allData["allGas"])
+        allTractorIDs = ViewModelsDBUtils.getAllTractorIDs(allData["allTractor"])
+        allTrailerIDs = ViewModelsDBUtils.getAllTrailerIDs(allData["allTrailer"])
+        allDriverNames = ViewModelsDBUtils.getAllStaffNamesByCategory(allData["allDrivers"])
+        allSupercargoNames = ViewModelsDBUtils.getAllStaffNamesByCategory(allData["allSupercargo"])
 
-
-
+        return {"allSupplierNames": allSupplierNames,
+                "allGasNames": allGasNames,
+                "allTractorIDs": allTractorIDs,
+                "allTrailerIDs": allTrailerIDs,
+                "allDriverNames": allDriverNames,
+                "allSupercargoNames": allSupercargoNames
+                }

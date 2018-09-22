@@ -41,6 +41,38 @@
     <script src="{% static "js/plugins/jqgrid/jquery.jqGrid.minffe4.js" %}?0820"></script>
 
 <script type="text/javascript">
+        function decodeUnicode(str) {
+            str = str.replace(/\\/g, "%");
+            return unescape(str);
+        }
+        // 查询所有气体种类
+        function getAllGasCategory(){
+            var allGasCategory = ""
+            var i = ""
+            $.ajax({
+				type : "get",
+				async : false,
+				url : "./getAllGasName",
+                dataType:"json",
+				success : function(result){
+                    var item = result.allGasNames;
+                    var data = item.substring(1,item.length-1)
+                    var str = data.replace(/\"/g, "")
+                    var strArr = str.split(",")
+                    for (i=0;i< strArr.length ;i++ ) {
+                        var str_item = decodeUnicode($.trim(strArr[i]))
+                        if(i!= strArr.length -1){
+                            allGasCategory += str_item+":"+str_item+";";
+                        }else {
+                            allGasCategory += str_item+":"+str_item;
+                        }
+                    }
+
+				}
+			});
+			return allGasCategory;
+        }
+
         function InitCustomerManageGrid(parameters) {
            $.jgrid.defaults.styleUI="Bootstrap";
            var mydata = {{ showData|safe }};
@@ -66,7 +98,7 @@
                     {name:"customBankAccount",index:"customBankAccount",editable:true,width:100,sortable:false},
                     {name:"customContactName",index:"customContactName",editable:true,width:100,sortable:false},
                     {name:"customContactTel",index:"customContactTel",editable:true,width:100,sortable:false},
-                    {name:"purchaseCategory",index:"purchaseCategory",editable:true,width:100,sortable:false}],
+                    {name:"purchaseCategory",index:"purchaseCategory",editable:true,width:100,sortable:false,edittype:"select", editoptions:{value:getAllGasCategory()}}],
                 pager:"#pager_list_2",viewrecords:true,caption:"供货商管理",add:true,edit:true,addtext:"Add",edittext:"Edit",hidegrid:false,editurl:"./editSupplier",
             });
 

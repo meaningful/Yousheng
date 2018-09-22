@@ -8,100 +8,142 @@
 
     <title>挂车管理</title>
 
-    <link rel="shortcut icon" href="favicon.ico"> <link href="{% static "css/bootstrap.min14ed.css" %}?v=3.3.6" rel="stylesheet">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="{% static "css/bootstrap.min14ed.css" %}?v=3.3.6" rel="stylesheet">
     <link href="{% static "css/font-awesome.min93e3.css" %}?v=4.4.0" rel="stylesheet">
     <link href="{% static "css/animate.min.css" %}" rel="stylesheet">
     <link href="{% static "css/style.min862f.css" %}?v=4.1.0" rel="stylesheet">
     <link href="{% static "css/plugins/jqgrid/ui.jqgridffe4.css" %}?0820" rel="stylesheet">
 </head>
 <body>
-    <div class="wrapper wrapper-content animated fadeInRight">
-        <!-- 挂车管理 -->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>挂车管理</h5>
-                    </div>
-                    <div class="ibox-content">
-                        <div class="jqGrid_wrapper">
-                            <table id="table_list_2"></table>
-                            <div id="pager_list_2"></div>
-                        </div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <!-- 挂车管理 -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>挂车管理</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="jqGrid_wrapper">
+                        <table id="table_list_2"></table>
+                        <div id="pager_list_2"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <script src="{% static "js/jquery.min.js" %}?v=2.1.4"></script>
-    <script src="{% static "js/bootstrap.min.js" %}?v=3.3.6"></script>
-    <script src="{% static "js/plugins/peity/jquery.peity.min.js" %}"></script>
-    <script src="{% static "js/plugins/jqgrid/i18n/grid.locale-cnffe4.js" %}?0820"></script>
-    <script src="{% static "js/plugins/jqgrid/jquery.jqGrid.minffe4.js" %}?0820"></script>
+<script src="{% static "js/jquery.min.js" %}?v=2.1.4"></script>
+<script src="{% static "js/bootstrap.min.js" %}?v=3.3.6"></script>
+<script src="{% static "js/plugins/peity/jquery.peity.min.js" %}"></script>
+<script src="{% static "js/plugins/jqgrid/i18n/grid.locale-cnffe4.js" %}?0820"></script>
+<script src="{% static "js/plugins/jqgrid/jquery.jqGrid.minffe4.js" %}?0820"></script>
 
 <script type="text/javascript">
-        function InitCustomerManageGrid(parameters) {
-           $.jgrid.defaults.styleUI="Bootstrap";
-           var mydata = {{ showData|safe }};
+    function InitCustomerManageGrid(parameters) {
+        $.jgrid.defaults.styleUI = "Bootstrap";
+        var mydata = {{ showData|safe }};
 
-           $("#table_list_2").jqGrid(
-            {  data:mydata,datatype:"local",height:450,autowidth:true,shrinkToFit:true,rowNum:20,rowList:[10,20,30],
-                 colNames:["挂车号","年检时间","保险时间(格式:2018-01-01)","车架号","出厂时间(格式:2018-01-01)","现余量"],
-                 colModel:[
-                    {name:"trailerID",index:"trailerID",editable:true,width:100,sortable:false},
-                    {name:"annualInspectionTime",index:"annualInspectionTime",editable:true,width:100,sorttype:"date",formatter:"date"},
-                    {name:"insuranceTime",index:"insuranceTime",editable:true,width:100,sorttype:"date",formatter:"date"},
-                    {name:"chassisNumber",index:"chassisNumber",editable:true,width:100,sortable:false},
-                    {name:"deliveryTime",index:"deliveryTime",editable:true,width:100,sorttype:"date",formatter:"date"},
-                    {name:"currentBalance",index:"currentBalance",editable:true,width:100,sortable:false}],
-                pager:"#pager_list_2",viewrecords:true,caption:"挂车管理",add:true,edit:true,addtext:"Add",edittext:"Edit",hidegrid:false,editurl:"./editTrailerManage",
+        $("#table_list_2").jqGrid(
+            {
+                data: mydata,
+                datatype: "local",
+                height: 450,
+                autowidth: true,
+                shrinkToFit: true,
+                rowNum: 20,
+                rowList: [10, 20, 30],
+                colNames: ["挂车号", "年检时间", "保险时间(格式:2018-01-01)", "车架号", "出厂时间(格式:2018-01-01)", "现余量"],
+                colModel: [
+                    {name: "trailerID", index: "trailerID", editable: true, width: 100, sortable: false},
+                    {
+                        name: "annualInspectionTime",
+                        index: "annualInspectionTime",
+                        editable: true,
+                        width: 100,
+                        sorttype: "date",
+                        formatter: "date"
+                    },
+                    {
+                        name: "insuranceTime",
+                        index: "insuranceTime",
+                        editable: true,
+                        width: 100,
+                        sorttype: "date",
+                        formatter: "date"
+                    },
+                    {name: "chassisNumber", index: "chassisNumber", editable: true, width: 100, sortable: false},
+                    {
+                        name: "deliveryTime",
+                        index: "deliveryTime",
+                        editable: true,
+                        width: 100,
+                        sorttype: "date",
+                        formatter: "date"
+                    },
+                    {name: "currentBalance", index: "currentBalance", editable: true, width: 100, sortable: false}],
+                pager: "#pager_list_2",
+                viewrecords: true,
+                caption: "挂车管理",
+                add: true,
+                edit: true,
+                addtext: "Add",
+                edittext: "Edit",
+                hidegrid: false,
+                editurl: "./editTrailerManage",
             });
 
-           $("#table_list_2").jqGrid("navGrid","#pager_list_2",{edit:true,add:true,del:true,search:true},
+        $("#table_list_2").jqGrid("navGrid", "#pager_list_2", {edit: true, add: true, del: true, search: true},
 
-               {
-                   modal:true,
-                   jqModal:true,
-                   reloadAfterSubmit:false,
-                   closeAfterEdit:true,
-                   afterSubmit: function(response, postdata){
-                       if(response.status == "200"){
-                           alert("修改成功!")
-                           return [true]
-                       }else {
-                           alert("修改失败!")
-                           return [false]
-                       }
-                   }
-               },
-               {
-                   modal:true,
-                   jqModal:true,
-                   reloadAfterSubmit:false,
-                   closeAfterAdd:true,
-                   afterSubmit: function(response, postdata){
-                       if(response.status == "200"){
-                           var newItem = JSON.parse(response.responseText)
-                           alert("添加成功!")
-                           return [true,"",newItem.new_id.toString()]
+            {
+                modal: true,
+                jqModal: true,
+                reloadAfterSubmit: false,
+                closeAfterEdit: true,
+                afterSubmit: function (response, postdata) {
+                    if (response.status == "200") {
+                        alert("修改成功!")
+                        return [true]
+                    } else {
+                        alert("修改失败!")
+                        return [false]
+                    }
+                }
+            },
+            {
+                modal: true,
+                jqModal: true,
+                reloadAfterSubmit: false,
+                closeAfterAdd: true,
+                afterSubmit: function (response, postdata) {
+                    if (response.status == "200") {
+                        var newItem = JSON.parse(response.responseText)
+                        alert("添加成功!")
+                        return [true, "", newItem.new_id.toString()]
 
-                       }else {
-                           alert("添加失败!")
-                           return [false]
-                       }
-                   }
-               },
-               {},
-               {});
-           $(window).bind("resize",function(){var width=$(".jqGrid_wrapper").width();$("#table_list_2").setGridWidth(width)}) ;
+                    } else {
+                        alert("添加失败!")
+                        return [false]
+                    }
+                }
+            },
+            {},
+            {});
+        $(window).bind("resize", function () {
+            var width = $(".jqGrid_wrapper").width();
+            $("#table_list_2").setGridWidth(width)
+        });
 
-        };
+    };
 
-         $(document).ready(function(){InitCustomerManageGrid();}) ;
+    $(document).ready(function () {
+        InitCustomerManageGrid();
+    });
 
 
-    </script>
+</script>
 
 </body>
 </html>

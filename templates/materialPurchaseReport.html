@@ -1,0 +1,122 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="{% static "css/bootstrap.min14ed.css" %}?v=3.3.6" rel="stylesheet">
+    <link href="{% static "css/font-awesome.min93e3.css" %}?v=4.4.0" rel="stylesheet">
+    <link href="{% static "css/animate.min.css" %}" rel="stylesheet">
+    <link href="{% static "css/style.min862f.css" %}?v=4.1.0" rel="stylesheet">
+    <link href="{% static "css/plugins/jqgrid/ui.jqgridffe4.css" %}?0820" rel="stylesheet">
+
+
+</head>
+<body>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>采购单报表 -- 按时间段筛选</h5>
+                    <div>
+                        下单日期 From: <input id="fromDate" type="text"> To: <input id="deadline" type="text">
+                        <button onclick="searchByDate()">搜索</button>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="jqGrid_wrapper">
+                        <table id="table_list_2"></table>
+                        <div id="pager_list_2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static "js/jquery.min.js" %}?v=2.1.4"></script>
+<script src="{% static "js/bootstrap.min.js" %}?v=3.3.6"></script>
+<script src="{% static "js/plugins/peity/jquery.peity.min.js" %}"></script>
+<script src="{% static "js/plugins/jqgrid/i18n/grid.locale-cnffe4.js" %}?0820"></script>
+<script src="{% static "js/plugins/jqgrid/jquery.jqGrid.minffe4.js" %}?0820"></script>
+
+<script type="text/javascript">
+
+
+    function searchByDate() {
+        var fromDate = $(" #fromDate ").val();
+        var deadline = $(" #deadline ").val();
+        $.ajax({
+            type: "get",
+            async: false,
+            data: {fromDate: fromDate, deadline: deadline},
+            url: "./searchMaterialPurchaseByDate",
+            dataType: "json",
+            success: function (result) {
+                //清除旧数据
+                $("#table_list_2").jqGrid("clearGridData");
+                //显示新的数据
+                showData(eval('(' + result.showData + ')'));
+            }
+        });
+    }
+
+    function showData(jqdata) {
+        $.jgrid.defaults.styleUI = "Bootstrap";
+        $("#table_list_2").jqGrid(
+            {
+                datatype: "json",
+                height: 450,
+                autowidth: true,
+                shrinkToFit: true,
+                rowNum: 20,
+                rowList: [10, 20, 30],
+                colNames: ["采购单编号", "供货商", "品种(气体种类)", "拖车号", "挂车号", "司机", "押运员", "采购数量", "单价", "码表数", "下单日期(格式:2018-01-01)", "入库日期(格式:2018-01-01)", "是否入库"],
+                colModel: [
+                    {name: "purchaseID", index: "purchaseID", editable: false, width: 100, sortable: false},
+                    {name: "supplierName", index: "supplierName", editable: false, width: 100, sortable: false},
+                    {name: "category", index: "category", editable: false, width: 100, sortable: false},
+                    {name: "tractorID", index: "tractorID", editable: false, width: 100, sortable: false,},
+                    {name: "trailerID", index: "trailerID", editable: false, width: 100,},
+                    {name: "driverName", index: "driverName", editable: false, width: 100, sortable: false,},
+                    {name: "supercargo", index: "supercargo", editable: false, width: 100,},
+                    {name: "count", index: "count", editable: false, width: 100, sortable: false},
+                    {name: "unitPrice", index: "unitPrice", editable: false, width: 100, sortable: false},
+                    {name: "mileage", index: "mileage", editable: false, width: 100, sortable: false},
+                    {
+                        name: "orderDate",
+                        index: "orderDate",
+                        editable: false,
+                        width: 100,
+                        sorttype: "date",
+                        formatter: "date"
+                    },
+                    {
+                        name: "storageDate",
+                        index: "storageDate",
+                        editable: false,
+                        width: 100,
+                        sorttype: "date",
+                        formatter: "date"
+                    },
+                    {name: "isStoraged", index: "isStoraged", editable: false, width: 100, sortable: false,}],
+                pager: "#pager_list_2",
+                viewrecords: true,
+                caption: "已入库的采购单-不可编辑",
+                add: false,
+                edit: false,
+                hidegrid: false,
+
+            });
+
+        for (var i = 0; i <= jqdata.length; i++) {
+            jQuery("#table_list_2").jqGrid('addRowData', i + 1, jqdata[i]);
+        }
+    }
+</script>
+
+</body>
+</html>

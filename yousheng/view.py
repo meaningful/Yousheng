@@ -1,20 +1,14 @@
 from django.shortcuts import render
 from apps.AppUtils import EncodeUtils, LoginUtils
 import json
-from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManage, GasManage, CustomerManage,TrailerManage, Supplier, TractorManage, User
+from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManage, GasManage, CustomerManage, TrailerManage, Supplier, TractorManage, User
 from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManageDBUtils, GasManageDBUtils, CustomerManageDBUtils, TrailerManageDBUtils, SupplierDBUtils, TractorManageDBUtils, UserDBUtils
 from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesList, MaterialPurchase, VehicleMaintenanceManage, WastageManage, CustomPaymentInfo
 from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesListDBUtils, MaterialPurchaseDBUtils, VehicleMaintenanceManageDBUtils, WastageManageDBUtils, CustomPaymentInfoDBUtils
-from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
-from apps.BusinessUtils import ViewModelsDBUtils
+from apps.BusinessUtils import ViewModelsDBUtils, SelectItemDataUtils
 
-
-# def json_default(value):
-#     if isinstance(value, datetime.date):
-#         return dict(year=value.year, month=value.month, day=value.day)
-#     else:
-#         return value.__dict__
 
 def index(request):
     if request.method == 'GET':
@@ -63,7 +57,7 @@ def gasManage(request):
 # 客户管理
 def customManage(request):
     allCustom = CustomerManageDBUtils.queryAll()
-    return render(request, "customManage.html",  {'showData': json.dumps(allCustom)})
+    return render(request, "customManage.html", {'showData': json.dumps(allCustom)})
 
 
 # 挂车管理
@@ -86,13 +80,14 @@ def supplier(request):
 
 # 销售单
 def salesList(request):
-    allSalesList = SalesListDBUtils.queryAll()
+    allSalesList = SalesListDBUtils.queryAllSalesListByIsStoraged(SalesListDBUtils.IS_STORAGED_NO)
     return render(request, "salesList.html", {'showData': json.dumps(allSalesList)})
 
 
 # 采购单
 def materialPurchase(request):
-    allmaterialPurchase = MaterialPurchaseDBUtils.queryAll()
+    allmaterialPurchase = MaterialPurchaseDBUtils.queryAllMaterialPurchaseByIsStoraged(
+        MaterialPurchaseDBUtils.IS_STORAGED_NO)
     return render(request, "materialPurchase.html", {'showData': json.dumps(allmaterialPurchase)})
 
 
@@ -120,6 +115,42 @@ def userManage(request):
     return render(request, "userManage.html", {'showData': json.dumps(allUsers)})
 
 
+# 销售报表
+def salesListReport(request):
+    return render(request, "salesListReport.html")
+
+
+# 根据时间段查询已入库的销售单
+def searchSalesListByDate(request):
+    fromDate = request.GET.get("fromDate")
+    deadline = request.GET.get("deadline")
+    invoiced = request.GET.get("invoiced")
+    isInvoiced = ""
+    if invoiced == SalesListDBUtils.IS_INVOICED_YES:
+        isInvoiced = SalesListDBUtils.IS_INVOICED_YES
+    elif invoiced == SalesListDBUtils.IS_INVOICED_NO:
+        isInvoiced = SalesListDBUtils.IS_INVOICED_NO
+    else:
+        isInvoiced = SalesListDBUtils.IS_INVOICED_NA
+
+    allSalesList = SalesListDBUtils.queryAllSalesListByDate(isInvoiced, fromDate, deadline)
+    return JsonResponse({'showData': json.dumps(allSalesList)})
+
+
+# 采购报表
+def materialPurchaseReport(request):
+    return render(request, "materialPurchaseReport.html")
+
+
+# 根据时间段查询已入库的采购单
+def searchMaterialPurchaseByDate(request):
+    fromDate = request.GET.get("fromDate")
+    deadline = request.GET.get("deadline")
+    allMaterialPurchase = MaterialPurchaseDBUtils.queryAllMaterialPurchaseByDate(
+        MaterialPurchaseDBUtils.IS_STORAGED_YES, fromDate, deadline)
+    return JsonResponse({'showData': json.dumps(allMaterialPurchase)})
+
+
 @csrf_exempt
 def editCustomManage(request):
     mode = request.POST.get('oper')
@@ -145,11 +176,11 @@ def editCustomManage(request):
     annualSales = request.POST.get('annualSales')
 
     custom = CustomerManage(customID=customID, customName=customName, tel=tel, addr=addr, taxFileNO=taxFileNO,
-                        bankOfDepsit=bankOfDepsit, bankAccount=bankAccount, fax=fax,
-                        industryField=industryField, companyNature=companyNature, consocationMode=consocationMode,
-                        level=level, contract=contract, payCycle=payCycle,
-                        companyCharge=companyCharge, companyContact=companyContact,
-                        customQualification=customQualification, annualSales=annualSales)
+                            bankOfDepsit=bankOfDepsit, bankAccount=bankAccount, fax=fax,
+                            industryField=industryField, companyNature=companyNature, consocationMode=consocationMode,
+                            level=level, contract=contract, payCycle=payCycle,
+                            companyCharge=companyCharge, companyContact=companyContact,
+                            customQualification=customQualification, annualSales=annualSales)
 
     if mode == 'add':
         newID = CustomerManageDBUtils.add(custom)
@@ -227,7 +258,7 @@ def editTrailerManage(request):
     insuranceTime = request.POST.get('insuranceTime')
     chassisNumber = request.POST.get('chassisNumber')
     deliveryTime = request.POST.get('deliveryTime')
-    currentBalance  =request.POST.get('currentBalance')
+    currentBalance = request.POST.get('currentBalance')
 
     trailer = TrailerManage(trailerID=trailerID, annualInspectionTime=annualInspectionTime, insuranceTime=insuranceTime,
                             chassisNumber=chassisNumber, deliveryTime=deliveryTime, currentBalance=currentBalance)
@@ -349,8 +380,8 @@ def editSalesList(request):
                               mileage=mileage, orderDate=orderDate, storageDate=storageDate, comment=comment,
                               isInvoiced=isInvoiced, isStoraged=isStoraged)
 
-        SalesListDBUtils.add(salesList)
-        return HttpResponse("OK")
+        newID = SalesListDBUtils.add(salesList)
+        return JsonResponse({'new_id': newID})
 
     if mode == 'del' and editId:
         SalesListDBUtils.delete(editId)
@@ -396,8 +427,8 @@ def editMaterialPurchaseManage(request):
                                             supercargo=supercargo, count=count,
                                             unitPrice=unitPrice, mileage=mileage, orderDate=orderDate,
                                             storageDate=storageDate, isStoraged=isStoraged)
-        MaterialPurchaseDBUtils.add(materialPurchase)
-        return HttpResponse("OK")
+        newID = MaterialPurchaseDBUtils.add(materialPurchase)
+        return JsonResponse({'new_id': newID})
 
     if mode == 'del' and editId:
         MaterialPurchaseDBUtils.delete(editId)
@@ -436,8 +467,8 @@ def editVehicleMaintenanceManage(request):
                                                         maintenanceComment=maintenanceComment)
 
     if mode == 'add':
-        VehicleMaintenanceManageDBUtils.add(vehicleMaintenanceManage)
-        return HttpResponse("OK")
+        newID = VehicleMaintenanceManageDBUtils.add(vehicleMaintenanceManage)
+        return JsonResponse({'new_id': newID})
 
     if mode == 'del' and editId:
         VehicleMaintenanceManageDBUtils.delete(editId)
@@ -459,8 +490,8 @@ def editWastageManage(request):
     wastageManage = WastageManage(trailerID=trailerID, wastageCount=wastageCount)
 
     if mode == 'add':
-        WastageManageDBUtils.add(wastageManage)
-        return HttpResponse("OK")
+        newID = WastageManageDBUtils.add(wastageManage)
+        return JsonResponse({'new_id': newID})
 
     if mode == 'del' and editId:
         WastageManageDBUtils.delete(editId)
@@ -484,8 +515,8 @@ def editCustomPaymentInfo(request):
     customPaymentInfo = CustomPaymentInfo(customName=customName, payTime=payTime, payAmount=payAmount, balance=balance)
 
     if mode == 'add':
-        CustomPaymentInfoDBUtils.add(customPaymentInfo)
-        return HttpResponse("OK")
+        newID = CustomPaymentInfoDBUtils.add(customPaymentInfo)
+        return JsonResponse({'new_id': newID})
 
     if mode == 'del' and editId:
         CustomPaymentInfoDBUtils.delete(editId)
@@ -494,6 +525,7 @@ def editCustomPaymentInfo(request):
     if mode == 'edit' and editId:
         CustomPaymentInfoDBUtils.update(editId, customPaymentInfo)
         return HttpResponse("OK")
+
 
 # def monthWastage(request):
 #     return render(request,"monthWastage.html")
@@ -528,58 +560,86 @@ def editUser(request):
 
 # -------- For Business begin--------- #
 # 查询所有客户名称
-@csrf_exempt
-def getAllCustomNames(request):
-    allCustomNames = ViewModelsDBUtils.getAllCustomNames()
-    return JsonResponse({"allCustomNames": allCustomNames})
-
-
-# 查询所有客户编号
-@csrf_exempt
-def getAllCustomIDs(request):
-    allCustomIDs = ViewModelsDBUtils.getAllCustomIDs()
-    return JsonResponse({"allCustomIDs": allCustomIDs})
-
-# 查询所有供货商名称
-@csrf_exempt
-def getAllSupplierNames(request):
-    allSupplierNames = ViewModelsDBUtils.getAllSupplierNames()
-    return JsonResponse({"allSupplierNames": allSupplierNames})
-
-
-# 查询所有品种（气体种类）名称
+# @csrf_exempt
+# def getAllCustomNames(request):
+#     allCustomNames = ViewModelsDBUtils.getAllCustomNames()
+#     return JsonResponse({"allCustomNames": allCustomNames})
+#
+#
+# # 查询所有客户编号
+# @csrf_exempt
+# def getAllCustomIDs(request):
+#     allCustomIDs = ViewModelsDBUtils.getAllCustomIDs()
+#     return JsonResponse({"allCustomIDs": allCustomIDs})
+#
+#
+# # 查询所有供货商名称
+# @csrf_exempt
+# def getAllSupplierNames(request):
+#     allSupplierNames = ViewModelsDBUtils.getAllSupplierNames()
+#     return JsonResponse({"allSupplierNames": allSupplierNames})
+#
+#
+# 获取所有品种（气体种类）名称
 @csrf_exempt
 def getAllGasName(request):
-    allGasNames = ViewModelsDBUtils.getAllGasName()
+    allGasNames = SelectItemDataUtils.getAllGasNames()
     return JsonResponse({"allGasNames": allGasNames})
 
 
-# 查询所有拖车的拖车号
+#
+#
+# # 查询所有拖车的拖车号
+# @csrf_exempt
+# def getAllTractorIDs(request):
+#     allTractorIDs = ViewModelsDBUtils.getAllTractorIDs()
+#     return JsonResponse({"allTractorIDs": allTractorIDs})
+
+
+# # 查询所有挂车号
+# @csrf_exempt
+# def getTrailerIDs(request):
+#     allTrailerIDs = ViewModelsDBUtils.getTrailerIDs()
+#     return JsonResponse({"allTrailerIDs": allTrailerIDs})
+#
+#
+# # 查询所有司机名称
+# @csrf_exempt
+# def getAllDriverNames(request):
+#     allDriverNames = ViewModelsDBUtils.getAllDriverNames()
+#     return JsonResponse({"allDriverNames": allDriverNames})
+#
+#
+# # 查询所有押运员名称
+# @csrf_exempt
+# def getAllSupercargoNames(request):
+#     allSupercargoNames = ViewModelsDBUtils.getAllSupercargoNames()
+#     return JsonResponse({"allSupercargoNames": allSupercargoNames})
+
+
+# 获取销售单 Select item 的数据
 @csrf_exempt
-def getAllTractorIDs(request):
-    allTractorIDs = ViewModelsDBUtils.getAllTractorIDs()
-    return JsonResponse({"allTractorIDs": allTractorIDs})
+def getAllSelectItemDataForSaleList(request):
+    allSelectItemDatas = SelectItemDataUtils.getAllSelectItemDataForSaleList()
+    return JsonResponse({"allCustomNames": allSelectItemDatas["allCustomNames"],
+                         "allCustomIDs": allSelectItemDatas["allCustomIDs"],
+                         "allGasNames": allSelectItemDatas["allGasNames"],
+                         "allTractorIDs": allSelectItemDatas["allTractorIDs"],
+                         "allTrailerIDs": allSelectItemDatas["allTrailerIDs"],
+                         "allDriverNames": allSelectItemDatas["allDriverNames"],
+                         "allSupercargoNames": allSelectItemDatas["allSupercargoNames"]})
 
 
-# 查询所有挂车号
+# 获取采购单 Select item 的数据
 @csrf_exempt
-def getTrailerIDs(request):
-    allTrailerIDs = ViewModelsDBUtils.getTrailerIDs()
-    return JsonResponse({"allTrailerIDs": allTrailerIDs})
+def getAllSelectItemDataForMaterialPurchase(request):
+    allSelectItemDatas = SelectItemDataUtils.getAllSelectItemDataForMaterialPurchase()
 
-
-# 查询所有司机名称
-@csrf_exempt
-def getAllDriverNames(request):
-    allDriverNames = ViewModelsDBUtils.getAllDriverNames()
-    return JsonResponse({"allDriverNames": allDriverNames})
-
-
-# 查询所有押运员名称
-@csrf_exempt
-def getAllSupercargoNames(request):
-    allSupercargoNames = ViewModelsDBUtils.getAllSupercargoNames()
-    return JsonResponse({"allSupercargoNames": allSupercargoNames})
-
+    return JsonResponse({"allSupplierNames": allSelectItemDatas["allSupplierNames"],
+                         "allGasNames": allSelectItemDatas["allGasNames"],
+                         "allTractorIDs": allSelectItemDatas["allTractorIDs"],
+                         "allTrailerIDs": allSelectItemDatas["allTrailerIDs"],
+                         "allDriverNames": allSelectItemDatas["allDriverNames"],
+                         "allSupercargoNames": allSelectItemDatas["allSupercargoNames"]})
 
 # -------- For Business end--------- #

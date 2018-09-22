@@ -59,7 +59,41 @@
                 pager:"#pager_list_2",viewrecords:true,caption:"车辆维修安排（统计）",add:true,edit:true,addtext:"Add",edittext:"Edit",hidegrid:false,editurl:"./editVehicleMaintenanceManage",
             });
 
-           $("#table_list_2").jqGrid("navGrid","#pager_list_2",{edit:true,add:true,del:true,search:true},{height:200,reloadAfterSubmit:true});
+           $("#table_list_2").jqGrid("navGrid","#pager_list_2",{edit:true,add:true,del:true,search:true},
+               {
+                   modal:true,
+                   jqModal:true,
+                   reloadAfterSubmit:false,
+                   closeAfterEdit:true,
+                   afterSubmit: function(response, postdata){
+                       if(response.status == "200"){
+                           alert("修改成功!")
+                           return [true]
+                       }else {
+                           alert("修改失败!")
+                           return [false]
+                       }
+                   }
+               },
+               {
+                   modal:true,
+                   jqModal:true,
+                   reloadAfterSubmit:false,
+                   closeAfterAdd:true,
+                   afterSubmit: function(response, postdata){
+                       if(response.status == "200"){
+                           var newItem = JSON.parse(response.responseText)
+                           alert("添加成功!")
+                           return [true,"",newItem.new_id.toString()]
+
+                       }else {
+                           alert("添加失败!")
+                           return [false]
+                       }
+                   }
+               },
+               {},
+               {});
            $(window).bind("resize",function(){var width=$(".jqGrid_wrapper").width();$("#table_list_2").setGridWidth(width)}) ;
 
         };

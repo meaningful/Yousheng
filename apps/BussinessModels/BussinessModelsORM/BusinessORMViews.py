@@ -94,14 +94,23 @@ class SalesList(Base):
 
 
 class SalesListDBUtils(object):
+    IS_STORAGED_YES = "是"
+    IS_STORAGED_NO = "否"
+    IS_INVOICED_YES = "是"
+    IS_INVOICED_NO = "否"
+    IS_INVOICED_NA = "NA"
+
     @classmethod
     def add(cls, salesList):
         if not isinstance(salesList, SalesList):
             raise TypeError('The parameter salesList is not instance of the SalesList instance')
         session = DBSession()
         session.add(salesList)
+        session.flush()
+        new_item_id = salesList.id
         session.commit()
         session.close()
+        return new_item_id
 
     @classmethod
     def delete(cls, delId):
@@ -152,6 +161,36 @@ class SalesListDBUtils(object):
         return allSalesList
 
     @classmethod
+    def queryAllSalesListByIsStoraged(cls, isStoraged):
+        session = DBSession()
+        queryAll = session.query(SalesList).filter(SalesList.isStoraged == isStoraged).all()
+        allSalesList = []
+        for item in queryAll:
+            salesList_json = json.dumps(object2dict(item), cls=DateEncoder)
+            salesList = json.loads(salesList_json)
+            allSalesList.append(salesList)
+        session.close()
+        return allSalesList
+
+    @classmethod
+    def queryAllSalesListByDate(cls, isInvoiced, fromDate, deadline):
+        session = DBSession()
+        if isInvoiced == SalesListDBUtils.IS_INVOICED_NA:
+            queryAll = session.query(SalesList).filter(SalesList.orderDate >= fromDate,
+                                                       SalesList.orderDate <= deadline).all()
+        else:
+            queryAll = session.query(SalesList).filter(SalesList.isInvoiced == isInvoiced,
+                                                       SalesList.orderDate >= fromDate,
+                                                       SalesList.orderDate <= deadline).all()
+        allSalesList = []
+        for item in queryAll:
+            salesList_json = json.dumps(object2dict(item), cls=DateEncoder)
+            salesList = json.loads(salesList_json)
+            allSalesList.append(salesList)
+        session.close()
+        return allSalesList
+
+    @classmethod
     def getCount(cls):
         session = DBSession()
         allCount = session.query(SalesList).count()
@@ -164,6 +203,7 @@ class SalesListDBUtils(object):
         item = session.query(SalesList).filter_by(id=editId).first()
         session.close()
         return item.salesListID
+
 
 # <- 销售单 End ->
 
@@ -204,14 +244,20 @@ class MaterialPurchase(Base):
 
 
 class MaterialPurchaseDBUtils(object):
+    IS_STORAGED_YES = "是"
+    IS_STORAGED_NO = "否"
+
     @classmethod
     def add(cls, materialPurchase):
         if not isinstance(materialPurchase, MaterialPurchase):
             raise TypeError('The parameter materialPurchase is not instance of the MaterialPurchase instance')
         session = DBSession()
         session.add(materialPurchase)
+        session.flush()
+        new_item_id = materialPurchase.id
         session.commit()
         session.close()
+        return new_item_id
 
     @classmethod
     def delete(cls, delId):
@@ -249,6 +295,34 @@ class MaterialPurchaseDBUtils(object):
     def queryAll(cls):
         session = DBSession()
         queryAll = session.query(MaterialPurchase).all()
+        allMaterialPurchase = []
+        for item in queryAll:
+            materialPurchase_json = json.dumps(object2dict(item), cls=DateEncoder)
+            materialPurchase = json.loads(materialPurchase_json)
+            allMaterialPurchase.append(materialPurchase)
+        session.close()
+        return allMaterialPurchase
+
+    @classmethod
+    def queryAllMaterialPurchaseByIsStoraged(cls, isStoraged):
+        session = DBSession()
+        queryAll = session.query(MaterialPurchase).filter(MaterialPurchase.isStoraged == isStoraged).all()
+        allMaterialPurchase = []
+        for item in queryAll:
+            materialPurchase_json = json.dumps(object2dict(item), cls=DateEncoder)
+            materialPurchase = json.loads(materialPurchase_json)
+            allMaterialPurchase.append(materialPurchase)
+        session.close()
+        return allMaterialPurchase
+
+    @classmethod
+    def queryAllMaterialPurchaseByDate(cls, isStoraged, fromDate, deadline):
+        session = DBSession()
+        queryAll = session.query(MaterialPurchase).filter(
+            MaterialPurchase.isStoraged == isStoraged,
+            MaterialPurchase.orderDate >= fromDate,
+            MaterialPurchase.orderDate <= deadline).all()
+
         allMaterialPurchase = []
         for item in queryAll:
             materialPurchase_json = json.dumps(object2dict(item), cls=DateEncoder)
@@ -309,8 +383,11 @@ class VehicleMaintenanceManageDBUtils(object):
                             'VehicleMaintenanceManage instance')
         session = DBSession()
         session.add(vehicleMaintenanceManage)
+        session.flush()
+        new_item_id = vehicleMaintenanceManage.id
         session.commit()
         session.close()
+        return new_item_id
 
     @classmethod
     def delete(cls, delId):
@@ -378,8 +455,11 @@ class WastageManageDBUtils(object):
             raise TypeError('The parameter wastageManage is not instance of the WastageManage instance')
         session = DBSession()
         session.add(wastageManage)
+        session.flush()
+        new_item_id = wastageManage.id
         session.commit()
         session.close()
+        return new_item_id
 
     @classmethod
     def delete(cls, delId):
@@ -442,8 +522,11 @@ class CustomPaymentInfoDBUtils(object):
             raise TypeError('The parameter customPaymentInfo is not instance of the CustomPaymentInfo instance')
         session = DBSession()
         session.add(customPaymentInfo)
+        session.flush()
+        new_item_id = customPaymentInfo.id
         session.commit()
         session.close()
+        return new_item_id
 
     @classmethod
     def delete(cls, delId):
@@ -480,8 +563,4 @@ class CustomPaymentInfoDBUtils(object):
         session.close()
         return allCustomPaymentInfo
 
-
 # <- 客户充值信息 End ->
-
-
-
