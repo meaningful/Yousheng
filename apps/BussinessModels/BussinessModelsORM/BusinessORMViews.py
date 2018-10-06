@@ -193,12 +193,15 @@ class SalesListDBUtils(object):
     def queryAllSalesListByDate(cls, isInvoiced, fromDate, deadline):
         session = DBSession()
         if isInvoiced == SalesListDBUtils.IS_INVOICED_NA:
-            queryAll = session.query(SalesList).filter(SalesList.orderDate >= fromDate,
-                                                       SalesList.orderDate <= deadline).all()
+            if __name__ == '__main__':
+                queryAll = session.query(SalesList).order_by(asc(SalesList.orderDate)).filter(
+                    SalesList.orderDate >= fromDate,
+                    SalesList.orderDate <= deadline).all()
         else:
-            queryAll = session.query(SalesList).filter(SalesList.isInvoiced == isInvoiced,
-                                                       SalesList.orderDate >= fromDate,
-                                                       SalesList.orderDate <= deadline).all()
+            queryAll = session.query(SalesList).order_by(asc(SalesList.orderDate)).filter(
+                    SalesList.isInvoiced == isInvoiced,
+                    SalesList.orderDate >= fromDate,
+                    SalesList.orderDate <= deadline).all()
 
         allSalesList = []
         for item in queryAll:
