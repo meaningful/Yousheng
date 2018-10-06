@@ -10,9 +10,9 @@
 """
 import datetime
 import json
-from sqlalchemy import Column, String, Integer, Date, create_engine
+from sqlalchemy import Column, String, Integer, Date, create_engine, func, asc
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base, DeclarativeMeta
+from sqlalchemy.ext.declarative import declarative_base
 
 # 创建ORM对象的基类
 Base = declarative_base()
@@ -173,6 +173,23 @@ class SalesListDBUtils(object):
         return allSalesList
 
     @classmethod
+    def queryAllSalesListForCustomerBillList(cls, customName, fromDate, deadline):
+        session = DBSession()
+
+        queryAll = session.query(SalesList).order_by(asc(SalesList.storageDate)).filter(
+            SalesList.customName == customName,
+            SalesList.storageDate >= fromDate,
+            SalesList.storageDate <= deadline).all()
+
+        allSalesList = []
+        for item in queryAll:
+            salesList_json = json.dumps(object2dict(item), cls=DateEncoder)
+            salesList = json.loads(salesList_json)
+            allSalesList.append(salesList)
+        session.close()
+        return allSalesList
+
+    @classmethod
     def queryAllSalesListByDate(cls, isInvoiced, fromDate, deadline):
         session = DBSession()
         if isInvoiced == SalesListDBUtils.IS_INVOICED_NA:
@@ -182,6 +199,7 @@ class SalesListDBUtils(object):
             queryAll = session.query(SalesList).filter(SalesList.isInvoiced == isInvoiced,
                                                        SalesList.orderDate >= fromDate,
                                                        SalesList.orderDate <= deadline).all()
+
         allSalesList = []
         for item in queryAll:
             salesList_json = json.dumps(object2dict(item), cls=DateEncoder)
@@ -210,6 +228,22 @@ class SalesListDBUtils(object):
         item = session.query(SalesList).filter_by(id=editId).first()
         session.close()
         return item.salesListID
+
+    # 查询最早入库销售单的日期
+    @classmethod
+    def getEarliestStorageDate(cls):
+        session = DBSession()
+        earliestStorageDate = session.query(func.min(SalesList.storageDate)).all()
+        session.close()
+        return earliestStorageDate[0][0]
+
+    # 查询最近入库销售单的日期
+    @classmethod
+    def getLatestStorageDate(cls):
+        session = DBSession()
+        latestStorageDate = session.query(func.max(SalesList.storageDate)).all()
+        session.close()
+        return latestStorageDate[0][0]
 
 
 # <- 销售单 End ->
@@ -577,7 +611,23 @@ class CustomPaymentInfoDBUtils(object):
         session.close()
         return allCustomPaymentInfo
 
+
 # <- 客户充值信息 End ->
 
-# count = SalesListDBUtils.getCountToday()
-# print(count)
+
+class BusinessViewUtils(object):
+
+    @classmethod
+    def getAllSalesListStorageDateMinAndMax(cls):
+        dateFromTo = []
+        session = DBSession()
+
+        # 查询最早入库销售单的日期
+        earliestStorageDate = session.query(func.min(SalesList.storageDate)).all()
+        dateFromTo.append(earliestStorageDate[0][0])
+
+        # 查询最近入库销售单的日期
+        latestStorageDate = session.query(func.max(SalesList.storageDate)).all()
+        dateFromTo.append(latestStorageDate[0][0])
+
+        return dateFromTo

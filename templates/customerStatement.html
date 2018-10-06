@@ -15,86 +15,119 @@
 <hr class="hr">
 
 <table align="center" border='1' width=80% cellpadding='5' cellspacing='0'>
-    {#    <tr>#}
-    {#        <td colspan='4' align='middle'>客户对账单</td>#}
-    {#    </tr>#}
 
     <tr>
         <td width="15%">收件人（To）</td>
-        <td width="25%">张三</td>
+        <td width="25%" height="25px"><input style="width:100%;height:100%;border: 0px;"></td>
         <td width="15%">发件人（From）</td>
-        <td width="25%">李四</td>
+        <td width="25%" height="25px"><input style="width:100%;height:100%;border: 0px;"></td>
     </tr>
 
     <tr>
         <td width="15%">公司（Company）</td>
-        <td width="25%">武汉XX</td>
+        <td width="25%" height="25px"><input style="width:100%;height:100%;border: 0px;"></td>
         <td width="15%">公司（Company）</td>
-        <td width="25%">友盛</td>
+        <td width="25%" height="25px"><input style="width:100%;height:100%;border: 0px;"></td>
     </tr>
     <tr>
         <td width="15%">传真（Fax）</td>
-        <td width="25%">xxx</td>
+        <td width="25%" height="25px"><input style="width:100%;height:100%;border: 0px;"></td>
         <td width="15%">电话（Tel）</td>
-        <td width="25%">xxx</td>
+        <td width="25%" height="25px"><input style="width:100%;height:100%;border: 0px;"></td>
     </tr>
     <tr>
         <td width="15%">电话（Tel）</td>
-        <td width="25%">xxxx</td>
+        <td width="25%" height="25px"><input style="width:100%;height:100%;border: 0px;"></td>
         <td width="15%">日期（Date）</td>
-        <td width="25%">2018-08-28</td>
+        <td width="25%" height="25px"><input style="width:100%;height:100%;border: 0px;"></td>
     </tr>
 
 </table>
-<h1 align="center">2018年8月份天一液体结算明细</h1>
+<script src="{% static "js/jquery.min.js" %}?v=2.1.4"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var url = window.location.href;
+        var herfData = url.split("=");
+        var customName = decodeURI(String((herfData[1].split("&"))[0]));
+        var billDateYear = (herfData[2].split("&"))[0];
+        var billDateMonth = (herfData[3].split("&"))[0];
 
+        var strTableTitle = billDateYear + "年" + billDateMonth + "月份" + customName + "液体结算明细";
+        $("#tableTitle").text(strTableTitle);
+
+        var fromDate = billDateYear + "-" + billDateMonth + "-01";
+        var deadline = billDateYear + "-" + billDateMonth + "-31";
+
+        $.ajax({
+            type: "get",
+            async: true,
+            data: {customName: customName, fromDate: fromDate, deadline: deadline},
+            url: "./searchForCustomerBillList",
+            dataType: "json",
+            success: function (result) {
+                console.log(result.showData);
+                var data = eval('(' + result.showData + ')');
+                console.log(data.length);
+
+                var html = "";
+
+                html += "<tr>";
+                html += "<td width='10%' rowspan='2'>" + "序号" + "</td>";
+                html += "<td width='10%' rowspan='2'>" + "品名" + "</td>";
+                html += "<td width='10%' rowspan='2'>" + "日期" + "</td>";
+                html += "<td width='10%' rowspan='2'>" + "车号" + "</td>";
+                html += "<td width='20%' colspan='2' align='center'>" + "数量" + "</td>";
+                html += "<td width='10%' rowspan='2'>" + "单价（元/m<sup>3</sup>）" + "</td>";
+                html += "<td width='10%' rowspan='2'>" + "合计（元)" + "</td>";
+                html += "<td width='10%' rowspan='2'>" + "备注" + " </td>";
+                html += "</tr>";
+
+                html += "<tr>";
+                html += "<td width='10%'>" + "T" + "</td>";
+                html += "<td width='10%'>" + "m<sup>3</sup>" + "</td>";
+                html += "</tr>";
+
+                var length = data.length;
+
+                for (var i = 0; i < length; i++) {
+                    console.log(data[i]);
+                    var item = data[i];
+                    html += "<tr>";
+                    html += "<td>" + (i + 1) + "</td>";
+                    html += "<td>" + item.category + "</td>";
+                    html += "<td>" + item.storageDate + "</td>";
+                    html += "<td>" + item.trailerID + "</td>";
+                    html += "<td>" + item.count + "</td>";
+                    html += "<td>" + item.count + "</td>";
+                    html += "<td>" + item.unitPrice + "</td>";
+                    html += "<td>" + 999 + "</td>";
+                    html += "<td>" + "<input style='width:100%;height:100%;border: 0px;'>" + "</td>";
+                    html += "</tr>";
+                }
+
+                html += "<tr>";
+                html += "<td width='10%' rowspan='2'>" + "合计" + "</td>";
+                for (var i = 0; i < 8; i++) {
+                    html += "<td width='10%'>" + "<input style='width:100%;height:100%;border: 0px;'>" + "</td>";
+                }
+                html += "</tr>";
+
+                html += "<tr>";
+                html += "<td width='10%' colspan='8'>" + "<input style='width:100%;height:100%;border: 0px;'>" + "</td>";
+                html += "</tr>";
+
+                $("#list_tab").html(html);
+            }
+
+        });
+
+    });
+
+</script>
+
+<h1 id="tableTitle" align="center">20XX年XX月份XX液体结算明细</h1>
 
 <table id="list_tab" align="center" border='1' width=80% cellpadding='5' cellspacing='0'>
-    <tr>
-        <td width="10%" rowspan="2">序号</td>
-        <td width="10%" rowspan="2">品名</td>
-        <td width="10%" rowspan="2">日期</td>
-        <td width="10%" rowspan="2">车号</td>
-        <td width="20%" colspan=2 align="center">数量</td>
-        <td width="10%" rowspan="2">单价（元/m<sup>3</sup>）</td>
-        <td width="10%" rowspan="2">合计（元）</td>
-        <td width="10%" rowspan="2">备注</td>
-    </tr>
-    <tr>
-        <td width="10%">T</td>
-        <td width="10%">m<sup>3</sup></td>
-    </tr>
-{#    {% for r,l in xx_dict.items %}#}
-{#　　<li>{{k}}-{{row}}</li>#}
-{#    TODO：遍历数据生成数据行#}
-{#    {% endfor %}#}
-    <tr>
-        <td>1.1</td>
-        <td>1.2</td>
-        <td>1.3</td>
-        <td>1.4</td>
-        <td>1.5</td>
-        <td>1.6</td>
-        <td>1.7</td>
-        <td>1.8</td>
-        <td>1.9</td>
-    </tr>
-
-    <tr>
-        <td width="10%" rowspan="2">合计</td>
-        <td width="10%"></td>
-        <td width="10%"></td>
-        <td width="10%"></td>
-        <td width="10%">666</td>
-        <td width="10%">999</td>
-        <td width="10%"></td>
-        <td width="10%"></td>
-        <td width="10%"></td>
-    </tr>
-    <tr>
-        <td width="10%" colspan="8">九十九万九千九百九十九</td>
-    </tr>
-
 </table>
 <div class="div_footer_left">
     <p class="p_bottom_lr">贵公司签字 &nbsp; 盖章确认如下：</P>

@@ -31,6 +31,9 @@ urlpatterns = [
     url(r'^searchMaterialPurchaseByDate', view.searchMaterialPurchaseByDate),
     # url(r'^monthWastage.html$',view.monthWastage),
     # url(r'^saleform.html$',view.saleform),
+    url(r'^customerBillList.html$', view.customerBillList),
+    url(r'^customerStatement.html$', view.customerStatement),
+    url(r'^searchForCustomerBillList', view.searchForCustomerBillList),
     url(r'^404.html$', view.unfound),
     url(r'^editCustomManage$', view.editCustomManage),
     url(r'^staffManage', view.staffManage),
@@ -63,6 +66,7 @@ urlpatterns = [
     # url(r'^getTrailerIDs', view.getTrailerIDs),
     # url(r'^getAllDriverNames', view.getAllDriverNames),
     # url(r'^getAllSupercargoNames', view.getAllSupercargoNames),
+    url(r'^getCustomerBillListSelectData$', view.getCustomerBillListSelectData),
     url(r'^getAllSelectItemDataForSaleList', view.getAllSelectItemDataForSaleList),
     url(r'^getAllSelectItemDataForMaterialPurchase', view.getAllSelectItemDataForMaterialPurchase)
 

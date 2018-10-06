@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from apps.AppUtils import EncodeUtils, LoginUtils
 import json
-from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManage, GasManage, CustomerManage, TrailerManage, Supplier,TractorManage, User
+from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManage, GasManage, CustomerManage, TrailerManage, Supplier, TractorManage, User
 from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManageDBUtils, GasManageDBUtils, CustomerManageDBUtils, TrailerManageDBUtils, SupplierDBUtils, TractorManageDBUtils, UserDBUtils
 from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesList, MaterialPurchase, VehicleMaintenanceManage, WastageManage, CustomPaymentInfo
 from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesListDBUtils, MaterialPurchaseDBUtils, VehicleMaintenanceManageDBUtils, WastageManageDBUtils, CustomPaymentInfoDBUtils
@@ -113,6 +113,24 @@ def customPaymentInfo(request):
 def userManage(request):
     allUsers = UserDBUtils.queryAll()
     return render(request, "userManage.html", {'showData': json.dumps(allUsers)})
+
+
+# 客户对账单
+def customerBillList(request):
+    return render(request, "customerBillList.html")
+
+
+def customerStatement(request):
+    return render(request, "customerStatement.html")
+
+
+# 查询客户对账单数据
+def searchForCustomerBillList(request):
+    customName = request.GET.get("customName")
+    fromDate = request.GET.get("fromDate")
+    deadline = request.GET.get("deadline")
+    allSalesList = SalesListDBUtils.queryAllSalesListForCustomerBillList(customName, fromDate, deadline)
+    return JsonResponse({'showData': json.dumps(allSalesList)})
 
 
 # 销售报表
@@ -586,12 +604,14 @@ def getAllGasName(request):
     allGasNames = SelectItemDataUtils.getAllGasNames()
     return JsonResponse({"allGasNames": allGasNames})
 
+
 # 生成销售单的编号
 @csrf_exempt
 def generatedSerialNumberForSaleList(request):
     serialNo = ViewModelsDBUtils.generated_serial_number_for_salelist()
     strOption = "<select> <option value=" + serialNo + ">" + serialNo + "</option> </select>"
     return HttpResponse(strOption)
+
 
 # 生成采购单编号
 @csrf_exempt
@@ -627,6 +647,14 @@ def generatedSerialNumberForMaterialPurchase(request):
 # def getAllSupercargoNames(request):
 #     allSupercargoNames = ViewModelsDBUtils.getAllSupercargoNames()
 #     return JsonResponse({"allSupercargoNames": allSupercargoNames})
+
+
+# 获取客户对账单页面select选项数据
+def getCustomerBillListSelectData(request):
+    allSelectItemDatas = SelectItemDataUtils.getAllSelectItemDataForCustomerBillList()
+    return JsonResponse({"allCustomNames": allSelectItemDatas["allCustomNames"],
+                         "earliestStorageDate": allSelectItemDatas["earliestStorageDate"],
+                         "latestStorageDate": allSelectItemDatas["latestStorageDate"]})
 
 
 # 获取销售单 Select item 的数据

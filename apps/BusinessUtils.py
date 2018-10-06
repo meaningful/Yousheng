@@ -9,8 +9,8 @@
 ---------------------------------------------
 """
 import json
-from apps.BaseModels.BaseModelsORM.BaseORMViews import GasManageDBUtils, StaffManageDBUtils, BaseViewUtils
-from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesListDBUtils, MaterialPurchaseDBUtils
+from apps.BaseModels.BaseModelsORM.BaseORMViews import GasManageDBUtils, StaffManageDBUtils, CustomerManageDBUtils, BaseViewUtils
+from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesListDBUtils, MaterialPurchaseDBUtils, BusinessViewUtils
 import datetime
 
 
@@ -131,6 +131,20 @@ class SelectItemDataUtils(object):
     def getAllGasNames(cls):
         allGas = GasManageDBUtils.queryAll()
         return ViewModelsDBUtils.getAllGasName(allGas)
+
+    #
+    @classmethod
+    def getAllSelectItemDataForCustomerBillList(cls):
+        allCustomers = CustomerManageDBUtils.queryAll()
+        allSalesListStoragdDateMinAndMax = BusinessViewUtils.getAllSalesListStorageDateMinAndMax()
+
+        allCustomNames = ViewModelsDBUtils.getAllCustomNames(allCustomers)
+        earliestStorageDate = allSalesListStoragdDateMinAndMax[0]
+        latestStorageDate = allSalesListStoragdDateMinAndMax[1]
+
+        return {"allCustomNames": allCustomNames,
+                "earliestStorageDate": earliestStorageDate,
+                "latestStorageDate": latestStorageDate}
 
     # 获取销售单 Select item 的数据
     @classmethod
