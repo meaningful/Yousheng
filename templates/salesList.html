@@ -98,7 +98,7 @@
                 var item_allCustomNames = result.allCustomNames;
                 jobj_allCustomNames = handleDataWithReplace(item_allCustomNames);
 
-                // 解析客户名称
+                // 解析客户编号
                 var item_allCustomIDs = result.allCustomIDs;
                 jobj_allCustomIDs = handleDataWithReplace(item_allCustomIDs);
 
@@ -148,7 +148,7 @@
                     {
                         name: "salesListID",
                         index: "salesListID",
-                        editable: true,
+                        editable: false,
                         width: 100,
                         sortable: false,
                         edittype: "select",
@@ -291,6 +291,7 @@
                 jqModal: true,
                 reloadAfterSubmit: false,
                 closeAfterAdd: true,
+
                 afterSubmit: function (response, postdata) {
                     if (response.status == "200") {
                         var newItem = JSON.parse(response.responseText)
@@ -304,8 +305,7 @@
                     }
                 }
             },
-            {}
-            ,
+            {},
             {}
         )
         ;

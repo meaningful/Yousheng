@@ -9,7 +9,7 @@
 ---------------------------------------------
 """
 import json
-from apps.BaseModels.BaseModelsORM.BaseORMViews import GasManageDBUtils, StaffManageDBUtils, CustomerManageDBUtils, BaseViewUtils
+from apps.BaseModels.BaseModelsORM.BaseORMViews import GasManageDBUtils, StaffManageDBUtils, CustomerManageDBUtils, TrailerManageDBUtils, TractorManageDBUtils, BaseViewUtils
 from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesListDBUtils, MaterialPurchaseDBUtils, BusinessViewUtils
 import datetime
 
@@ -104,6 +104,19 @@ class ViewModelsDBUtils(object):
 
         return json.dumps(allTrailerIDs)
 
+    @classmethod
+    def getAllVehicleIDs(cls,allTractor,allTrailer):
+        allVehicleIDs = []
+        if allTractor:
+            for tractor in allTractor:
+                allVehicleIDs.append(tractor['tractorID'])
+
+        if allTrailer:
+            for trailer in allTrailer:
+                allVehicleIDs.append(trailer['trailerID'])
+
+        return json.dumps(allVehicleIDs)
+
     # 根据人员category查询所有人员name
     @classmethod
     def getAllStaffNamesByCategory(cls, allStaff):
@@ -132,7 +145,27 @@ class SelectItemDataUtils(object):
         allGas = GasManageDBUtils.queryAll()
         return ViewModelsDBUtils.getAllGasName(allGas)
 
-    #
+    # 查询所有挂车的挂车号
+    @classmethod
+    def getAllTrailerIDs(cls):
+        allTrailer = TrailerManageDBUtils.queryAll()
+        return ViewModelsDBUtils.getAllTrailerIDs(allTrailer)
+
+    # 查询所有客户名称
+    @classmethod
+    def getAllCustomNames(cls):
+        allCustom = CustomerManageDBUtils.queryAll()
+        return ViewModelsDBUtils.getAllCustomNames(allCustom)
+
+    # 挂车和拖车号
+    @classmethod
+    def getAllVehicleIDs(cls):
+        allTractor = TractorManageDBUtils.queryAll()
+        allTrailer = TrailerManageDBUtils.queryAll()
+
+        allVehicleIDs = ViewModelsDBUtils.getAllVehicleIDs(allTractor, allTrailer)
+        return ViewModelsDBUtils.getAllVehicleIDs(allTractor, allTrailer)
+
     @classmethod
     def getAllSelectItemDataForCustomerBillList(cls):
         allCustomers = CustomerManageDBUtils.queryAll()

@@ -414,16 +414,12 @@ class VehicleMaintenanceManage(Base):
     __tablename__ = 'BussinessModels_vehiclemaintenancemanage'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    salesListID = Column(String(128))
     vehicleType = Column(String(128))
     vehicleID = Column(String(128))
     maintenanceDate = Column(Date)
     maintenanceItems = Column(String(128))
     maintenanceCost = Column(String(128))
     maintenanceComment = Column(String(128))
-    wastageManage = Column(String(128))
-    trailerID = Column(String(128))
-    wastageCount = Column(String(128))
 
 
 class VehicleMaintenanceManageDBUtils(object):
@@ -451,21 +447,21 @@ class VehicleMaintenanceManageDBUtils(object):
     @classmethod
     def update(cls, updateId, vehicleMaintenanceManage):
         if not isinstance(vehicleMaintenanceManage, VehicleMaintenanceManage):
-            raise TypeError('The parameter vehicleMaintenanceManage is not instance of the '
+            raise TypeError('The parameter ehicleMaintenanceManage is not instance of the '
                             'VehicleMaintenanceManage instance')
         session = DBSession()
 
-        item_to_update = session.query(MaterialPurchase).filter_by(id=updateId).first()
-        item_to_update.salesListID = vehicleMaintenanceManage.salesListID
+        item_to_update = session.query(VehicleMaintenanceManage).filter_by(id=updateId).first()
+        # item_to_update.salesListID = vehicleMaintenanceManage.salesListID
         item_to_update.vehicleType = vehicleMaintenanceManage.vehicleType
         item_to_update.vehicleID = vehicleMaintenanceManage.vehicleID
         item_to_update.maintenanceDate = vehicleMaintenanceManage.maintenanceDate
         item_to_update.maintenanceItems = vehicleMaintenanceManage.maintenanceItems
         item_to_update.maintenanceCost = vehicleMaintenanceManage.maintenanceCost
         item_to_update.maintenanceComment = vehicleMaintenanceManage.maintenanceComment
-        item_to_update.wastageManage = vehicleMaintenanceManage.wastageManage
-        item_to_update.trailerID = vehicleMaintenanceManage.trailerID
-        item_to_update.wastageCount = vehicleMaintenanceManage.wastageCount
+        # item_to_update.wastageManage = vehicleMaintenanceManage.wastageManage
+        # item_to_update.trailerID = vehicleMaintenanceManage.trailerID
+        # item_to_update.wastageCount = vehicleMaintenanceManage.wastageCount
 
         session.commit()
         session.close()

@@ -528,9 +528,10 @@ def editCustomPaymentInfo(request):
     customName = request.POST.get('customName')
     payTime = request.POST.get('payTime')
     payAmount = request.POST.get('payAmount')
+    # balance 为计算出来的值，所以这里是空，先用假数据
     balance = request.POST.get('balance')
 
-    customPaymentInfo = CustomPaymentInfo(customName=customName, payTime=payTime, payAmount=payAmount, balance=balance)
+    customPaymentInfo = CustomPaymentInfo(customName=customName, payTime=payTime, payAmount=payAmount, balance="100")
 
     if mode == 'add':
         newID = CustomPaymentInfoDBUtils.add(customPaymentInfo)
@@ -578,10 +579,10 @@ def editUser(request):
 
 # -------- For Business begin--------- #
 # 查询所有客户名称
-# @csrf_exempt
-# def getAllCustomNames(request):
-#     allCustomNames = ViewModelsDBUtils.getAllCustomNames()
-#     return JsonResponse({"allCustomNames": allCustomNames})
+@csrf_exempt
+def getAllCustomNames(request):
+    allCustomNames = SelectItemDataUtils.getAllCustomNames()
+    return JsonResponse({"allCustomNames": allCustomNames})
 #
 #
 # # 查询所有客户编号
@@ -628,12 +629,18 @@ def generatedSerialNumberForMaterialPurchase(request):
 #     return JsonResponse({"allTractorIDs": allTractorIDs})
 
 
-# # 查询所有挂车号
-# @csrf_exempt
-# def getTrailerIDs(request):
-#     allTrailerIDs = ViewModelsDBUtils.getTrailerIDs()
-#     return JsonResponse({"allTrailerIDs": allTrailerIDs})
-#
+# 查询所有挂车号
+@csrf_exempt
+def getTrailerIDs(request):
+    allTrailerIDs = SelectItemDataUtils.getAllTrailerIDs()
+    return JsonResponse({"allTrailerIDs": allTrailerIDs})
+
+
+# 查询所有挂车/拖车号
+@csrf_exempt
+def getAllVehicleIDs(request):
+    allVehicleIDs = SelectItemDataUtils.getAllVehicleIDs()
+    return JsonResponse({"allVehicleIDs": allVehicleIDs})
 #
 # # 查询所有司机名称
 # @csrf_exempt

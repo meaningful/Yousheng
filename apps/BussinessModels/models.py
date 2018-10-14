@@ -109,18 +109,12 @@ class SalesList(models.Model):
 
 
 class VehicleMaintenanceManage(models.Model):
-    salesListID = models.CharField(max_length=100)
     vehicleType = models.CharField(max_length=100)
     vehicleID = models.CharField(max_length=100)
     maintenanceDate = models.DateField()
     maintenanceItems = models.CharField(max_length=100)
     maintenanceCost = models.CharField(max_length=100)
     maintenanceComment = models.CharField(max_length=100)
-    wastageManage = models.CharField(max_length=100)
-    trailerID = models.CharField(max_length=100)
-    wastageCount = models.CharField(max_length=100)
-
-
 
 
 # wastageManage【损耗校验】
