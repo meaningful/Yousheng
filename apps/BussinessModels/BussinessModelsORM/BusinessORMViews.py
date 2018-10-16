@@ -143,7 +143,7 @@ class SalesListDBUtils(object):
         item_to_update.storageDate = salesList.storageDate
         item_to_update.comment = salesList.comment
         item_to_update.isInvoiced = salesList.isInvoiced
-        item_to_update.sStoraged = salesList.isStoraged
+        item_to_update.isStoraged = salesList.isStoraged
 
         session.commit()
         session.close()
@@ -193,8 +193,7 @@ class SalesListDBUtils(object):
     def queryAllSalesListByDate(cls, isInvoiced, fromDate, deadline):
         session = DBSession()
         if isInvoiced == SalesListDBUtils.IS_INVOICED_NA:
-            if __name__ == '__main__':
-                queryAll = session.query(SalesList).order_by(asc(SalesList.orderDate)).filter(
+            queryAll = session.query(SalesList).order_by(asc(SalesList.orderDate)).filter(
                     SalesList.orderDate >= fromDate,
                     SalesList.orderDate <= deadline).all()
         else:
@@ -452,16 +451,12 @@ class VehicleMaintenanceManageDBUtils(object):
         session = DBSession()
 
         item_to_update = session.query(VehicleMaintenanceManage).filter_by(id=updateId).first()
-        # item_to_update.salesListID = vehicleMaintenanceManage.salesListID
         item_to_update.vehicleType = vehicleMaintenanceManage.vehicleType
         item_to_update.vehicleID = vehicleMaintenanceManage.vehicleID
         item_to_update.maintenanceDate = vehicleMaintenanceManage.maintenanceDate
         item_to_update.maintenanceItems = vehicleMaintenanceManage.maintenanceItems
         item_to_update.maintenanceCost = vehicleMaintenanceManage.maintenanceCost
         item_to_update.maintenanceComment = vehicleMaintenanceManage.maintenanceComment
-        # item_to_update.wastageManage = vehicleMaintenanceManage.wastageManage
-        # item_to_update.trailerID = vehicleMaintenanceManage.trailerID
-        # item_to_update.wastageCount = vehicleMaintenanceManage.wastageCount
 
         session.commit()
         session.close()
