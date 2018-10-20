@@ -10,9 +10,10 @@
 """
 import datetime
 import json
-from sqlalchemy import Column, String, Integer, Date, create_engine, func, asc
+from sqlalchemy import Column, String, Integer, Date, create_engine, func, asc, desc
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from apps.AppUtils import DataUtils
 
 # 创建ORM对象的基类
 Base = declarative_base()
@@ -108,6 +109,15 @@ class SalesListDBUtils(object):
         session.add(salesList)
         session.flush()
         new_item_id = salesList.id
+
+        # 销售单入库时，更新最新余额
+        if salesList.isStoraged == SalesListDBUtils.IS_STORAGED_YES:
+            latestCustomPaymentInfo = session.query(CustomPaymentInfo).order_by(desc(CustomPaymentInfo.id)).filter(
+                CustomPaymentInfo.customName == salesList.customName).first()
+
+            latestCustomPaymentInfo.balance = DataUtils.strNumToDeciaml(
+                latestCustomPaymentInfo.balance) - DataUtils.countSaleListPrice(salesList.count, salesList.unitPrice)
+
         session.commit()
         session.close()
         return new_item_id
@@ -144,6 +154,14 @@ class SalesListDBUtils(object):
         item_to_update.comment = salesList.comment
         item_to_update.isInvoiced = salesList.isInvoiced
         item_to_update.isStoraged = salesList.isStoraged
+
+        # 销售单入库时，更新最新余额
+        if salesList.isStoraged == SalesListDBUtils.IS_STORAGED_YES:
+            latestCustomPaymentInfo = session.query(CustomPaymentInfo).order_by(desc(CustomPaymentInfo.id)).filter(
+                CustomPaymentInfo.customName == salesList.customName).first()
+
+            latestCustomPaymentInfo.balance = DataUtils.strNumToDeciaml(
+                latestCustomPaymentInfo.balance) - DataUtils.countSaleListPrice(salesList.count, salesList.unitPrice)
 
         session.commit()
         session.close()
@@ -190,17 +208,21 @@ class SalesListDBUtils(object):
         return allSalesList
 
     @classmethod
-    def queryAllSalesListByDate(cls, isInvoiced, fromDate, deadline):
+    def queryAllSalesListByDate(cls, fromDate, deadline):
         session = DBSession()
-        if isInvoiced == SalesListDBUtils.IS_INVOICED_NA:
-            queryAll = session.query(SalesList).order_by(asc(SalesList.orderDate)).filter(
-                    SalesList.orderDate >= fromDate,
-                    SalesList.orderDate <= deadline).all()
-        else:
-            queryAll = session.query(SalesList).order_by(asc(SalesList.orderDate)).filter(
-                    SalesList.isInvoiced == isInvoiced,
-                    SalesList.orderDate >= fromDate,
-                    SalesList.orderDate <= deadline).all()
+        # if isInvoiced == SalesListDBUtils.IS_INVOICED_NA:
+        #     queryAll = session.query(SalesList).order_by(asc(SalesList.orderDate)).filter(
+        #             SalesList.orderDate >= fromDate,
+        #             SalesList.orderDate <= deadline).all()
+        # else:
+        #     queryAll = session.query(SalesList).order_by(asc(SalesList.orderDate)).filter(
+        #             SalesList.isInvoiced == isInvoiced,
+        #             SalesList.orderDate >= fromDate,
+        #             SalesList.orderDate <= deadline).all()
+        queryAll = session.query(SalesList).order_by(asc(SalesList.orderDate)).filter(
+            SalesList.isStoraged == SalesListDBUtils.IS_STORAGED_YES,
+            SalesList.orderDate >= fromDate,
+            SalesList.orderDate <= deadline).all()
 
         allSalesList = []
         for item in queryAll:
@@ -563,6 +585,18 @@ class CustomPaymentInfoDBUtils(object):
         if not isinstance(customPaymentInfo, CustomPaymentInfo):
             raise TypeError('The parameter customPaymentInfo is not instance of the CustomPaymentInfo instance')
         session = DBSession()
+
+        queryAllSaleList = session.query(SalesList).filter(SalesList.customName == customPaymentInfo.customName,
+                                                           SalesList.isStoraged == SalesListDBUtils.IS_STORAGED_YES).all()
+
+        queryAllCustomPaymentInfo = session.query(CustomPaymentInfo).filter(
+            CustomPaymentInfo.customName == customPaymentInfo.customName).all()
+
+        # 充值时计算余额
+        customPaymentInfo.balance = DataUtils.strNumToDeciaml(
+            customPaymentInfo.payAmount) + BusinessViewUtils.getTotalOfPayAmount(
+            queryAllCustomPaymentInfo) - BusinessViewUtils.getTotalOfAllSalelist(queryAllSaleList)
+
         session.add(customPaymentInfo)
         session.flush()
         new_item_id = customPaymentInfo.id
@@ -588,7 +622,18 @@ class CustomPaymentInfoDBUtils(object):
         item_to_update.customName = customPaymentInfo.customName
         item_to_update.payTime = customPaymentInfo.payTime
         item_to_update.payAmount = customPaymentInfo.payAmount
-        item_to_update.balance = customPaymentInfo.balance
+        # item_to_update.balance = customPaymentInfo.balance
+
+        queryAllSaleList = session.query(SalesList).filter(SalesList.customName == customPaymentInfo.customName,
+                                                           SalesList.isStoraged == SalesListDBUtils.IS_STORAGED_YES).all()
+
+        queryAllCustomPaymentInfo = session.query(CustomPaymentInfo).filter(
+            CustomPaymentInfo.customName == customPaymentInfo.customName).all()
+
+        # 充值时计算(更新)余额
+        item_to_update.balance = DataUtils.strNumToDeciaml(
+            customPaymentInfo.payAmount) + BusinessViewUtils.getTotalOfPayAmount(
+            queryAllCustomPaymentInfo[:-1]) - BusinessViewUtils.getTotalOfAllSalelist(queryAllSaleList)
 
         session.commit()
         session.close()
@@ -597,6 +642,23 @@ class CustomPaymentInfoDBUtils(object):
     def queryAll(cls):
         session = DBSession()
         queryAll = session.query(CustomPaymentInfo).all()
+        allCustomPaymentInfo = []
+        for item in queryAll:
+            customPaymentInfo_json = json.dumps(object2dict(item), cls=DateEncoder)
+            customPaymentInfo = json.loads(customPaymentInfo_json)
+            allCustomPaymentInfo.append(customPaymentInfo)
+        session.close()
+        return allCustomPaymentInfo
+
+    @classmethod
+    def queryAllByCustomName(cls, customName):
+        session = DBSession()
+        if "ALL" == customName:
+            queryAll = session.query(CustomPaymentInfo).order_by(desc(CustomPaymentInfo.payTime)).all()
+        else:
+            queryAll = session.query(CustomPaymentInfo).order_by(desc(CustomPaymentInfo.payTime)).filter(
+                CustomPaymentInfo.customName == customName).all()
+
         allCustomPaymentInfo = []
         for item in queryAll:
             customPaymentInfo_json = json.dumps(object2dict(item), cls=DateEncoder)
@@ -625,3 +687,24 @@ class BusinessViewUtils(object):
         dateFromTo.append(latestStorageDate[0][0])
 
         return dateFromTo
+
+    @classmethod
+    def getTotalOfAllSalelist(cls, queryAll):
+        allSaleListTotal = []
+        for item in queryAll:
+            salesList_json = json.dumps(object2dict(item), cls=DateEncoder)
+            salesList = json.loads(salesList_json)
+            total = DataUtils.countSaleListPrice(salesList.get("count"), salesList.get("unitPrice"))
+            allSaleListTotal.append(total)
+        return sum(allSaleListTotal)
+
+    @classmethod
+    def getTotalOfPayAmount(cls, queryAll):
+        allCustomPaymentInfo = []
+        for item in queryAll:
+            customPaymentInfo_json = json.dumps(object2dict(item), cls=DateEncoder)
+            customPaymentInfo = json.loads(customPaymentInfo_json)
+            total = DataUtils.strNumToDeciaml(customPaymentInfo.get("payAmount"))
+            allCustomPaymentInfo.append(total)
+        return sum(allCustomPaymentInfo)
+

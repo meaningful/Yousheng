@@ -109,6 +109,12 @@ def customPaymentInfo(request):
     return render(request, "customPaymentInfo.html", {'showData': json.dumps(allCustomPaymentInfo)})
 
 
+# 客户余额信息
+def customBalanceInfo(request):
+    allCustomPaymentInfo = CustomPaymentInfoDBUtils.queryAll()
+    return render(request, "customBalanceInfo.html", {'showData': json.dumps(allCustomPaymentInfo)})
+
+
 # 用户管理
 def userManage(request):
     allUsers = UserDBUtils.queryAll()
@@ -133,6 +139,12 @@ def searchForCustomerBillList(request):
     return JsonResponse({'showData': json.dumps(allSalesList)})
 
 
+def searchCustomerBalanceInfo(request):
+    customName = request.GET.get("customName")
+    allCustomBalanceInfo = CustomPaymentInfoDBUtils.queryAllByCustomName(customName)
+    return JsonResponse({'showData': json.dumps(allCustomBalanceInfo)})
+
+
 # 销售报表
 def salesListReport(request):
     return render(request, "salesListReport.html")
@@ -142,16 +154,16 @@ def salesListReport(request):
 def searchSalesListByDate(request):
     fromDate = request.GET.get("fromDate")
     deadline = request.GET.get("deadline")
-    invoiced = request.GET.get("invoiced")
-    isInvoiced = ""
-    if invoiced == SalesListDBUtils.IS_INVOICED_YES:
-        isInvoiced = SalesListDBUtils.IS_INVOICED_YES
-    elif invoiced == SalesListDBUtils.IS_INVOICED_NO:
-        isInvoiced = SalesListDBUtils.IS_INVOICED_NO
-    else:
-        isInvoiced = SalesListDBUtils.IS_INVOICED_NA
+    #invoiced = request.GET.get("invoiced")
+    #isInvoiced = ""
+    # if invoiced == SalesListDBUtils.IS_INVOICED_YES:
+    #     isInvoiced = SalesListDBUtils.IS_INVOICED_YES
+    # elif invoiced == SalesListDBUtils.IS_INVOICED_NO:
+    #     isInvoiced = SalesListDBUtils.IS_INVOICED_NO
+    # else:
+    #     isInvoiced = SalesListDBUtils.IS_INVOICED_NA
 
-    allSalesList = SalesListDBUtils.queryAllSalesListByDate(isInvoiced, fromDate, deadline)
+    allSalesList = SalesListDBUtils.queryAllSalesListByDate(fromDate, deadline)
     return JsonResponse({'showData': json.dumps(allSalesList)})
 
 
@@ -375,7 +387,7 @@ def editSalesList(request):
     # salesListID = request.POST.get('salesListID')
     customName = request.POST.get('customName')
     customID = request.POST.get('customID')
-    purchaseID = request.POST.get('purchaseID')
+    purchaseID = "NA"
     category = request.POST.get('category')
     tractorID = request.POST.get('tractorID')
     trailerID = request.POST.get('trailerID')
@@ -387,7 +399,7 @@ def editSalesList(request):
     orderDate = request.POST.get('orderDate')
     storageDate = request.POST.get('storageDate')
     comment = request.POST.get('comment')
-    isInvoiced = request.POST.get('isInvoiced')
+    isInvoiced = "NA"
     isStoraged = request.POST.get('isStoraged')
 
     if mode == 'add':
@@ -531,7 +543,7 @@ def editCustomPaymentInfo(request):
     # balance 为计算出来的值，所以这里是空，先用假数据
     balance = request.POST.get('balance')
 
-    customPaymentInfo = CustomPaymentInfo(customName=customName, payTime=payTime, payAmount=payAmount, balance="100")
+    customPaymentInfo = CustomPaymentInfo(customName=customName, payTime=payTime, payAmount=payAmount, balance="0")
 
     if mode == 'add':
         newID = CustomPaymentInfoDBUtils.add(customPaymentInfo)
@@ -544,13 +556,6 @@ def editCustomPaymentInfo(request):
     if mode == 'edit' and editId:
         CustomPaymentInfoDBUtils.update(editId, customPaymentInfo)
         return HttpResponse("OK")
-
-
-# def monthWastage(request):
-#     return render(request,"monthWastage.html")
-#
-# def saleform(request):
-#     return render(request,"saleform.html")
 
 
 @csrf_exempt
@@ -577,7 +582,6 @@ def editUser(request):
         return HttpResponse("OK")
 
 
-# -------- For Business begin--------- #
 # 查询所有客户名称
 @csrf_exempt
 def getAllCustomNames(request):
@@ -689,4 +693,3 @@ def getAllSelectItemDataForMaterialPurchase(request):
                          "allDriverNames": allSelectItemDatas["allDriverNames"],
                          "allSupercargoNames": allSelectItemDatas["allSupercargoNames"]})
 
-# -------- For Business end--------- #

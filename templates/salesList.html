@@ -142,8 +142,8 @@
                 shrinkToFit: true,
                 rowNum: 20,
                 rowList: [10, 20, 30],
-                colNames: ["销售单编号(日期时间+流水号)", "客户名称", "客户编号", "采购单编号", "品种", "拖车号", "挂车号", "司机", "押运员", "数量(吨/立方米)(默认显示挂车余量)",
-                    "单价", "码表公里数", "下单日期(格式:2018-01-01)", "入库日期(格式:2018-01-01)", "备注", "是否已开发票", "本单是否入库"],
+                colNames: ["销售单编号", "客户名称", "客户编号", "品种", "拖车号", "挂车号", "司机", "押运员", "数量(吨)",
+                    "单价", "码表公里数", "下单日期", "入库日期", "备注", "本单是否入库"],
                 colModel: [
                     {
                         name: "salesListID",
@@ -174,7 +174,7 @@
                         edittype: "select",
                         editoptions: {value: jobj_allCustomIDs}
                     },
-                    {name: "purchaseID", index: "purchaseID", editable: true, width: 100},
+                    // {name: "purchaseID", index: "purchaseID", editable: true, width: 100},
                     {
                         name: "category",
                         index: "category",
@@ -239,15 +239,15 @@
                         formatter: "date"
                     },
                     {name: "comment", index: "comment", editable: true, width: 100, sortable: false},
-                    {
-                        name: "isInvoiced",
-                        index: "isInvoiced",
-                        editable: true,
-                        width: 100,
-                        sortable: false,
-                        edittype: "select",
-                        editoptions: {value: jobj_YesOrNO}
-                    },
+                    //{
+                    //    name: "isInvoiced",
+                    //    index: "isInvoiced",
+                    //    editable: true,
+                    //    width: 100,
+                    //   sortable: false,
+                    //   edittype: "select",
+                    //    editoptions: {value: jobj_YesOrNO}
+                    // },
                     {
                         name: "isStoraged",
                         index: "isStoraged",

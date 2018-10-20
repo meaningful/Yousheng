@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-    <title>客户充值</title>
+    <title>客户余额信息</title>
 
     <link rel="shortcut icon" href="favicon.ico">
     <link href="{% static "css/bootstrap.min14ed.css" %}?v=3.3.6" rel="stylesheet">
@@ -17,12 +17,15 @@
 </head>
 <body>
 <div class="wrapper wrapper-content animated fadeInRight">
-    <!-- 客户充值信息 -->
+    <!-- 客户余额信息 -->
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>客户充值</h5>
+                    <div>
+                        客户单位名称: <select id="customName" style="width: 150px"> </select>
+                        <button style="width: 100px" onclick="search()">查询</button>
+                    </div>
                 </div>
                 <div class="ibox-content">
                     <div class="jqGrid_wrapper">
@@ -42,72 +45,77 @@
 <script src="{% static "js/plugins/jqgrid/jquery.jqGrid.minffe4.js" %}?0820"></script>
 
 <script type="text/javascript">
+    function handleData(item) {
+        var data = item.substring(1, item.length - 1);
+        var str = data.replace(/\"/g, "")
+        var strArr = str.split(",")
+        return strArr
+    }
 
     function decodeUnicode(str) {
         str = str.replace(/\\/g, "%");
         return unescape(str);
     }
 
-    function handleDataWithReplace(item) {
-        var jobj_allData = ""
-        var data = item.substring(1, item.length - 1);
-        var str = data.replace(/\"/g, "")
-        var strArr = str.split(",")
-        for (var i = 0; i < strArr.length; i++) {
-            var str_item = decodeUnicode($.trim(strArr[i]))
-            if (i != strArr.length - 1) {
-                jobj_allData += str_item + ":" + str_item + ";";
-            } else {
-                jobj_allData += str_item + ":" + str_item;
-            }
-        }
-        return jobj_allData
-    }
-
-    function getAllCustomNames() {
-        var allCustomNames = "";
+    function initSelectOptions() {
         $.ajax({
             type: "get",
-            async: false,
+            async: true,
             url: "./getAllCustomNames",
             dataType: "json",
             success: function (result) {
                 // 解析客户名称
-                allCustomNames = handleDataWithReplace(result.allCustomNames);
+                strArr = handleData(result.allCustomNames);
+                $("#customName").html(""); //绑定客户名称下拉菜单
+                $("#customName").append($("<option value=\"ALL\"> 所有客户 </option>"));
+                for (var i = 0; i < strArr.length; i++) {
+                    $("#customName").append($("<option value=\"" + decodeUnicode($.trim(strArr[i])) + "\">" + decodeUnicode($.trim(strArr[i])) + "</option>"));
+                }
             }
         });
-        return allCustomNames;
-
     }
 
-    function InitCustomerManageGrid(parameters) {
-        $.jgrid.defaults.styleUI = "Bootstrap";
-        var mydata = {{ showData|safe }};
+    function search() {
+        var customName = $(" #customName ").val();
+        $.ajax({
+            type: "get",
+            async: false,
+            data: {customName: customName},
+            url: "./searchCustomerBalanceInfo",
+            dataType: "json",
+            success: function (result) {
+                console.log(result.showData)
+                //清除旧数据
+                $("#table_list_2").jqGrid("clearGridData");
+                //显示新的数据
+                showData(eval('(' + result.showData + ')'));
+            }
+        });
+    }
 
+    function showData(jqdata) {
+        $.jgrid.defaults.styleUI = "Bootstrap";
         $("#table_list_2").jqGrid(
             {
-                data: mydata,
-                datatype: "local",
+                datatype: "json",
                 height: 450,
                 autowidth: true,
                 shrinkToFit: true,
                 rowNum: 20,
                 rowList: [10, 20, 30],
-                colNames: ["客户单位名称", "充值日期", "充值金额(元)"],
+                colNames: ["客户单位名称", "充值日期", "充值金额(元)", "余额(元)"],
                 colModel: [
                     {
                         name: "customName",
                         index: "customName",
-                        editable: true,
+                        editable: false,
                         width: 100,
-                        sortable: false,
-                        edittype: "select",
-                        editoptions: {value: getAllCustomNames()}
+                        sortable: true,
                     },
                     {
                         name: "payTime",
                         index: "payTime",
-                        editable: true,
+                        editable: false,
                         width: 100,
                         sorttype: "date",
                         formatter: "date"
@@ -115,71 +123,37 @@
                     {
                         name: "payAmount",
                         index: "payAmount",
-                        editable: true,
+                        editable: false,
                         width: 100,
-                        sortable: true,
-                        formatter: "integer",
-                        formatoptions: {defaultValue: '0'}
+                        sortable: false,
+
                     },
-                    //{name: "balance", index: "balance", editable: false, width: 100, sortable: false},
+                    {name: "balance", index: "balance", editable: false, width: 100, sortable: false},
                 ],
                 pager: "#pager_list_2",
                 viewrecords: true,
-                caption: "客户充值",
+                caption: "客户余额信息",
                 add: true,
                 edit: true,
                 addtext: "Add",
                 edittext: "Edit",
                 hidegrid: false,
-                editurl: "./editCustomPaymentInfo",
+
             });
 
-        $("#table_list_2").jqGrid("navGrid", "#pager_list_2", {edit: true, add: true, del: false, search: false},
-            {
-                modal: true,
-                jqModal: true,
-                reloadAfterSubmit: false,
-                closeAfterEdit: true,
-                afterSubmit: function (response, postdata) {
-                    if (response.status == "200") {
-                        alert("修改成功!")
-                        return [true]
-                    } else {
-                        alert("修改失败!")
-                        return [false]
-                    }
-                }
-            },
-            {
-                modal: true,
-                jqModal: true,
-                reloadAfterSubmit: false,
-                closeAfterAdd: true,
-                afterSubmit: function (response, postdata) {
+        for (var i = 0; i <= jqdata.length; i++) {
+            jQuery("#table_list_2").jqGrid('addRowData', i + 1, jqdata[i]);
+        }
 
-                    if (response.status == "200") {
-                        var newItem = JSON.parse(response.responseText);
-                        alert("添加成功!");
-                        return [true, "", newItem.new_id.toString()]
-
-                    } else {
-                        alert("添加失败!")
-                        return [false]
-                    }
-                },
-            },
-            {},
-            {},
-        );
         $(window).bind("resize", function () {
             var width = $(".jqGrid_wrapper").width();
             $("#table_list_2").setGridWidth(width)
         });
+    }
 
-    };
 
     $(document).ready(function () {
-        InitCustomerManageGrid();
+        initSelectOptions();
     });
 
 

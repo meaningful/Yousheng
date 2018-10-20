@@ -13,7 +13,6 @@ import json
 from sqlalchemy import Column, String, Integer, Date, create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base, DeclarativeMeta
-
 # 创建ORM对象的基类
 Base = declarative_base()
 
@@ -155,6 +154,7 @@ class CustomerManageDBUtils(object):
         item_to_update.companyContact = customer.companyContact
         item_to_update.customQualification = customer.customQualification
         item_to_update.annualSales = customer.annualSales
+
         session.commit()
         session.close()
 

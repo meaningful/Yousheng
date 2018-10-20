@@ -20,18 +20,19 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>销售单报表 -- 按时间段筛选</h5>
+{#                    <h5>销售单报表 -- 按时间段筛选</h5>#}
                     <div>
+                        按照时间段查询已入库的销售单：
                         下单日期 From: <input id="fromDate" type="text"> To: <input id="deadline" type="text">
-                        是否已开发票：
-                        <select id="invoiced" name="invoiced">
-                            <option value="NA" selected="selected"> NA</option>
-                            <option value="否"> 否</option>
-                            <option value="是"> 是</option>
-                             
-                        </select>
 
-                        <button onclick="searchByDate()">搜索</button>
+                        {#                        <select id="invoiced" name="invoiced">#}
+                        {#                            <option value="NA" selected="selected"> NA</option>#}
+                        {#                            <option value="否"> 否</option>#}
+                        {#                            <option value="是"> 是</option>#}
+                        {#                             #}
+                        {#                        </select>#}
+
+                        <button onclick="searchByDate()">查询</button>
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -57,11 +58,11 @@
     function searchByDate() {
         var fromDate = $(" #fromDate ").val();
         var deadline = $(" #deadline ").val();
-        var invoiced = $(" #invoiced ").val();
+        //var invoiced = $(" #invoiced ").val();
         $.ajax({
             type: "get",
             async: false,
-            data: {fromDate: fromDate, deadline: deadline, invoiced: invoiced},
+            data: {fromDate: fromDate, deadline: deadline},
             url: "./searchSalesListByDate",
             dataType: "json",
             success: function (result) {
@@ -83,13 +84,13 @@
                 shrinkToFit: true,
                 rowNum: 20,
                 rowList: [10, 20, 30],
-                colNames: ["销售单编号(日期时间+流水号)", "客户名称", "客户编号", "采购单编号", "品种", "拖车号", "挂车号", "司机", "押运员", "数量(吨/立方米)(默认显示挂车余量)",
-                    "单价", "码表公里数", "下单日期(格式:2018-01-01)", "入库日期(格式:2018-01-01)", "备注", "是否已开发票", "本单是否入库"],
+                colNames: ["销售单编号(日期时间+流水号)", "客户名称", "客户编号", "品种", "拖车号", "挂车号", "司机", "押运员", "数量(吨)",
+                    "单价", "码表公里数", "下单日期", "入库日期", "备注", "本单是否入库"],
                 colModel: [
                     {name: "salesListID", index: "salesListID", editable: false, width: 100, sortable: false},
                     {name: "customName", index: "customName", editable: false, width: 100, sortable: false},
                     {name: "customID", index: "customID", editable: false, width: 100, sortable: false},
-                    {name: "purchaseID", index: "purchaseID", editable: false, width: 100, sortable: false},
+                    //{name: "purchaseID", index: "purchaseID", editable: false, width: 100, sortable: false},
                     {name: "category", index: "category", editable: false, width: 100, sortable: false},
                     {name: "tractorID", index: "tractorID", editable: false, width: 100, sortable: false},
                     {name: "trailerID", index: "trailerID", editable: false, width: 100, sortable: false},
@@ -115,11 +116,11 @@
                         formatter: "date"
                     },
                     {name: "comment", index: "comment", editable: false, width: 100, sortable: false},
-                    {name: "isInvoiced", index: "isInvoiced", editable: false, width: 100, sortable: false},
+                    // {name: "isInvoiced", index: "isInvoiced", editable: false, width: 100, sortable: false},
                     {name: "isStoraged", index: "isStoraged", editable: false, width: 100, sortable: false}],
                 pager: "#pager_list_2",
                 viewrecords: true,
-                caption: "已入库的销售单-不可编辑",
+                caption: "温馨提示：已入库的销售单不可编辑修改",
                 add: false,
                 edit: false,
                 hidegrid: false,
@@ -129,6 +130,10 @@
         for (var i = 0; i <= jqdata.length; i++) {
             jQuery("#table_list_2").jqGrid('addRowData', i + 1, jqdata[i]);
         }
+        $(window).bind("resize", function () {
+            var width = $(".jqGrid_wrapper").width();
+            $("#table_list_2").setGridWidth(width)
+        });
     }
 </script>
 
