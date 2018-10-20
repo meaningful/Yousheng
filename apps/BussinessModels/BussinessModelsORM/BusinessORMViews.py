@@ -112,7 +112,8 @@ class SalesListDBUtils(object):
 
         # 销售单入库时，更新最新余额
         if salesList.isStoraged == SalesListDBUtils.IS_STORAGED_YES:
-            latestCustomPaymentInfo = session.query(CustomPaymentInfo).order_by(desc(CustomPaymentInfo.id)).filter(
+            latestCustomPaymentInfo = session.query(CustomPaymentInfo).order_by(desc(CustomPaymentInfo.payTime),
+                                                                                desc(CustomPaymentInfo.id)).filter(
                 CustomPaymentInfo.customName == salesList.customName).first()
 
             latestCustomPaymentInfo.balance = DataUtils.strNumToDeciaml(
@@ -157,7 +158,8 @@ class SalesListDBUtils(object):
 
         # 销售单入库时，更新最新余额
         if salesList.isStoraged == SalesListDBUtils.IS_STORAGED_YES:
-            latestCustomPaymentInfo = session.query(CustomPaymentInfo).order_by(desc(CustomPaymentInfo.id)).filter(
+            latestCustomPaymentInfo = session.query(CustomPaymentInfo).order_by(desc(CustomPaymentInfo.payTime),
+                                                                                desc(CustomPaymentInfo.id)).filter(
                 CustomPaymentInfo.customName == salesList.customName).first()
 
             latestCustomPaymentInfo.balance = DataUtils.strNumToDeciaml(
@@ -585,21 +587,25 @@ class CustomPaymentInfoDBUtils(object):
         if not isinstance(customPaymentInfo, CustomPaymentInfo):
             raise TypeError('The parameter customPaymentInfo is not instance of the CustomPaymentInfo instance')
         session = DBSession()
-
-        queryAllSaleList = session.query(SalesList).filter(SalesList.customName == customPaymentInfo.customName,
-                                                           SalesList.isStoraged == SalesListDBUtils.IS_STORAGED_YES).all()
-
-        queryAllCustomPaymentInfo = session.query(CustomPaymentInfo).filter(
-            CustomPaymentInfo.customName == customPaymentInfo.customName).all()
-
-        # 充值时计算余额
-        customPaymentInfo.balance = DataUtils.strNumToDeciaml(
-            customPaymentInfo.payAmount) + BusinessViewUtils.getTotalOfPayAmount(
-            queryAllCustomPaymentInfo) - BusinessViewUtils.getTotalOfAllSalelist(queryAllSaleList)
-
         session.add(customPaymentInfo)
         session.flush()
         new_item_id = customPaymentInfo.id
+        # 所有销售单价格总和
+        queryAllSaleList = session.query(SalesList).filter(SalesList.customName == customPaymentInfo.customName,
+                                                           SalesList.isStoraged == SalesListDBUtils.IS_STORAGED_YES).all()
+        # 所有充值总额
+        queryAllCustomPaymentInfo = session.query(CustomPaymentInfo).filter(
+            CustomPaymentInfo.customName == customPaymentInfo.customName).all()
+
+        # 最近充值记录
+        latestCustomPaymentInfo = session.query(CustomPaymentInfo).order_by(desc(CustomPaymentInfo.payTime),
+                                                                            (CustomPaymentInfo.id)).filter(
+            CustomPaymentInfo.customName == customPaymentInfo.customName).first()
+
+        # 充值时计算并更新最近充值记录的余额
+        latestCustomPaymentInfo.balance = BusinessViewUtils.getTotalOfPayAmount(
+            queryAllCustomPaymentInfo) - BusinessViewUtils.getTotalOfAllSalelist(queryAllSaleList)
+
         session.commit()
         session.close()
         return new_item_id
@@ -617,23 +623,27 @@ class CustomPaymentInfoDBUtils(object):
         if not isinstance(customPaymentInfo, CustomPaymentInfo):
             raise TypeError('The parameter customPaymentInfo is not instance of the CustomPaymentInfo instance')
         session = DBSession()
-
         item_to_update = session.query(CustomPaymentInfo).filter_by(id=updateId).first()
         item_to_update.customName = customPaymentInfo.customName
         item_to_update.payTime = customPaymentInfo.payTime
         item_to_update.payAmount = customPaymentInfo.payAmount
         # item_to_update.balance = customPaymentInfo.balance
-
+        session.flush()
+        # 所有销售单价格总和
         queryAllSaleList = session.query(SalesList).filter(SalesList.customName == customPaymentInfo.customName,
                                                            SalesList.isStoraged == SalesListDBUtils.IS_STORAGED_YES).all()
-
+        # 所有充值总额
         queryAllCustomPaymentInfo = session.query(CustomPaymentInfo).filter(
             CustomPaymentInfo.customName == customPaymentInfo.customName).all()
 
-        # 充值时计算(更新)余额
-        item_to_update.balance = DataUtils.strNumToDeciaml(
-            customPaymentInfo.payAmount) + BusinessViewUtils.getTotalOfPayAmount(
-            queryAllCustomPaymentInfo[:-1]) - BusinessViewUtils.getTotalOfAllSalelist(queryAllSaleList)
+        # 最近充值记录
+        latestCustomPaymentInfo = session.query(CustomPaymentInfo).order_by(desc(CustomPaymentInfo.payTime),
+                                                                            (CustomPaymentInfo.id)).filter(
+            CustomPaymentInfo.customName == customPaymentInfo.customName).first()
+
+        # 充值时计算并更新最近充值记录的余额
+        latestCustomPaymentInfo.balance = BusinessViewUtils.getTotalOfPayAmount(
+            queryAllCustomPaymentInfo) - BusinessViewUtils.getTotalOfAllSalelist(queryAllSaleList)
 
         session.commit()
         session.close()
@@ -651,19 +661,19 @@ class CustomPaymentInfoDBUtils(object):
         return allCustomPaymentInfo
 
     @classmethod
-    def queryAllByCustomName(cls, customName):
+    def queryAllLatestByCustomName(cls, customName):
         session = DBSession()
-        if "ALL" == customName:
-            queryAll = session.query(CustomPaymentInfo).order_by(desc(CustomPaymentInfo.payTime)).all()
-        else:
-            queryAll = session.query(CustomPaymentInfo).order_by(desc(CustomPaymentInfo.payTime)).filter(
-                CustomPaymentInfo.customName == customName).all()
-
         allCustomPaymentInfo = []
-        for item in queryAll:
-            customPaymentInfo_json = json.dumps(object2dict(item), cls=DateEncoder)
+
+        latestCustomPaymentInfo = session.query(CustomPaymentInfo).order_by(desc(CustomPaymentInfo.payTime),
+                                                                            desc(CustomPaymentInfo.id)).filter(
+            CustomPaymentInfo.customName == customName).first()
+
+        if latestCustomPaymentInfo:
+            customPaymentInfo_json = json.dumps(object2dict(latestCustomPaymentInfo), cls=DateEncoder)
             customPaymentInfo = json.loads(customPaymentInfo_json)
             allCustomPaymentInfo.append(customPaymentInfo)
+
         session.close()
         return allCustomPaymentInfo
 
@@ -707,4 +717,3 @@ class BusinessViewUtils(object):
             total = DataUtils.strNumToDeciaml(customPaymentInfo.get("payAmount"))
             allCustomPaymentInfo.append(total)
         return sum(allCustomPaymentInfo)
-

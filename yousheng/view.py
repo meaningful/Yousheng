@@ -141,7 +141,7 @@ def searchForCustomerBillList(request):
 
 def searchCustomerBalanceInfo(request):
     customName = request.GET.get("customName")
-    allCustomBalanceInfo = CustomPaymentInfoDBUtils.queryAllByCustomName(customName)
+    allCustomBalanceInfo = CustomPaymentInfoDBUtils.queryAllLatestByCustomName(customName)
     return JsonResponse({'showData': json.dumps(allCustomBalanceInfo)})
 
 

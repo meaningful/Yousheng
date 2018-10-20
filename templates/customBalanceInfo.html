@@ -67,7 +67,7 @@
                 // 解析客户名称
                 strArr = handleData(result.allCustomNames);
                 $("#customName").html(""); //绑定客户名称下拉菜单
-                $("#customName").append($("<option value=\"ALL\"> 所有客户 </option>"));
+                //$("#customName").append($("<option value=\"ALL\"> 所有客户 </option>"));
                 for (var i = 0; i < strArr.length; i++) {
                     $("#customName").append($("<option value=\"" + decodeUnicode($.trim(strArr[i])) + "\">" + decodeUnicode($.trim(strArr[i])) + "</option>"));
                 }
@@ -103,7 +103,7 @@
                 shrinkToFit: true,
                 rowNum: 20,
                 rowList: [10, 20, 30],
-                colNames: ["客户单位名称", "充值日期", "充值金额(元)", "余额(元)"],
+                colNames: ["客户单位名称", "最近充值日期", "最近充值金额(元)", "当前余额(元)"],
                 colModel: [
                     {
                         name: "customName",
@@ -132,7 +132,7 @@
                 ],
                 pager: "#pager_list_2",
                 viewrecords: true,
-                caption: "客户余额信息",
+                caption: "客户最新余额信息",
                 add: true,
                 edit: true,
                 addtext: "Add",
