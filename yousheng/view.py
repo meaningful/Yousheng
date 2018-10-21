@@ -1,10 +1,14 @@
 from django.shortcuts import render
 from apps.AppUtils import EncodeUtils, LoginUtils
 import json
-from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManage, GasManage, CustomerManage, TrailerManage, Supplier, TractorManage, User
-from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManageDBUtils, GasManageDBUtils, CustomerManageDBUtils, TrailerManageDBUtils, SupplierDBUtils, TractorManageDBUtils, UserDBUtils
-from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesList, MaterialPurchase, VehicleMaintenanceManage, WastageManage, CustomPaymentInfo
-from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesListDBUtils, MaterialPurchaseDBUtils, VehicleMaintenanceManageDBUtils, WastageManageDBUtils, CustomPaymentInfoDBUtils
+from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManage, GasManage, CustomerManage, TrailerManage, Supplier, \
+    TractorManage, User
+from apps.BaseModels.BaseModelsORM.BaseORMViews import StaffManageDBUtils, GasManageDBUtils, CustomerManageDBUtils, \
+    TrailerManageDBUtils, SupplierDBUtils, TractorManageDBUtils, UserDBUtils
+from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesList, MaterialPurchase, \
+    VehicleMaintenanceManage, WastageManage, CustomPaymentInfo
+from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesListDBUtils, MaterialPurchaseDBUtils, \
+    VehicleMaintenanceManageDBUtils, WastageManageDBUtils, CustomPaymentInfoDBUtils
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
 from apps.BusinessUtils import ViewModelsDBUtils, SelectItemDataUtils
@@ -154,8 +158,8 @@ def salesListReport(request):
 def searchSalesListByDate(request):
     fromDate = request.GET.get("fromDate")
     deadline = request.GET.get("deadline")
-    #invoiced = request.GET.get("invoiced")
-    #isInvoiced = ""
+    # invoiced = request.GET.get("invoiced")
+    # isInvoiced = ""
     # if invoiced == SalesListDBUtils.IS_INVOICED_YES:
     #     isInvoiced = SalesListDBUtils.IS_INVOICED_YES
     # elif invoiced == SalesListDBUtils.IS_INVOICED_NO:
@@ -179,6 +183,20 @@ def searchMaterialPurchaseByDate(request):
     allMaterialPurchase = MaterialPurchaseDBUtils.queryAllMaterialPurchaseByDate(
         MaterialPurchaseDBUtils.IS_STORAGED_YES, fromDate, deadline)
     return JsonResponse({'showData': json.dumps(allMaterialPurchase)})
+
+
+# 月损耗列表
+def monthWastage(request):
+    return render(request, "monthWastage.html")
+
+
+def searchMonthWastage(request):
+    trailerID = request.GET.get("trailerID")
+    fromDate = request.GET.get("fromDate")
+    deadline = request.GET.get("deadline")
+
+    allMonthWastage = WastageManageDBUtils.queryMonthWastage(trailerID, fromDate, deadline)
+    return JsonResponse({'showData': json.dumps(allMonthWastage)})
 
 
 @csrf_exempt
@@ -516,8 +534,11 @@ def editWastageManage(request):
     editId = request.POST.get('id')
     trailerID = request.POST.get('trailerID')
     wastageCount = request.POST.get('wastageCount')
+    checkDate = request.POST.get('checkDate')
+    wastageRatio = "NA"
 
-    wastageManage = WastageManage(trailerID=trailerID, wastageCount=wastageCount)
+    wastageManage = WastageManage(trailerID=trailerID, wastageCount=wastageCount, checkDate=checkDate,
+                                  wastageRatio=wastageRatio)
 
     if mode == 'add':
         newID = WastageManageDBUtils.add(wastageManage)
@@ -587,6 +608,8 @@ def editUser(request):
 def getAllCustomNames(request):
     allCustomNames = SelectItemDataUtils.getAllCustomNames()
     return JsonResponse({"allCustomNames": allCustomNames})
+
+
 #
 #
 # # 查询所有客户编号
@@ -645,6 +668,8 @@ def getTrailerIDs(request):
 def getAllVehicleIDs(request):
     allVehicleIDs = SelectItemDataUtils.getAllVehicleIDs()
     return JsonResponse({"allVehicleIDs": allVehicleIDs})
+
+
 #
 # # 查询所有司机名称
 # @csrf_exempt
@@ -684,12 +709,13 @@ def getAllSelectItemDataForSaleList(request):
 # 获取采购单 Select item 的数据
 @csrf_exempt
 def getAllSelectItemDataForMaterialPurchase(request):
+    serialNo = ViewModelsDBUtils.generated_serial_number_for_material_purchase()
     allSelectItemDatas = SelectItemDataUtils.getAllSelectItemDataForMaterialPurchase()
 
-    return JsonResponse({"allSupplierNames": allSelectItemDatas["allSupplierNames"],
+    return JsonResponse({"serialNo": serialNo,
+                         "allSupplierNames": allSelectItemDatas["allSupplierNames"],
                          "allGasNames": allSelectItemDatas["allGasNames"],
                          "allTractorIDs": allSelectItemDatas["allTractorIDs"],
                          "allTrailerIDs": allSelectItemDatas["allTrailerIDs"],
                          "allDriverNames": allSelectItemDatas["allDriverNames"],
                          "allSupercargoNames": allSelectItemDatas["allSupercargoNames"]})
-

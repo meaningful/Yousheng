@@ -52,6 +52,8 @@ urlpatterns = [
     url(r'^editVehicleMaintenanceManage', view.editVehicleMaintenanceManage),
     url(r'^wastageManage', view.wastageManage),
     url(r'^editWastageManage', view.editWastageManage),
+    url(r'^monthWastage.html$', view.monthWastage),
+    url(r'^searchMonthWastage', view.searchMonthWastage),
     url(r'^customPaymentInfo', view.customPaymentInfo),
     url(r'^customBalanceInfo', view.customBalanceInfo),
     url(r'^searchCustomerBalanceInfo', view.searchCustomerBalanceInfo),

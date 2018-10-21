@@ -42,6 +42,15 @@
 <script src="{% static "js/plugins/jqgrid/jquery.jqGrid.minffe4.js" %}?0820"></script>
 
 <script type="text/javascript">
+
+    function getFormatDate() {
+        var nowDate = new Date();
+        var year = nowDate.getFullYear();
+        var month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1) : nowDate.getMonth() + 1;
+        var date = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();
+        return year + "-" + month + "-" + date;
+    }
+
     function InitCustomerManageGrid(parameters) {
         $.jgrid.defaults.styleUI = "Bootstrap";
         var mydata = {{ showData|safe }};
@@ -73,7 +82,9 @@
                         editable: true,
                         width: 100,
                         sorttype: "date",
-                        formatter: "date"
+                        formatter: "date",
+                        edittype: 'text',
+                        editoptions: {defaultValue: getFormatDate()}
                     },
                     {
                         name: "position",

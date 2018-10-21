@@ -120,12 +120,15 @@ class VehicleMaintenanceManage(models.Model):
 # wastageManage【损耗校验】
 # 挂车号		trailerID
 # 损耗量 （吨）	默认值为现余量	wastageCount
+# 定损日期   checkDate
+# 损耗比率   wastageRatio
 
 
 class WastageManage(models.Model):
     trailerID = models.CharField(max_length=100)
     wastageCount = models.CharField(max_length=100)
-
+    checkDate = models.DateField()
+    wastageRatio = models.CharField(max_length=100)
 
 # customPaymentInfo[客户充值信息]
 # 客户名		customName

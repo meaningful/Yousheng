@@ -87,6 +87,14 @@
     }
 
 
+    function getFormatDate() {
+        var nowDate = new Date();
+        var year = nowDate.getFullYear();
+        var month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1) : nowDate.getMonth() + 1;
+        var date = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();
+        return year + "-" + month + "-" + date;
+    }
+
     function getAllSelectItemDataForSaleList() {
         $.ajax({
             type: "get",
@@ -128,7 +136,6 @@
 
     function InitCustomerManageGrid(parameters) {
         getAllSelectItemDataForSaleList()
-
 
         $.jgrid.defaults.styleUI = "Bootstrap";
         var mydata = {{ showData|safe }};
@@ -228,7 +235,9 @@
                         editable: true,
                         width: 100,
                         sorttype: "date",
-                        formatter: "date"
+                        formatter: "date",
+                        edittype: 'text',
+                        editoptions: {defaultValue: getFormatDate()}
                     },
                     {
                         name: "storageDate",
@@ -236,7 +245,9 @@
                         editable: true,
                         width: 100,
                         sorttype: "date",
-                        formatter: "date"
+                        formatter: "date",
+                        edittype: 'text',
+                        editoptions: {defaultValue: getFormatDate()}
                     },
                     {name: "comment", index: "comment", editable: true, width: 100, sortable: false},
                     //{

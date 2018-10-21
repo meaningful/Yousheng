@@ -10,77 +10,157 @@
 
     <title>月损耗</title>
 
-    <link rel="shortcut icon" href="favicon.ico"> <link href="{% static "css/bootstrap.min14ed.css" %}?v=3.3.6" rel="stylesheet">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="{% static "css/bootstrap.min14ed.css" %}?v=3.3.6" rel="stylesheet">
     <link href="{% static "css/font-awesome.min93e3.css" %}?v=4.4.0" rel="stylesheet">
     <link href="{% static "css/animate.min.css" %}" rel="stylesheet">
     <link href="{% static "css/style.min862f.css" %}?v=4.1.0" rel="stylesheet">
-     <!-- jqgrid-->
+    <!-- jqgrid-->
     <link href="{% static "css/plugins/jqgrid/ui.jqgridffe4.css" %}?0820" rel="stylesheet">
 
 
 </head>
 
-<body class="gray-bg">
-    <div class="wrapper wrapper-content animated fadeInRight">
-        <!-- 每月损耗列表 -->
-         <div class="row">
-            <div class="col-lg-12"  >
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>每月损耗列表</h5>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <!-- 每月损耗列表 -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <div>
+                        挂车号: <select id="trailerID" style="width: 150px"> </select>
+                        损耗时间段 From: <input id="fromDate" type="text"> To: <input id="deadline" type="text">
+                        <button style="width: 100px" onclick="search()">查询</button>
                     </div>
-                    <div class="ibox-content">
-                        <div class="jqGrid_wrappermonthWastage">
-                            <table id="table_monthWastage"></table>
-                            <div id="pager_monthWastage"></div>
-                        </div>
-
-                     </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="jqGrid_wrapper">
+                        <table id="table_list_2"></table>
+                        <div id="pager_list_2"></div>
+                    </div>
                 </div>
             </div>
         </div>
-
     </div>
+</div>
 
-    <script src="{% static "js/jquery.min.js" %}?v=2.1.4"></script>
-    <script src="{% static "js/bootstrap.min.js" %}?v=3.3.6"></script>
-    <script src="{% static "js/plugins/peity/jquery.peity.min.js" %}"></script>
-    <script src="{% static "js/plugins/jqgrid/i18n/grid.locale-cnffe4.js" %}?0820"></script>
-    <script src="{% static "js/plugins/jqgrid/jquery.jqGrid.minffe4.js" %}?0820"></script>
+<script src="{% static "js/jquery.min.js" %}?v=2.1.4"></script>
+<script src="{% static "js/bootstrap.min.js" %}?v=3.3.6"></script>
+<script src="{% static "js/plugins/peity/jquery.peity.min.js" %}"></script>
+<script src="{% static "js/plugins/jqgrid/i18n/grid.locale-cnffe4.js" %}?0820"></script>
+<script src="{% static "js/plugins/jqgrid/jquery.jqGrid.minffe4.js" %}?0820"></script>
 
-    <script type="text/javascript">
-        function InitMonthWastageGrid(parameters) {
-             $.jgrid.defaults.styleUI="Bootstrap";
-                   var mydata=[{carNo:"鄂A A50L2",carType:"挂车",leftContent:"5.2",contents:"是否清空？"},
-                  {carNo:"鄂A A50L2",carType:"挂车",leftContent:"5.2",contents:"是否清空？"},
-                  {carNo:"鄂A A50L2",carType:"挂车",leftContent:"5.2",contents:"是否清空？"},
-                  {carNo:"鄂A A50L2",carType:"挂车",leftContent:"5.2",contents:"是否清空？"},
-                  {carNo:"鄂A A50L2",carType:"挂车",leftContent:"5.2",contents:"是否清空？"},
-                  {carNo:"鄂A A50L2",carType:"挂车",leftContent:"5.2",contents:"是否清空？"},
-                  {carNo:"鄂A A50L2",carType:"挂车",leftContent:"5.2",contents:"是否清空？"}
-                   ];
-
-                   $("#table_monthWastage").jqGrid(
-                        {  data:mydata,datatype:"local",height:450,autowidth:true,shrinkToFit:true,rowNum:20,rowList:[10,20,30],
-                             colNames:["挂车号/拖车号","类型","现有量","备注"],
-                             colModel:[
-                                {name:"carNo",index:"carNo",editable:true,width:120,sorttype:"int",search:true},
-                                {name:"carType",index:"carType",editable:true,width:90,sorttype:"date"},
-                                {name:"leftContent",index:"leftContent",editable:true,width:100 , sorttype:"date",formatter:"date"},
-                                {name:"contents",index:"contents",editable:true,width:80,align:"right"}],
-                            pager:"#pager_monthWastage",viewrecords:true,caption:"车辆维修统计",add:true,edit:true,addtext:"Add",edittext:"Edit",hidegrid:false
-                        }
-                    );
-
-                   $("#table_monthWastage").jqGrid("navGrid","#pager_monthWastage",{edit:true,add:true,del:true,search:true},{height:200,reloadAfterSubmit:true});
-                   $(window).bind("resize",function(){var width=$(".jqGrid_wrappermonthWastage").width();$("#table_monthWastage").setGridWidth(width)}) ;
-
-                };
-
-         $(document).ready(function(){InitMonthWastageGrid();}) ;
+<script type="text/javascript">
 
 
-    </script>
+    function handleData(item) {
+        var data = item.substring(1, item.length - 1);
+        var str = data.replace(/\"/g, "")
+        var strArr = str.split(",")
+        return strArr
+    }
+
+    function decodeUnicode(str) {
+        str = str.replace(/\\/g, "%");
+        return unescape(str);
+    }
+
+    function initSelectOptions() {
+        $.ajax({
+            type: "get",
+            async: true,
+            url: "./getTrailerIDs",
+            dataType: "json",
+            success: function (result) {
+                strArr = handleData(result.allTrailerIDs);
+                $("#trailerID").html("");
+                //$("#customName").append($("<option value=\"ALL\"> 所有客户 </option>"));
+                for (var i = 0; i < strArr.length; i++) {
+                    $("#trailerID").append($("<option value=\"" + decodeUnicode($.trim(strArr[i])) + "\">" + decodeUnicode($.trim(strArr[i])) + "</option>"));
+                }
+            }
+        });
+    }
+
+
+    function search() {
+        var trailerID = $(" #trailerID ").val();
+        var fromDate = $(" #fromDate ").val();
+        var deadline = $(" #deadline ").val();
+        $.ajax({
+            type: "get",
+            async: false,
+            data: {trailerID: trailerID, fromDate: fromDate, deadline: deadline},
+            url: "./searchMonthWastage",
+            dataType: "json",
+            success: function (result) {
+                //清除旧数据
+                $("#table_list_2").jqGrid("clearGridData");
+                //显示新的数据
+                showData(eval('(' + result.showData + ')'));
+            }
+        });
+    }
+
+    function showData(jqdata) {
+        $.jgrid.defaults.styleUI = "Bootstrap";
+
+        $("#table_list_2").jqGrid(
+            {
+                datatype: "json",
+                height: 450,
+                autowidth: true,
+                shrinkToFit: true,
+                rowNum: 20,
+                rowList: [10, 20, 30],
+                colNames: ["挂车号", "损耗总量(吨)", "最近损耗校验日期", "损耗率"],
+                colModel: [
+                    {
+                        name: "trailerID",
+                        index: "trailerID",
+                        editable: true,
+                        width: 100,
+                        sortable: false,
+                    },
+                    {name: "wastageCount", index: "wastageCount", editable: true, width: 100, sortable: false},
+                    {
+                        name: "checkDate",
+                        index: "checkDate",
+                        editable: true,
+                        width: 100,
+                        sortable: false,
+                    },
+                    {name: "wastageRatio", index: "wastageRatio", editable: true, width: 100, sortable: false},
+                ],
+                pager: "#pager_list_2",
+                viewrecords: true,
+                caption: "损耗列表",
+                add: true,
+                edit: true,
+                addtext: "Add",
+                edittext: "Edit",
+                hidegrid: false
+            }
+        );
+
+
+        for (var i = 0; i <= jqdata.length; i++) {
+            jQuery("#table_list_2").jqGrid('addRowData', i + 1, jqdata[i]);
+        }
+
+        $(window).bind("resize", function () {
+            var width = $(".jqGrid_wrapper").width();
+            $("#table_list_2").setGridWidth(width)
+        });
+
+    };
+
+    $(document).ready(function () {
+        initSelectOptions();
+    });
+
+
+</script>
 </body>
 
 </html>

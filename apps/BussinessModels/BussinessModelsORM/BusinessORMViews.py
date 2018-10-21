@@ -504,6 +504,8 @@ class VehicleMaintenanceManageDBUtils(object):
 # <- 损耗校验 Begin ->
 # 挂车号		trailerID
 # 损耗量 （吨）	默认值为现余量	wastageCount
+# 定损日期   checkDate
+# 损耗比率   wastageRatio
 
 
 class WastageManage(Base):
@@ -512,6 +514,8 @@ class WastageManage(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     trailerID = Column(String(128))
     wastageCount = Column(String(128))
+    checkDate = Column(Date)
+    wastageRatio = Column(String(128))
 
 
 class WastageManageDBUtils(object):
@@ -544,6 +548,8 @@ class WastageManageDBUtils(object):
         item_to_update = session.query(WastageManage).filter_by(id=updateId).first()
         item_to_update.trailerID = wastageManage.trailerID
         item_to_update.wastageCount = wastageManage.wastageCount
+        item_to_update.checkDate = wastageManage.checkDate
+        item_to_update.wastageRatio = wastageManage.wastageRatio
 
         session.commit()
         session.close()
@@ -559,6 +565,42 @@ class WastageManageDBUtils(object):
             allWastageManage.append(wastageManage)
         session.close()
         return allWastageManage
+
+    @classmethod
+    def queryMonthWastage(cls, trailerID, fromDate, deadline):
+        session = DBSession()
+        # 查询该挂车在某个时间段的采购总量
+        queryAllPurchase = session.query(MaterialPurchase).filter(MaterialPurchase.trailerID == trailerID,
+                                                                  MaterialPurchase.isStoraged == MaterialPurchaseDBUtils.IS_STORAGED_YES,
+                                                                  MaterialPurchase.storageDate >= fromDate,
+                                                                  MaterialPurchase.storageDate <= deadline).all()
+        totalOfPurchase = BusinessViewUtils.getTotalOfPurchase(queryAllPurchase)
+
+        # 查询该挂车在某个时间段的损耗总量
+        queryAllWastage = session.query(WastageManage).filter(WastageManage.trailerID == trailerID,
+                                                              WastageManage.checkDate >= fromDate,
+                                                              WastageManage.checkDate <= deadline).all()
+
+        totalOfWastage = BusinessViewUtils.getTotalOfWastage(queryAllWastage)
+
+        # 查询最近充值记录，作为结果集
+        latestWastage = session.query(WastageManage).order_by(desc(WastageManage.checkDate),
+                                                              desc(WastageManage.id)).filter(
+            WastageManage.trailerID == trailerID).first()
+        wastageRatio = BusinessViewUtils.computeWastageRatio(totalOfWastage, totalOfPurchase)
+
+        # 计算最新的损耗比率，作为返回结果集
+        latestWastage.wastageRatio = wastageRatio
+        latestWastage.wastageCount = str(totalOfWastage)
+
+        allWastage = []
+        monthWastage_json = json.dumps(object2dict(latestWastage), cls=DateEncoder)
+        monthWastage = json.loads(monthWastage_json)
+        allWastage.append(monthWastage)
+
+        # 注意，查询时不要进行 session.commit() ,否则会将已有记录进行更新掉
+        session.close()
+        return allWastage
 
 
 # <- 损耗校验 End ->
@@ -599,7 +641,7 @@ class CustomPaymentInfoDBUtils(object):
 
         # 最近充值记录
         latestCustomPaymentInfo = session.query(CustomPaymentInfo).order_by(desc(CustomPaymentInfo.payTime),
-                                                                            (CustomPaymentInfo.id)).filter(
+                                                                            desc(CustomPaymentInfo.id)).filter(
             CustomPaymentInfo.customName == customPaymentInfo.customName).first()
 
         # 充值时计算并更新最近充值记录的余额
@@ -638,7 +680,7 @@ class CustomPaymentInfoDBUtils(object):
 
         # 最近充值记录
         latestCustomPaymentInfo = session.query(CustomPaymentInfo).order_by(desc(CustomPaymentInfo.payTime),
-                                                                            (CustomPaymentInfo.id)).filter(
+                                                                            desc(CustomPaymentInfo.id)).filter(
             CustomPaymentInfo.customName == customPaymentInfo.customName).first()
 
         # 充值时计算并更新最近充值记录的余额
@@ -717,3 +759,34 @@ class BusinessViewUtils(object):
             total = DataUtils.strNumToDeciaml(customPaymentInfo.get("payAmount"))
             allCustomPaymentInfo.append(total)
         return sum(allCustomPaymentInfo)
+
+    @classmethod
+    def getTotalOfPurchase(cls, queryAll):
+        allPurchase = []
+        for item in queryAll:
+            materialPurchase_json = json.dumps(object2dict(item), cls=DateEncoder)
+            materialPurchase = json.loads(materialPurchase_json)
+            total = DataUtils.strNumToDeciaml(materialPurchase.get("count"))
+            allPurchase.append(total)
+        return sum(allPurchase)
+
+
+    @classmethod
+    def getTotalOfWastage(cls, queryAll):
+        allWastage = []
+        for item in queryAll:
+            wastagee_json = json.dumps(object2dict(item), cls=DateEncoder)
+            wastage = json.loads(wastagee_json)
+            total = DataUtils.strNumToDeciaml(wastage.get("wastageCount"))
+            allWastage.append(total)
+        return sum(allWastage)
+
+    @classmethod
+    def computeWastageRatio(cls, allWastage, allPurchase):
+        wastageTotal = DataUtils.strNumToDeciaml(allWastage)
+        purchaseTotal = DataUtils.strNumToDeciaml(allPurchase)
+        ratio = wastageTotal/purchaseTotal
+        return format(DataUtils.switchToPercent(ratio), '.2%')
+
+
+

@@ -48,6 +48,7 @@
     var jobj_allTrailerIDs = ""
     var jobj_allDriverNames = ""
     var jobj_allSupercargoNames = ""
+    var serialNo = ""
 
     function decodeUnicode(str) {
         str = str.replace(/\\/g, "%");
@@ -83,6 +84,13 @@
         return jobj_allData;
     }
 
+    function getFormatDate() {
+        var nowDate = new Date();
+        var year = nowDate.getFullYear();
+        var month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1) : nowDate.getMonth() + 1;
+        var date = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();
+        return year + "-" + month + "-" + date;
+    }
 
     function getAllSelectItemDataforMaterialPurchase() {
         $.ajax({
@@ -91,6 +99,7 @@
             url: "./getAllSelectItemDataForMaterialPurchase",
             dataType: "json",
             success: function (result) {
+                serialNo = result.serialNo
                 // 解析所有供货商名称
                 var item_allSupplierNames = result.allSupplierNames;
                 jobj_allSupplierNames = handleDataWithReplace(item_allSupplierNames);
@@ -198,7 +207,10 @@
                         edittype: "select",
                         editoptions: {value: jobj_allSupercargoNames}
                     },
-                    {name: "count", index: "count", editable: true, width: 100, sortable: false},
+                    {
+                        name: "count", index: "count", editable: true, width: 100, sortable: false,
+
+                    },
                     {name: "unitPrice", index: "unitPrice", editable: true, width: 100, sortable: false},
                     {name: "mileage", index: "mileage", editable: true, width: 100, sortable: false},
                     {
@@ -207,7 +219,9 @@
                         editable: true,
                         width: 100,
                         sorttype: "date",
-                        formatter: "date"
+                        formatter: "date",
+                        edittype: 'text',
+                        editoptions: {defaultValue: getFormatDate()}
                     },
                     {
                         name: "storageDate",
@@ -215,7 +229,9 @@
                         editable: true,
                         width: 100,
                         sorttype: "date",
-                        formatter: "date"
+                        formatter: "date",
+                        edittype: 'text',
+                        editoptions: {defaultValue: getFormatDate()}
                     },
                     {
                         name: "isStoraged",

@@ -64,6 +64,14 @@
         return jobj_allData
     }
 
+    function getFormatDate() {
+        var nowDate = new Date();
+        var year = nowDate.getFullYear();
+        var month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1) : nowDate.getMonth() + 1;
+        var date = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();
+        return year + "-" + month + "-" + date;
+    }
+
     function getAllCustomNames() {
         var allCustomNames = "";
         $.ajax({
@@ -110,7 +118,9 @@
                         editable: true,
                         width: 100,
                         sorttype: "date",
-                        formatter: "date"
+                        formatter: "date",
+                        edittype: 'text',
+                        editoptions: {defaultValue: getFormatDate()}
                     },
                     {
                         name: "payAmount",
@@ -119,7 +129,8 @@
                         width: 100,
                         sortable: true,
                         formatter: "integer",
-                        formatoptions: {defaultValue: '0'}
+                        edittype: 'text',
+                        editoptions: {defaultValue: "0"}
                     },
                     //{name: "balance", index: "balance", editable: false, width: 100, sortable: false},
                 ],

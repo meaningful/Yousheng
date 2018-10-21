@@ -12,6 +12,9 @@ import hashlib
 from apps.BaseModels.BaseModelsORM.BaseORMViews import UserDBUtils
 from time import strftime, localtime
 from decimal import Decimal
+from dateutil.relativedelta import *
+from dateutil.parser import *
+import time
 
 _year = strftime("%Y", localtime())
 _mon = strftime("%m", localtime())
@@ -49,6 +52,15 @@ class DateUtils(object):
     def get_current_time(cls):
         return _year + _mon + _day + _hour + _min + _sec
 
+    @classmethod
+    def getIntervalMonthDate(cls, intervalMonth):
+        # 当前时间
+        localtime = time.asctime(time.localtime(time.time()))
+        now = parse(localtime)
+        # 计算间隔日期
+        intervalDate = now + relativedelta(months=intervalMonth)
+        return str(intervalDate)[0:10]
+
 
 # 数据计算工具类
 class DataUtils(object):
@@ -64,6 +76,6 @@ class DataUtils(object):
         total = Decimal(count) * Decimal(unitPrice)
         return total.quantize(Decimal('0.00'))
 
-
-
-
+    @classmethod
+    def switchToPercent(cls, ratio):
+        return ratio.quantize(Decimal('0.0000'))

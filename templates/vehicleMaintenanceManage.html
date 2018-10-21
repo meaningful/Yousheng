@@ -45,6 +45,14 @@
     var str_vehicleType = '{ "拖车": "拖车", "挂车": "挂车" }';
     var jobj_vehicleType = JSON.parse(str_vehicleType);
 
+    function getFormatDate() {
+        var nowDate = new Date();
+        var year = nowDate.getFullYear();
+        var month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1) : nowDate.getMonth() + 1;
+        var date = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();
+        return year + "-" + month + "-" + date;
+    }
+
     function decodeUnicode(str) {
         str = str.replace(/\\/g, "%");
         return unescape(str);
@@ -94,7 +102,7 @@
                 shrinkToFit: true,
                 rowNum: 20,
                 rowList: [10, 20, 30],
-                colNames: ["类型", "拖车号/挂车号", "维修时间(格式:2018-01-01)", "维修项目", "费用", "备注"],
+                colNames: ["类型", "拖车号/挂车号", "维修时间", "维修项目", "费用", "备注"],
                 colModel: [
                     {
                         name: "vehicleType",
@@ -120,7 +128,9 @@
                         editable: true,
                         width: 100,
                         sorttype: "date",
-                        formatter: "date"
+                        formatter: "date",
+                        edittype: 'text',
+                        editoptions: {defaultValue: getFormatDate()}
                     },
                     {name: "maintenanceItems", index: "maintenanceItems", editable: true, width: 100, sortable: false},
                     {name: "maintenanceCost", index: "maintenanceCost", editable: true, width: 100, sortable: false},
