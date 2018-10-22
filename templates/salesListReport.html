@@ -11,7 +11,7 @@
     <link href="{% static "css/style.min862f.css" %}?v=4.1.0" rel="stylesheet">
     <link href="{% static "css/plugins/jqgrid/ui.jqgridffe4.css" %}?0820" rel="stylesheet">
 
-
+    <script src="{% static "My97DatePicker/WdatePicker.js" %}"></script>
 </head>
 <body>
 
@@ -23,7 +23,10 @@
 {#                    <h5>销售单报表 -- 按时间段筛选</h5>#}
                     <div>
                         按照时间段查询已入库的销售单：
-                        下单日期 From: <input id="fromDate" type="text"> To: <input id="deadline" type="text">
+                        下单日期 From:
+                        <input id="fromDate" class="Wdate" type="text" onClick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd'})">
+                        To:
+                        <input id="deadline" class="Wdate" type="text" onClick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd'})">
 
                         {#                        <select id="invoiced" name="invoiced">#}
                         {#                            <option value="NA" selected="selected"> NA</option>#}

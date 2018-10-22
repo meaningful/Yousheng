@@ -17,8 +17,7 @@
     <link href="{% static "css/style.min862f.css" %}?v=4.1.0" rel="stylesheet">
     <!-- jqgrid-->
     <link href="{% static "css/plugins/jqgrid/ui.jqgridffe4.css" %}?0820" rel="stylesheet">
-
-
+    <script src="{% static "My97DatePicker/WdatePicker.js" %}"></script>
 </head>
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -29,7 +28,10 @@
                 <div class="ibox-title">
                     <div>
                         挂车号: <select id="trailerID" style="width: 150px"> </select>
-                        损耗时间段 From: <input id="fromDate" type="text"> To: <input id="deadline" type="text">
+                        时间段 From:
+                        <input id="fromDate" class="Wdate" type="text" onClick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd'})">
+                        To:
+                        <input id="deadline" class="Wdate" type="text" onClick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd'})">
                         <button style="width: 100px" onclick="search()">查询</button>
                     </div>
                 </div>

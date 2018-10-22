@@ -11,6 +11,7 @@
     <link href="{% static "css/style.min862f.css" %}?v=4.1.0" rel="stylesheet">
     <link href="{% static "css/plugins/jqgrid/ui.jqgridffe4.css" %}?0820" rel="stylesheet">
 
+    <script src="{% static "My97DatePicker/WdatePicker.js" %}"></script>
 </head>
 <body>
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -21,8 +22,9 @@
                     {#                    <h5>客户对账单 -- 按时间段筛选</h5>#}
                     <div>
                         客户名称: <select id="customName" style="width: 150px"> </select>
-                        账单年份: <select id="billDateYear" style="width: 75px"></select>
-                        账单月份: <select id="billDateMonth" style="width: 75px"></select>
+                        账单年月:
+                        <input id="billDate" class="Wdate" type="text" onClick="WdatePicker({el:this,dateFmt:'yyyy-MM'})">
+
                         <button style="width: 100px" onclick="searchByDate()">搜索交易记录</button>
                         <button id="createTableBtn" style="width: 100px" onclick="createBillListTable()">生成对账单</button>
                     </div>
@@ -146,11 +148,9 @@
 
     function searchByDate() {
         var customName = $(" #customName ").val();
-        var billDateYear = $(" #billDateYear ").val();
-        var billDateMonth = $(" #billDateMonth ").val();
-        var fromDate = billDateYear + "-" + billDateMonth + "-01";
-        var deadline = billDateYear + "-" + billDateMonth + "-31";
-
+        var billDate = $(" #billDate ").val();
+        var fromDate = billDate + "-01";
+        var deadline = billDate + "-31";
         $.ajax({
             type: "get",
             async: false,
