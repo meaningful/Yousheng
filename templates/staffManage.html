@@ -64,7 +64,7 @@
                 shrinkToFit: true,
                 rowNum: 20,
                 rowList: [10, 20, 30],
-                colNames: ["编号", "姓名", "身份证号", "入职时间(格式:2018-01-01)", "职务", "照片", "人员简历", "人员类别"],
+                colNames: ["编号", "姓名", "身份证号", "入职时间", "职务", "照片", "人员简历", "人员类别"],
                 colModel: [
                     {name: "staffID", index: "staffID", editable: true, width: 120, sortable: false},
                     {name: "staffName", index: "staffName", editable: true, width: 100, sortable: false},
@@ -124,7 +124,23 @@
                 jqModal: true,
                 reloadAfterSubmit: false,
                 closeAfterEdit: true,
+                beforeShowForm:function(formid){
+                     console.log("beforeShowForm")
+                     var id=$("#table_list_2").jqGrid("getGridParam","selrow");
+                     console.log(id)
+                    var ret = $("#table_list_2").getCell(id, "hiredate", 0);
+                     console.log(ret)
+                },
+                afterShowForm: function(formid){
+                   console.log("afterShowForm")
+                     var id=$("#table_list_2").jqGrid("getGridParam","selrow");
+                     console.log(id)
+                    var ret = $("#table_list_2").getCell(id, "hiredate");
+                     console.log(ret)
+
+                },
                 afterSubmit: function (response, postdata) {
+                    console.log("afterSubmit")
                     if (response.status == "200") {
                         alert("修改成功!")
                         return [true]

@@ -109,6 +109,7 @@ class GasManage(models.Model):
 # <- 拖车管理表 Begin ->
 # 车牌号		tractorID
 # 年检时间		annualInspectionTime
+# 年检周期       annualInspectionCycle
 # 保险时间		insuranceTime
 # 车架号		chassisNumber
 # 出厂时间		deliveryTime
@@ -118,6 +119,7 @@ class GasManage(models.Model):
 class TractorManage(models.Model):
     tractorID = models.CharField(max_length=100)
     annualInspectionTime = models.DateField()
+    annualInspectionCycle = models.IntegerField()
     insuranceTime = models.DateField()
     chassisNumber = models.CharField(max_length=100)
     deliveryTime = models.CharField(max_length=100)
@@ -129,6 +131,7 @@ class TractorManage(models.Model):
 # <- 挂车管理表 Begin ->
 # 挂车号		trailerID
 # 年检时间		annualInspectionTime
+# 年检周期       annualInspectionCycle
 # 保险时间		insuranceTime
 # 车架号		chassisNumber
 # 出厂时间		deliveryTime
@@ -138,6 +141,7 @@ class TractorManage(models.Model):
 class TrailerManage(models.Model):
     trailerID = models.CharField(max_length=100)
     annualInspectionTime = models.DateField()
+    annualInspectionCycle = models.IntegerField()
     insuranceTime = models.DateField()
     chassisNumber = models.CharField(max_length=100)
     deliveryTime = models.CharField(max_length=100)

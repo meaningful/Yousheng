@@ -428,6 +428,7 @@ class MaterialPurchaseDBUtils(object):
 # 类型（拖车/挂车）		vehicleType
 # 拖车号/挂车号		vehicleID
 # 维修时间		maintenanceDate
+# 维修类型       maintainType
 # 维修项目		maintenanceItems
 # 费用		maintenanceCost
 # 备注		maintenanceComment
@@ -440,12 +441,16 @@ class VehicleMaintenanceManage(Base):
     vehicleType = Column(String(128))
     vehicleID = Column(String(128))
     maintenanceDate = Column(Date)
+    maintainType = Column(String(32))
     maintenanceItems = Column(String(128))
     maintenanceCost = Column(String(128))
     maintenanceComment = Column(String(128))
 
 
 class VehicleMaintenanceManageDBUtils(object):
+
+    MAINTAIN_TYPE_ALL = "ALL"
+
     @classmethod
     def add(cls, vehicleMaintenanceManage):
         if not isinstance(vehicleMaintenanceManage, VehicleMaintenanceManage):
@@ -478,6 +483,7 @@ class VehicleMaintenanceManageDBUtils(object):
         item_to_update.vehicleType = vehicleMaintenanceManage.vehicleType
         item_to_update.vehicleID = vehicleMaintenanceManage.vehicleID
         item_to_update.maintenanceDate = vehicleMaintenanceManage.maintenanceDate
+        item_to_update.maintainType = vehicleMaintenanceManage.maintainType
         item_to_update.maintenanceItems = vehicleMaintenanceManage.maintenanceItems
         item_to_update.maintenanceCost = vehicleMaintenanceManage.maintenanceCost
         item_to_update.maintenanceComment = vehicleMaintenanceManage.maintenanceComment
@@ -496,6 +502,19 @@ class VehicleMaintenanceManageDBUtils(object):
             allVehicleMaintenanceManage.append(vehicleMaintenanceManage)
         session.close()
         return allVehicleMaintenanceManage
+
+    @classmethod
+    def queryMaintenanceByType(cls, maintainType):
+        session = DBSession()
+        queryAll = session.query(VehicleMaintenanceManage).filter(
+                            VehicleMaintenanceManage.maintainType == maintainType).all()
+        allMaintenance = []
+        for item in queryAll:
+            maintenance_json = json.dumps(object2dict(item), cls=DateEncoder)
+            maintenance = json.loads(maintenance_json)
+            allMaintenance.append(maintenance)
+        session.close()
+        return allMaintenance
 
 
 # <- 车辆维修安排（统计）End ->

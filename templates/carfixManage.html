@@ -21,7 +21,7 @@
 
 </head>
 
-<body class="gray-bg">
+<body>
 <div class="wrapper wrapper-content animated fadeInRight">
     <!-- 车辆维修统计 -->
     <div class="row">
@@ -29,18 +29,19 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <div>
-                        检修周期: <select id="maintenanceCycle" style="width: 150px">
-                        <option value="12">12个月</option>
-                        <option value="6">6个月</option>
-                        <option value="3">3个月</option>
+                        维修类型: <select id="maintainType" style="width: 150px">
+                        <option value="ALL">全部</option>
+                        <option value="日常维修">日常维修</option>
+                        <option value="年检">年检</option>
+                        <option value="其他">其他</option>
                     </select>
                         <button style="width: 100px" onclick="search()">查询</button>
                     </div>
                 </div>
                 <div class="ibox-content">
-                    <div class="jqGrid_wrapperfixcar">
-                        <table id="table_fixCar"></table>
-                        <div id="pager_fixCar"></div>
+                    <div class="jqGrid_wrapper">
+                        <table id="table_list_2"></table>
+                        <div id="pager_list_2"></div>
                     </div>
 
                 </div>
@@ -57,56 +58,77 @@
 <script src="{% static "js/plugins/jqgrid/jquery.jqGrid.minffe4.js" %}?0820"></script>
 
 <script type="text/javascript">
-    function InitFixCarGrid(parameters) {
-        $.jgrid.defaults.styleUI = "Bootstrap";
-        var mydata = [{
-            carNo: "鄂A A50L2",
-            carType: "挂车",
-            fixTime: "2017-05-6",
-            cost: "3204.6",
-            fixTopic: "保养",
-            contents: "日常养护"
-        },
-            {carNo: "鄂A A50L2", carType: "挂车", fixTime: "2017-05-6", cost: "3204.6", fixTopic: "保养", contents: "日常养护"},
-            {carNo: "鄂A A50L2", carType: "挂车", fixTime: "2017-05-6", cost: "3204.6", fixTopic: "保养", contents: "日常养护"},
-            {carNo: "鄂A A50L2", carType: "挂车", fixTime: "2017-05-6", cost: "3204.6", fixTopic: "保养", contents: "日常养护"},
-            {carNo: "鄂A A50L2", carType: "挂车", fixTime: "2017-05-6", cost: "3204.6", fixTopic: "保养", contents: "日常养护"},
-            {carNo: "鄂A A50L2", carType: "挂车", fixTime: "2017-05-6", cost: "3204.6", fixTopic: "保养", contents: "日常养护"}
-        ];
+    function search() {
+        var maintainType = $(" #maintainType ").val();
+        console.log(maintainType)
+        $.ajax({
+            type: "get",
+            async: false,
+            data: {maintainType: maintainType},
+            url: "./searchMaintenanceByType",
+            dataType: "json",
+            success: function (result) {
+                console.log(result.showData)
+                //清除旧数据
+                $("#table_list_2").jqGrid("clearGridData");
+                //显示新的数据
+                showData(eval('(' + result.showData + ')'));
+            }
+        });
+    }
 
-        $("#table_fixCar").jqGrid(
+    function showData(jqdata) {
+        $.jgrid.defaults.styleUI = "Bootstrap";
+        $("#table_list_2").jqGrid(
             {
-                data: mydata,
-                datatype: "local",
+                datatype: "json",
                 height: 450,
                 autowidth: true,
                 shrinkToFit: true,
                 rowNum: 20,
                 rowList: [10, 20, 30],
-                colNames: ["挂车号/拖车号", "类型", "维修时间", "费用", "维修项目", "备注"],
+                colNames: ["车辆类型", "拖车号/挂车号", "维修时间", "维修类型", "维修项目", "费用", "备注"],
                 colModel: [
-                    {name: "carNo", index: "carNo", editable: true, width: 120, sorttype: "int", search: true},
-                    {name: "carType", index: "carType", editable: true, width: 90, sorttype: "date"},
                     {
-                        name: "fixTime",
-                        index: "fixTime",
-                        editable: true,
+                        name: "vehicleType",
+                        index: "vehicleType",
+                        editable: false,
+                        width: 100,
+                        sortable: false
+                    },
+                    {
+                        name: "vehicleID",
+                        index: "vehicleID",
+                        editable: false,
+                        width: 100,
+                        sortable: false
+                    },
+                    {
+                        name: "maintenanceDate",
+                        index: "maintenanceDate",
+                        editable: false,
                         width: 100,
                         sorttype: "date",
-                        formatter: "date"
+                        formatter: "date",
+                        sortable: true
                     },
                     {
-                        name: "cost",
-                        index: "cost",
-                        editable: true,
-                        width: 80,
-                        align: "right",
-                        sorttype: "float",
-                        formatter: "number"
+                        name: "maintainType",
+                        index: "maintainType",
+                        editable: false,
+                        width: 100,
+                        sortable: false,
                     },
-                    {name: "fixTopic", index: "fixTopic", editable: true, width: 80, align: "right"},
-                    {name: "contents", index: "contents", editable: true, width: 80, align: "right"}],
-                pager: "#pager_fixCar",
+                    {name: "maintenanceItems", index: "maintenanceItems", editable: false, width: 100, sortable: false},
+                    {name: "maintenanceCost", index: "maintenanceCost", editable: false, width: 100, sortable: false},
+                    {
+                        name: "maintenanceComment",
+                        index: "maintenanceComment",
+                        editable: false,
+                        width: 100,
+                        sortable: false
+                    }],
+                pager: "#pager_list_2",
                 viewrecords: true,
                 caption: "车辆维修统计",
                 add: true,
@@ -114,25 +136,20 @@
                 addtext: "Add",
                 edittext: "Edit",
                 hidegrid: false
-            }
-        );
+            });
 
-        $("#table_fixCar").jqGrid("navGrid", "#pager_fixCar", {
-            edit: true,
-            add: true,
-            del: true,
-            search: true
-        }, {height: 200, reloadAfterSubmit: true});
+
+        for (var i = 0; i <= jqdata.length; i++) {
+            jQuery("#table_list_2").jqGrid('addRowData', i + 1, jqdata[i]);
+        }
+
         $(window).bind("resize", function () {
-            var width = $(".jqGrid_wrapperfixcar").width();
-            $("#table_fixCar").setGridWidth(width)
+            var width = $(".jqGrid_wrapper").width();
+            $("#table_list_2").setGridWidth(width)
         });
 
-    };
 
-    $(document).ready(function () {
-        InitFixCarGrid();
-    });
+    }
 
 
 </script>

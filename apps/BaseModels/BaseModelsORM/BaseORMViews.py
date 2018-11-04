@@ -416,6 +416,7 @@ class GasManageDBUtils(object):
 # <- 拖车管理表 Begin ->
 # 车牌号		tractorID
 # 年检时间		annualInspectionTime
+# 年检周期       annualInspectionCycle
 # 保险时间		insuranceTime
 # 车架号		chassisNumber
 # 出厂时间		deliveryTime
@@ -428,6 +429,7 @@ class TractorManage(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     tractorID = Column(String(128))
     annualInspectionTime = Column(Date)
+    annualInspectionCycle = Column(Integer)
     insuranceTime = Column(Date)
     chassisNumber = Column(String(128))
     deliveryTime = Column(String(128))
@@ -463,6 +465,7 @@ class TractorManageDBUtils(object):
         item_to_update = session.query(TractorManage).filter_by(id=updateId).first()
         item_to_update.tractorID = tractor.tractorID
         item_to_update.annualInspectionTime = tractor.annualInspectionTime
+        item_to_update.annualInspectionCycle = tractor.annualInspectionCycle
         item_to_update.insuranceTime = tractor.insuranceTime
         item_to_update.chassisNumber = tractor.chassisNumber
         item_to_update.deliveryTime = tractor.deliveryTime
@@ -488,6 +491,7 @@ class TractorManageDBUtils(object):
 # <- 挂车管理表 Begin ->
 # 挂车号		trailerID
 # 年检时间		annualInspectionTime
+# 年检周期       annualInspectionCycle
 # 保险时间		insuranceTime
 # 车架号		chassisNumber
 # 出厂时间		deliveryTime
@@ -499,6 +503,7 @@ class TrailerManage(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     trailerID = Column(String(128))
     annualInspectionTime = Column(Date)
+    annualInspectionCycle = Column(Integer)
     insuranceTime = Column(Date)
     chassisNumber = Column(String(128))
     deliveryTime = Column(String(128))
@@ -534,6 +539,7 @@ class TrailerManageDBUtils(object):
         item_to_update = session.query(TrailerManage).filter_by(id=updateId).first()
         item_to_update.trailerID = trailer.trailerID
         item_to_update.annualInspectionTime = trailer.annualInspectionTime
+        item_to_update.annualInspectionCycle = trailer.annualInspectionCycle
         item_to_update.insuranceTime = trailer.insuranceTime
         item_to_update.chassisNumber = trailer.chassisNumber
         item_to_update.deliveryTime = trailer.deliveryTime

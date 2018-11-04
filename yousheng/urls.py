@@ -50,6 +50,7 @@ urlpatterns = [
     url(r'^editSalesList', view.editSalesList),
     url(r'^vehicleMaintenanceManage', view.vehicleMaintenanceManage),
     url(r'^editVehicleMaintenanceManage', view.editVehicleMaintenanceManage),
+    url(r'^searchMaintenanceByType', view.searchMaintenanceByType),
     url(r'^wastageManage', view.wastageManage),
     url(r'^editWastageManage', view.editWastageManage),
     url(r'^monthWastage.html$', view.monthWastage),

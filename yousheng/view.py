@@ -189,7 +189,7 @@ def searchMaterialPurchaseByDate(request):
 def monthWastage(request):
     return render(request, "monthWastage.html")
 
-
+# 损耗查询
 def searchMonthWastage(request):
     trailerID = request.GET.get("trailerID")
     fromDate = request.GET.get("fromDate")
@@ -197,6 +197,19 @@ def searchMonthWastage(request):
 
     allMonthWastage = WastageManageDBUtils.queryMonthWastage(trailerID, fromDate, deadline)
     return JsonResponse({'showData': json.dumps(allMonthWastage)})
+
+
+# 维修查询
+def searchMaintenanceByType(request):
+    maintainType = request.GET.get("maintainType")
+
+
+    if VehicleMaintenanceManageDBUtils.MAINTAIN_TYPE_ALL == maintainType:
+        allMaintenance = VehicleMaintenanceManageDBUtils.queryAll()
+    else:
+        allMaintenance = VehicleMaintenanceManageDBUtils.queryMaintenanceByType(maintainType)
+
+    return JsonResponse({'showData': json.dumps(allMaintenance)})
 
 
 @csrf_exempt
@@ -303,12 +316,14 @@ def editTrailerManage(request):
     editId = request.POST.get('id')
     trailerID = request.POST.get('trailerID')
     annualInspectionTime = request.POST.get('annualInspectionTime')
+    annualInspectionCycle = request.POST.get('annualInspectionCycle')
     insuranceTime = request.POST.get('insuranceTime')
     chassisNumber = request.POST.get('chassisNumber')
     deliveryTime = request.POST.get('deliveryTime')
     currentBalance = request.POST.get('currentBalance')
 
-    trailer = TrailerManage(trailerID=trailerID, annualInspectionTime=annualInspectionTime, insuranceTime=insuranceTime,
+    trailer = TrailerManage(trailerID=trailerID, annualInspectionTime=annualInspectionTime,
+                            annualInspectionCycle=annualInspectionCycle, insuranceTime=insuranceTime,
                             chassisNumber=chassisNumber, deliveryTime=deliveryTime, currentBalance=currentBalance)
 
     if mode == 'add':
@@ -331,12 +346,14 @@ def editTractorManage(request):
     editId = request.POST.get('id')
     tractorID = request.POST.get('tractorID')
     annualInspectionTime = request.POST.get('annualInspectionTime')
+    annualInspectionCycle = request.POST.get('annualInspectionCycle')
     insuranceTime = request.POST.get('insuranceTime')
     chassisNumber = request.POST.get('chassisNumber')
     deliveryTime = request.POST.get('deliveryTime')
     initMileage = request.POST.get('initMileage')
 
-    tractor = TractorManage(tractorID=tractorID, annualInspectionTime=annualInspectionTime, insuranceTime=insuranceTime,
+    tractor = TractorManage(tractorID=tractorID, annualInspectionTime=annualInspectionTime,
+                            annualInspectionCycle=annualInspectionCycle, insuranceTime=insuranceTime,
                             chassisNumber=chassisNumber, deliveryTime=deliveryTime, initMileage=initMileage)
 
     if mode == 'add':
@@ -504,12 +521,14 @@ def editVehicleMaintenanceManage(request):
     vehicleType = request.POST.get('vehicleType')
     vehicleID = request.POST.get('vehicleID')
     maintenanceDate = request.POST.get('maintenanceDate')
+    maintainType = request.POST.get('maintainType')
     maintenanceItems = request.POST.get('maintenanceItems')
     maintenanceCost = request.POST.get('maintenanceCost')
     maintenanceComment = request.POST.get('maintenanceComment')
 
     vehicleMaintenanceManage = VehicleMaintenanceManage(vehicleType=vehicleType, vehicleID=vehicleID,
                                                         maintenanceDate=maintenanceDate,
+                                                        maintainType=maintainType,
                                                         maintenanceItems=maintenanceItems,
                                                         maintenanceCost=maintenanceCost,
                                                         maintenanceComment=maintenanceComment)

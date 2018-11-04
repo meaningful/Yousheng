@@ -84,7 +84,6 @@
             url: "./searchCustomerBalanceInfo",
             dataType: "json",
             success: function (result) {
-                console.log(result.showData)
                 //清除旧数据
                 $("#table_list_2").jqGrid("clearGridData");
                 //显示新的数据
@@ -110,11 +109,12 @@
                         index: "customName",
                         editable: false,
                         width: 100,
-                        sortable: true,
+                        sortable: false,
                     },
                     {
                         name: "payTime",
                         index: "payTime",
+                        sortable:true,
                         editable: false,
                         width: 100,
                         sorttype: "date",

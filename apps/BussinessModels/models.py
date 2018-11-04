@@ -103,6 +103,7 @@ class SalesList(models.Model):
 # 类型（拖车/挂车）		vehicleType
 # 拖车号/挂车号		vehicleID
 # 维修时间		maintenanceDate
+# 维修类型       maintainType
 # 维修项目		maintenanceItems
 # 费用		maintenanceCost
 # 备注		maintenanceComment
@@ -112,6 +113,7 @@ class VehicleMaintenanceManage(models.Model):
     vehicleType = models.CharField(max_length=100)
     vehicleID = models.CharField(max_length=100)
     maintenanceDate = models.DateField()
+    maintainType = models.CharField(max_length=10)
     maintenanceItems = models.CharField(max_length=100)
     maintenanceCost = models.CharField(max_length=100)
     maintenanceComment = models.CharField(max_length=100)

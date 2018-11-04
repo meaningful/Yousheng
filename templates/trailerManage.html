@@ -64,7 +64,7 @@
                 shrinkToFit: true,
                 rowNum: 20,
                 rowList: [10, 20, 30],
-                colNames: ["挂车号", "年检时间", "保险时间", "车架号", "出厂时间", "现余量"],
+                colNames: ["挂车号", "上次年检时间", "年检周期", "保险时间", "车架号", "出厂时间", "现余量"],
                 colModel: [
                     {name: "trailerID", index: "trailerID", editable: true, width: 100, sortable: false},
                     {
@@ -76,6 +76,16 @@
                         formatter: "date",
                         edittype: 'text',
                         editoptions: {defaultValue: getFormatDate()}
+                    },
+                    {
+                        name: "annualInspectionCycle",
+                        index: "annualInspectionCycle",
+                        editable: true,
+                        width: 100,
+                        sortable: false,
+                        formatter: "integer",
+                        edittype:"select",
+                        editoptions:{value:{3:"3个月",6:"6个月",12:"12个月"}}
                     },
                     {
                         name: "insuranceTime",

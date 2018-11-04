@@ -102,7 +102,7 @@
                 shrinkToFit: true,
                 rowNum: 20,
                 rowList: [10, 20, 30],
-                colNames: ["类型", "拖车号/挂车号", "维修时间", "维修项目", "费用", "备注"],
+                colNames: ["车辆类型", "拖车号/挂车号", "维修时间", "维修类型", "维修项目","费用", "备注"],
                 colModel: [
                     {
                         name: "vehicleType",
@@ -131,6 +131,15 @@
                         formatter: "date",
                         edittype: 'text',
                         editoptions: {defaultValue: getFormatDate()}
+                    },
+                    {
+                        name: "maintainType",
+                        index: "maintainType",
+                        editable: true,
+                        width: 100,
+                        sortable:false,
+                        edittype: 'select',
+                        editoptions: {value: { "日常维修": "日常维修", "年检":"年检", "其他":"其他"}}
                     },
                     {name: "maintenanceItems", index: "maintenanceItems", editable: true, width: 100, sortable: false},
                     {name: "maintenanceCost", index: "maintenanceCost", editable: true, width: 100, sortable: false},
