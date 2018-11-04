@@ -12,6 +12,7 @@ from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import SalesListDB
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
 from apps.BusinessUtils import ViewModelsDBUtils, SelectItemDataUtils
+from apps.BaseModels.BaseModelsORM.BaseORMViews import BaseViewUtils
 
 
 def index(request):
@@ -36,6 +37,11 @@ def index(request):
 
 def homePage(request):
     return render(request, "homePage.html")
+
+
+def getBaseInfoForHome(request):
+    baseInfo = BaseViewUtils.getBaseInfoForHome()
+    return JsonResponse({'showData': json.dumps(baseInfo)})
 
 
 def unfound(request):
@@ -202,7 +208,6 @@ def searchMonthWastage(request):
 # 维修查询
 def searchMaintenanceByType(request):
     maintainType = request.GET.get("maintainType")
-
 
     if VehicleMaintenanceManageDBUtils.MAINTAIN_TYPE_ALL == maintainType:
         allMaintenance = VehicleMaintenanceManageDBUtils.queryAll()

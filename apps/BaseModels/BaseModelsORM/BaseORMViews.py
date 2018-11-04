@@ -13,6 +13,9 @@ import json
 from sqlalchemy import Column, String, Integer, Date, create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base, DeclarativeMeta
+from dateutil import rrule
+from dateutil.relativedelta import relativedelta
+
 # 创建ORM对象的基类
 Base = declarative_base()
 
@@ -759,5 +762,62 @@ class BaseViewUtils(object):
                 "allSupercargo": allSupercargo
                 }
 
+    # Home page 基础信息查询
+    @classmethod
+    def getBaseInfoForHome(cls):
+        session = DBSession()
 
+        staffCount = session.query(StaffManage).count()
+        customerCount = session.query(CustomerManage).count()
+        supplierCount = session.query(Supplier).count()
+        gasCount = session.query(GasManage).count()
+        tractorCount = session.query(TractorManage).count()
+        trailerCount = session.query(TrailerManage).count()
+        session.close()
+
+        return {"staffCount": staffCount,
+                "customerCount": customerCount,
+                "supplierCount": supplierCount,
+                "gasCount": gasCount,
+                "tractorCount": tractorCount,
+                "trailerCount": trailerCount
+                }
+
+    # 计算当前日期与指定日期的间隔天数(日期字串分隔符"-")
+    @classmethod
+    def getIntervalDays(cls, dateTarget):
+        dateStr = dateTarget.split("-")
+        target = datetime.date(int(dateStr[0]), int(dateStr[1]), int(dateStr[2]))
+        today = datetime.date.today()
+        days = rrule.rrule(rrule.DAILY, dtstart=today, until=target).count()
+        return days
+
+    # 计算指定间隔月份的日期
+    @classmethod
+    def getIntervalMonthDate(cls, startDate, intervalMonth):
+        dateStr = startDate.split("-")
+        currentDate = datetime.date(int(dateStr[0]), int(dateStr[1]), int(dateStr[2]))
+        return currentDate+relativedelta(months=intervalMonth)
+
+    # 筛选条件：上次年检时间 + 年检周期 - 当前日期 <= 15 天
+    @classmethod
+    def getMaintenanceInfoForHome(cls):
+        session = DBSession()
+
+        queryAllTractor = session.query(TractorManage).all()
+        for item in queryAllTractor:
+            # 上次年检时间
+            lastAnnualInspectionTime = item.annualInspectionTime.strftime("%Y-%m-%d")
+            # 年检周期
+            cycle = item.annualInspectionCycle
+            # 下次年检日期
+            dateNext= BaseViewUtils.getIntervalMonthDate(lastAnnualInspectionTime, cycle).strftime("%Y-%m-%d")
+            intervalDays = BaseViewUtils.getIntervalDays(dateNext)
+            if intervalDays <= 15:
+                print(item.annualInspectionCycle)
+
+
+            allTailer = session.query(TrailerManage).all()
+
+        return {}
 
