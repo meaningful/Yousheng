@@ -13,7 +13,8 @@ import json
 from sqlalchemy import Column, String, Integer, Date, create_engine, func, asc, desc
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from apps.AppUtils import DataUtils
+from apps.AppUtils import DataUtils, DateUtils
+from apps.BaseModels.BaseModelsORM.BaseORMViews import TractorManage, TrailerManage, TractorManageDBUtils, TrailerManageDBUtils
 
 # 创建ORM对象的基类
 Base = declarative_base()
@@ -450,6 +451,9 @@ class VehicleMaintenanceManage(Base):
 class VehicleMaintenanceManageDBUtils(object):
 
     MAINTAIN_TYPE_ALL = "ALL"
+    MAINTAIN_TYPE_REGULAR = "年检"
+    VEHICLE_TYPE_TRAILER = "挂车"
+    VEHICLE_TYPE_TRACTOR = "拖车"
 
     @classmethod
     def add(cls, vehicleMaintenanceManage):
@@ -460,6 +464,23 @@ class VehicleMaintenanceManageDBUtils(object):
         session.add(vehicleMaintenanceManage)
         session.flush()
         new_item_id = vehicleMaintenanceManage.id
+
+        # 更新车辆年检时间
+        if VehicleMaintenanceManageDBUtils.MAINTAIN_TYPE_REGULAR == vehicleMaintenanceManage.maintainType:
+            if VehicleMaintenanceManageDBUtils.VEHICLE_TYPE_TRACTOR == vehicleMaintenanceManage.vehicleType:
+                item = session.query(TractorManage).filter(
+                    TractorManage.tractorID == vehicleMaintenanceManage.vehicleID).first()
+                if item:
+                    item.annualInspectionTime = vehicleMaintenanceManage.maintenanceDate
+                    TractorManageDBUtils.updateBytractorID(item)
+
+            if VehicleMaintenanceManageDBUtils.VEHICLE_TYPE_TRAILER == vehicleMaintenanceManage.vehicleType:
+                item = session.query(TrailerManage).filter(
+                    TrailerManage.trailerID == vehicleMaintenanceManage.vehicleID).first()
+                if item:
+                    item.annualInspectionTime = vehicleMaintenanceManage.maintenanceDate
+                    TrailerManageDBUtils.updateBytrailerID(item)
+
         session.commit()
         session.close()
         return new_item_id
@@ -487,6 +508,22 @@ class VehicleMaintenanceManageDBUtils(object):
         item_to_update.maintenanceItems = vehicleMaintenanceManage.maintenanceItems
         item_to_update.maintenanceCost = vehicleMaintenanceManage.maintenanceCost
         item_to_update.maintenanceComment = vehicleMaintenanceManage.maintenanceComment
+
+        # 更新车辆年检时间
+        if VehicleMaintenanceManageDBUtils.MAINTAIN_TYPE_REGULAR == vehicleMaintenanceManage.maintainType:
+            if VehicleMaintenanceManageDBUtils.VEHICLE_TYPE_TRACTOR == vehicleMaintenanceManage.vehicleType:
+                item = session.query(TractorManage).filter(
+                    TractorManage.tractorID == vehicleMaintenanceManage.vehicleID).first()
+                if item:
+                    item.annualInspectionTime = vehicleMaintenanceManage.maintenanceDate
+                    TractorManageDBUtils.updateBytractorID(item)
+
+            if VehicleMaintenanceManageDBUtils.VEHICLE_TYPE_TRAILER == vehicleMaintenanceManage.vehicleType:
+                item = session.query(TrailerManage).filter(
+                    TrailerManage.trailerID == vehicleMaintenanceManage.vehicleID).first()
+                if item:
+                    item.annualInspectionTime = vehicleMaintenanceManage.maintenanceDate
+                    TrailerManageDBUtils.updateBytrailerID(item)
 
         session.commit()
         session.close()
@@ -621,6 +658,16 @@ class WastageManageDBUtils(object):
         session.close()
         return allWastage
 
+    # # 根据定损日期月份查询求和
+    # @classmethod
+    # def queryMonthWastageByMonth(cls, month):
+    #     session = DBSession()
+    #     queryAll = session.query(WastageManage).filter(WastageManage.checkDate.like(month)).all()
+    #     allMonthWastage = []
+    #     for item in queryAll:
+    #         allMonthWastage.append(int(item.wastageCount))
+    #     session.close()
+    #     return sum(allMonthWastage)
 
 # <- 损耗校验 End ->
 
@@ -807,5 +854,108 @@ class BusinessViewUtils(object):
         ratio = wastageTotal/purchaseTotal
         return format(DataUtils.switchToPercent(ratio), '.2%')
 
+    @classmethod
+    def getSaleCount(cls, queryAll):
+        allSaleCount = []
+        for item in queryAll:
+            allSaleCount.append(float(item.count))
+
+        return sum(allSaleCount)
 
 
+    @classmethod
+    def getPurchaseCount(cls, queryAll):
+        allPurchaseCount = []
+        for item in queryAll:
+            allPurchaseCount.append(float(item.count))
+
+        return sum(allPurchaseCount)
+
+    @classmethod
+    def getAmountCount(cls, queryAll):
+        allAmountCount = []
+        for item in queryAll:
+            itemAmount = float(item.count) * float(item.unitPrice)
+            allAmountCount.append(itemAmount)
+
+        return sum(allAmountCount)
+
+    @classmethod
+    def getMonthWastageCount(cls, queryAll):
+        allMonthWastage = []
+        for item in queryAll:
+            allMonthWastage.append(float(item.wastageCount))
+
+        return sum(allMonthWastage)
+
+
+    @classmethod
+    def getHomePageSummary(cls):
+        session = DBSession()
+        # 当年销售总量/总额
+        queryAllCurrentYearSaleCount = session.query(SalesList).filter(
+            SalesList.orderDate.like(DateUtils.get_current_Y()+"%")).all()
+        currentYearSaleSum = BusinessViewUtils.getSaleCount(queryAllCurrentYearSaleCount)
+
+
+        # 本月销售总量/总额
+        queryAllCurrentMonthSaleCount = session.query(SalesList).filter(
+            SalesList.orderDate.like(DateUtils.get_current_YM() + "%")).all()
+        currentMonthSaleSum = BusinessViewUtils.getSaleCount(queryAllCurrentMonthSaleCount)
+        currentMonthSaleAmount = BusinessViewUtils.getAmountCount(queryAllCurrentMonthSaleCount)
+
+        # 上月销售总量/总额
+        queryAllLastMonthSaleCount = session.query(SalesList).filter(
+            SalesList.orderDate.like(DateUtils.get_last_YM() + "%")).all()
+        lastMonthSaleSum = BusinessViewUtils.getSaleCount(queryAllLastMonthSaleCount)
+        lastMonthSaleAmount = BusinessViewUtils.getAmountCount(queryAllLastMonthSaleCount)
+
+        # 当年采购总量/总额
+        queryAllCurrentYearPurchaseCount = session.query(MaterialPurchase).filter(
+            MaterialPurchase.orderDate.like(DateUtils.get_current_Y() + "%")).all()
+        currentYearPurchaseSum = BusinessViewUtils.getPurchaseCount(queryAllCurrentYearPurchaseCount)
+
+        # 本月采购总量/总额
+        queryAllCurrentMonthPurchaseCount = session.query(MaterialPurchase).filter(
+            MaterialPurchase.orderDate.like(DateUtils.get_current_YM() + "%")).all()
+        currentMonthPurchaseSum = BusinessViewUtils.getPurchaseCount(queryAllCurrentMonthPurchaseCount)
+        currentMonthPurchaseAmount = BusinessViewUtils.getAmountCount(queryAllCurrentMonthPurchaseCount)
+
+        # 上月采购总量/总额
+        queryAllLastMonthPurchaseCount = session.query(MaterialPurchase).filter(
+            MaterialPurchase.orderDate.like(DateUtils.get_last_YM() + "%")).all()
+        lastMonthPurchaseSum = BusinessViewUtils.getPurchaseCount(queryAllLastMonthPurchaseCount)
+        lastMonthPurchaseAmount = BusinessViewUtils.getAmountCount(queryAllLastMonthPurchaseCount)
+
+        # 当年损耗总量
+        queryAllCurrentYearWastage = session.query(WastageManage).filter(
+            WastageManage.checkDate.like(DateUtils.get_current_Y()+"%")).all()
+        currentYearWastageSum = BusinessViewUtils.getMonthWastageCount(queryAllCurrentYearWastage)
+
+        # 当月损耗总量
+        queryAllCurrentMonthWastage = session.query(WastageManage).filter(
+            WastageManage.checkDate.like(DateUtils.get_current_YM()+"%")).all()
+        currentMonthWastageSum = BusinessViewUtils.getMonthWastageCount(queryAllCurrentMonthWastage)
+
+        # 上月损耗总量
+        queryAllLastMonthWastage = session.query(WastageManage).filter(
+            WastageManage.checkDate.like(DateUtils.get_last_YM()+"%")).all()
+        lastMonthWastageSum = BusinessViewUtils.getMonthWastageCount(queryAllLastMonthWastage)
+
+
+        session.close()
+
+        return {"currentYearSaleSum": currentYearSaleSum,
+                "currentMonthSaleSum": currentMonthSaleSum,
+                "currentMonthSaleAmount": round(currentMonthSaleAmount, 2),
+                "lastMonthSaleSum": lastMonthSaleSum,
+                "lastMonthSaleAmount": round(lastMonthSaleAmount, 2),
+                "currentYearPurchaseSum": currentYearPurchaseSum,
+                "currentMonthPurchaseSum": currentMonthPurchaseSum,
+                "currentMonthPurchaseAmount": round(currentMonthPurchaseAmount, 2),
+                "lastMonthPurchaseSum": lastMonthPurchaseSum,
+                "lastMonthPurchaseAmount": round(lastMonthPurchaseAmount, 2),
+                "currentYearWastageSum": currentYearWastageSum,
+                "currentMonthWastageSum": currentMonthWastageSum,
+                "lastMonthWastageSum": lastMonthWastageSum
+                }

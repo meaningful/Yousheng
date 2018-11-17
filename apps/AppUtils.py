@@ -53,6 +53,28 @@ class DateUtils(object):
         return _year + _mon + _day + _hour + _min + _sec
 
     @classmethod
+    def get_current_Y(cls):
+        localtime = time.asctime(time.localtime(time.time()))
+        now = parse(localtime)
+        return str(now)[0:5]
+
+    @classmethod
+    def get_current_YM(cls):
+        localtime = time.asctime(time.localtime(time.time()))
+        now = parse(localtime)
+        return str(now)[0:7]
+
+    @classmethod
+    def get_last_YM(cls):
+        # 当前时间
+        localtime = time.asctime(time.localtime(time.time()))
+        now = parse(localtime)
+        # 上个月的时间
+        lastDate = now + relativedelta(months=-1)
+        return str(lastDate)[0:7]
+
+
+    @classmethod
     def getIntervalMonthDate(cls, intervalMonth):
         # 当前时间
         localtime = time.asctime(time.localtime(time.time()))

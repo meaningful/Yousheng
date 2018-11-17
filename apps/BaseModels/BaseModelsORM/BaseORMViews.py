@@ -476,6 +476,21 @@ class TractorManageDBUtils(object):
         session.close()
 
     @classmethod
+    def updateBytractorID(cls, tractor):
+        if not isinstance(tractor, TractorManage):
+            raise TypeError('The parameter tractor is not instance of the TractorManage instance')
+        session = DBSession()
+        item_to_update = session.query(TractorManage).filter(TractorManage.tractorID == tractor.tractorID).first()
+        item_to_update.tractorID = tractor.tractorID
+        item_to_update.annualInspectionTime = tractor.annualInspectionTime
+        item_to_update.annualInspectionCycle = tractor.annualInspectionCycle
+        item_to_update.insuranceTime = tractor.insuranceTime
+        item_to_update.chassisNumber = tractor.chassisNumber
+        item_to_update.deliveryTime = tractor.deliveryTime
+        session.commit()
+        session.close()
+
+    @classmethod
     def queryAll(cls):
         session = DBSession()
         queryAll = session.query(TractorManage).all()
@@ -547,6 +562,21 @@ class TrailerManageDBUtils(object):
         item_to_update.chassisNumber = trailer.chassisNumber
         item_to_update.deliveryTime = trailer.deliveryTime
         item_to_update.currentBalance = trailer.currentBalance
+        session.commit()
+        session.close()
+
+    @classmethod
+    def updateBytrailerID(cls, trailer):
+        if not isinstance(trailer, TrailerManage):
+            raise TypeError('The parameter trailer is not instance of the TrailerManage instance')
+        session = DBSession()
+        item_to_update = session.query(TrailerManage).filter(TrailerManage.trailerID == trailer.trailerID).first()
+        item_to_update.trailerID = trailer.trailerID
+        item_to_update.annualInspectionTime = trailer.annualInspectionTime
+        item_to_update.annualInspectionCycle = trailer.annualInspectionCycle
+        item_to_update.insuranceTime = trailer.insuranceTime
+        item_to_update.chassisNumber = trailer.chassisNumber
+        item_to_update.deliveryTime = trailer.deliveryTime
         session.commit()
         session.close()
 
@@ -638,6 +668,25 @@ class UserDBUtils(object):
 
 
 # <- 用户管理表 end ->
+
+
+# vehicleType  车辆类型（挂车/拖车）
+# vehicleID    车辆编号
+# lastAnnualInspectionTime 上次年检时间
+# annualInspectionCycle  年检周期
+# nextAnnualInspectionTime 下次年检时间
+# intervalDeadline  距离下次年检天数
+
+class VehicleMaintenanceTip(object):
+
+    def __init__(self, vehicleType, vehicleID, lastAnnualInspectionTime, annualInspectionCycle,
+                 nextAnnualInspectionTime, intervalDeadline):
+        self.vehicleType = vehicleType
+        self.vehicleID = vehicleID
+        self.lastAnnualInspectionTime = lastAnnualInspectionTime
+        self.annualInspectionCycle = annualInspectionCycle
+        self.nextAnnualInspectionTime = nextAnnualInspectionTime
+        self.intervalDeadline = intervalDeadline
 
 
 class BaseViewUtils(object):
@@ -797,13 +846,13 @@ class BaseViewUtils(object):
     def getIntervalMonthDate(cls, startDate, intervalMonth):
         dateStr = startDate.split("-")
         currentDate = datetime.date(int(dateStr[0]), int(dateStr[1]), int(dateStr[2]))
-        return currentDate+relativedelta(months=intervalMonth)
+        return currentDate + relativedelta(months=intervalMonth)
 
     # 筛选条件：上次年检时间 + 年检周期 - 当前日期 <= 15 天
     @classmethod
-    def getMaintenanceInfoForHome(cls):
+    def getMaintenanceTipsForHome(cls):
         session = DBSession()
-
+        allTips = []
         queryAllTractor = session.query(TractorManage).all()
         for item in queryAllTractor:
             # 上次年检时间
@@ -811,13 +860,29 @@ class BaseViewUtils(object):
             # 年检周期
             cycle = item.annualInspectionCycle
             # 下次年检日期
-            dateNext= BaseViewUtils.getIntervalMonthDate(lastAnnualInspectionTime, cycle).strftime("%Y-%m-%d")
+            dateNext = BaseViewUtils.getIntervalMonthDate(lastAnnualInspectionTime, cycle).strftime("%Y-%m-%d")
             intervalDays = BaseViewUtils.getIntervalDays(dateNext)
-            if intervalDays <= 15:
-                print(item.annualInspectionCycle)
+            if intervalDays <= 30:
+                tipItem = VehicleMaintenanceTip("拖车", item.tractorID, lastAnnualInspectionTime, cycle, dateNext,
+                                                intervalDays)
+                tip_json = json.dumps(object2dict(tipItem), cls=DateEncoder)
+                tip = json.loads(tip_json)
+                allTips.append(tip)
 
+        queryAllTailer = session.query(TrailerManage).all()
+        for item in queryAllTailer:
+            lastAnnualInspectionTime = item.annualInspectionTime.strftime("%Y-%m-%d")
+            cycle = item.annualInspectionCycle
+            dateNext = BaseViewUtils.getIntervalMonthDate(lastAnnualInspectionTime, cycle).strftime("%Y-%m-%d")
+            intervalDays = BaseViewUtils.getIntervalDays(dateNext)
+            if intervalDays <= 30:
+                tipItem = VehicleMaintenanceTip("挂车", item.trailerID, lastAnnualInspectionTime, cycle, dateNext,
+                                                intervalDays)
+                tip_json = json.dumps(object2dict(tipItem), cls=DateEncoder)
+                tip = json.loads(tip_json)
+                allTips.append(tip)
 
-            allTailer = session.query(TrailerManage).all()
+        session.close()
+        return allTips
 
-        return {}
 

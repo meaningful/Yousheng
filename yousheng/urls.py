@@ -70,7 +70,9 @@ urlpatterns = [
     url(r'^getCustomerBillListSelectData$', view.getCustomerBillListSelectData),
     url(r'^getAllSelectItemDataForSaleList', view.getAllSelectItemDataForSaleList),
     url(r'^getAllSelectItemDataForMaterialPurchase', view.getAllSelectItemDataForMaterialPurchase),
-    url(r'^getBaseInfoForHome', view.getBaseInfoForHome)
+    url(r'^getBaseInfoForHome', view.getBaseInfoForHome),
+    url(r'^getMaintenanceTipsForHome', view.getMaintenanceTipsForHome),
+    url(r'^getSummary', view.getSummary)
 
 ]
 

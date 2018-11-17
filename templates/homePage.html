@@ -18,21 +18,82 @@
 <body class="gray-bg">
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
+        {#        <div class="col-md-4">#}
+        {#            <div class="ibox float-e-margins">#}
+        {#                <div class="ibox-title">#}
+        {#                    <span class="label label-primary pull-right">2018.11.11</span>#}
+        {#                    <h5>今日销量</h5>#}
+        {#                </div>#}
+        {#                <div class="ibox-content">#}
+        {#                    <div class="row">#}
+        {#                        <div class="col-md-6">#}
+        {#                            <h1 class="no-margins">60m³</h1>#}
+        {#                            <small>销量</small>#}
+        {#                        </div>#}
+        {#                        <div class="col-md-6">#}
+        {#                            <h1 class="no-margins">5</h1>#}
+        {#                            <small>销售单数</small>#}
+        {#                        </div>#}
+        {#                    </div>#}
+        {#                </div>#}
+        {#            </div>#}
+        {#        </div>#}
+        {#        <div class="col-md-4">#}
+        {#            <div class="ibox float-e-margins">#}
+        {#                <div class="ibox-title">#}
+        {#                    <span class="label label-primary pull-right">2018.11.11</span>#}
+        {#                    <h5>今日采购量</h5>#}
+        {#                </div>#}
+        {#                <div class="ibox-content">#}
+        {#                    <div class="row">#}
+        {#                        <div class="col-md-6">#}
+        {#                            <h1 class="no-margins">60m³</h1>#}
+        {#                            <small>采购量</small>#}
+        {#                        </div>#}
+        {#                        <div class="col-md-6">#}
+        {#                            <h1 class="no-margins">5</h1>#}
+        {#                            <small>采购单数</small>#}
+        {#                        </div>#}
+        {#                    </div>#}
+        {#                </div>#}
+        {#            </div>#}
+        {#        </div>#}
+        {#        <div class="col-md-4">#}
+        {#            <div class="ibox float-e-margins">#}
+        {#                <div class="ibox-title">#}
+        {#                    <span class="label label-primary pull-right">2018.11.11</span>#}
+        {#                    <h5>今日营收</h5>#}
+        {#                </div>#}
+        {#                <div class="ibox-content">#}
+        {#                    <div class="row">#}
+        {#                        <div class="col-md-6">#}
+        {#                            <h1 class="no-margins">¥5000</h1>#}
+        {#                            <small>销售额</small>#}
+        {#                        </div>#}
+        {#                        <div class="col-md-6">#}
+        {#                            <h1 class="no-margins">¥608</h1>#}
+        {#                            <small>采购额</small>#}
+        {#                        </div>#}
+        {#                    </div>#}
+        {#                </div>#}
+        {#            </div>#}
+        {#        </div>#}
         <div class="col-md-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <span class="label label-primary pull-right">2018.11.11</span>
-                    <h5>今日销量</h5>
+                    <span id="span_deadline" class="label label-success pull-right">--</span>
+                    <h5>销售统计(单位:m³)</h5>
                 </div>
                 <div class="ibox-content">
                     <div class="row">
                         <div class="col-md-6">
-                            <h1 class="no-margins">60m³</h1>
-                            <small>销量</small>
+                            <h1 id="currentMonthSaleSum" class="no-margins">--</h1>
+                            <small>本月销售量</small>
+                            <small id="currentMonthSaleSumUpPercentage" class="font-bold text-navy">--</small>
                         </div>
                         <div class="col-md-6">
-                            <h1 class="no-margins">5</h1>
-                            <small>销售单数</small>
+                            <h1 id="currentYearSaleSum" class="no-margins">--</h1>
+                            <small>年销售总量</small>
                         </div>
                     </div>
                 </div>
@@ -41,108 +102,19 @@
         <div class="col-md-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <span class="label label-primary pull-right">2018.11.11</span>
-                    <h5>今日采购量</h5>
+                    <span id="span_deadline" class="label label-success pull-right">--</span>
+                    <h5>采购统计(单位:m³)</h5>
                 </div>
                 <div class="ibox-content">
                     <div class="row">
                         <div class="col-md-6">
-                            <h1 class="no-margins">60m³</h1>
-                            <small>采购量</small>
+                            <h1 id="currentMonthPurchaseSum" class="no-margins">--</h1>
+                            <small>本月采购量</small>
+                            <small id="currentMonthPurchaseSumUpPercentage" class="font-bold text-navy">--</small>
                         </div>
                         <div class="col-md-6">
-                            <h1 class="no-margins">5</h1>
-                            <small>采购单数</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <span class="label label-primary pull-right">2018.11.11</span>
-                    <h5>今日营收</h5>
-                </div>
-                <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h1 class="no-margins">¥5000</h1>
-                            <small>销售额</small>
-                        </div>
-                        <div class="col-md-6">
-                            <h1 class="no-margins">¥608</h1>
-                            <small>采购额</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <span class="label label-success pull-right">截止 2018.11</span>
-                    <h5>月销售总量</h5>
-                </div>
-                <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h1 class="no-margins">406m³</h1>
-                            <small>月销售总量</small>
-                            <small class="font-bold text-success">44% <i class="fa fa-level-up"></i></small>
-                        </div>
-                        <div class="col-md-6">
-                            <h1 class="no-margins">40</h1>
-                            <small>月销售单量</small>
-                            <small class="font-bold text-navy">-4% <i class="fa fa-level-down"></i></small>
-                        </div>
-
-
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <span class="label label-success pull-right">截止 2018.11</span>
-                    <h5>月采购总量</h5>
-                </div>
-                <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h1 class="no-margins">8906m³</h1>
-                            <small>月采购总量</small>
-                            <small class="font-bold text-success">44% <i class="fa fa-level-up"></i></small>
-                        </div>
-                        <div class="col-md-6">
-                            <h1 class="no-margins">406</h1>
-                            <small>月采购单数</small>
-                            <small class="font-bold text-navy">-4% <i class="fa fa-level-down"></i></small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <span class="label label-success pull-right">截止2018.11</span>
-                    <h5>月营收</h5>
-                </div>
-                <div class="ibox-content">
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h1 class="no-margins">&yen; 406,420</h1>
-                            <small>月销售额</small>
-                            <small class="font-bold text-navy">44% <i class="fa fa-level-up"></i></small>
-                        </div>
-                        <div class="col-md-6">
-                            <h1 class="no-margins">106</h1>
-                            <small>月采购额</small>
-                            <small class="font-bold text-navy">22% <i class="fa fa-level-up"></i></small>
+                            <h1 id="currentYearPurchaseSum" class="no-margins">--</h1>
+                            <small>年采购总量</small>
                         </div>
                     </div>
                 </div>
@@ -152,28 +124,53 @@
         <div class="col-md-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <span class="label  pull-right">截止2018.11</span>
-                    <h5>损耗统计</h5>
+                    <span id="span_deadline" class="label  label-success pull-right">--</span>
+                    <h5>损耗统计(单位:m³)</h5>
                 </div>
                 <div class="ibox-content">
 
                     <div class="row">
                         <div class="col-md-6">
-                            <h1 class="no-margins">60m³</h1>
-                            <small>月损耗量</small>
-                            <small class="font-bold text-navy">44% <i class="fa fa-level-up"></i></small>
+                            <h1 id="currentMonthWastageSum" class="no-margins">--</h1>
+                            <small> 本月损耗量</small>
+                            <small id="currentMonthWastageUpPercentage" class="font-bold text-navy">--</small>
                         </div>
                         <div class="col-md-6">
-                            <h1 class="no-margins">160m³</h1>
+                            <h1 id="currentYearWastageSum" class="no-margins">--</h1>
                             <small>年损耗总量</small>
-                            <small class="font-bold text-navy">22% <i class="fa fa-level-up"></i></small>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="col-md-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <span id="span_deadline" class="label label-success pull-right">--</span>
+                    <h5>营收统计(单位:元)</h5>
+                </div>
+                <div class="ibox-content">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h1 id="currentMonthSaleAmount" class="no-margins">--</h1>
+                            <small>本月销售额</small>
+                            <small id="currentMonthSaleAmountUpPercentage" class="font-bold text-navy">--</small>
+                        </div>
+                        <div class="col-md-6">
+                            <h1 id="currentMonthPurchaseAmount" class="no-margins">--</h1>
+                            <small>本月采购额</small>
+                            <small id="currentMonthPurchaseAmountUpPercentage" class="font-bold text-navy">--</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
+    <!-- 车辆年检提醒 -->
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
@@ -181,20 +178,13 @@
                     <h5>车辆年检提醒</h5>
                 </div>
                 <div class="ibox-content">
-                    <div id="maintenanceList" class="row">
-                        {#                        <div class="col-xs-4">#}
-                        {#                            <small class="stats-label">公司总人数/在职人数</small>#}
-                        {#                            <h4>236 220</h4>#}
-                        {#                        </div>#}
-                        <p style="margin-left: 20px;">挂车001 上次年检时间 <span style="color:#0000cc"> 2018-05-20</span>
-                            年检周期6个月 下次年检截止日期：<span style="color:#FF2F2F"> 2018-11-20</span>
-                        </p>
-                    </div>
+                    <ul id="maintenanceList" class="row"></ul>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- 基础信息一览表 -->
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
@@ -244,11 +234,131 @@
 
 <script type="text/javascript">
 
+    function toPercentage(num, total) {
+        // 小数点后两位百分比
+        return (Math.round(num / total * 10000) / 100.00 + "%");
+
+    }
+
+    function getCurrentFormatDate() {
+        var nowDate = new Date();
+        var year = nowDate.getFullYear();
+        var month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1) : nowDate.getMonth() + 1;
+        var date = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();
+        return year + "/" + month + "/" + date;
+    }
+
+    // 获取数据汇总信息
+    function getSummary() {
+        $.ajax({
+            type: "get",
+            async: true,
+            url: "./getSummary",
+            dataType: "json",
+            success: function (result) {
+                var info = eval('(' + result.showData + ')');
+                console.log(info);
+                var arrow_down = "&nbsp;&nbsp;<i class=\"fa fa-level-down\"></i>";
+                var arrow_up = "&nbsp;&nbsp;<i class=\"fa fa-level-up\"></i>";
+
+                // 销售统计
+                $(" #currentYearSaleSum ").text(info.currentYearSaleSum);
+                var current_month_sale_sum = info.currentMonthSaleSum;
+                var last_month_sale_sum = info.lastMonthSaleSum;
+                $(" #currentMonthSaleSum ").text(current_month_sale_sum);
+                var current_month_sale_up_to_last = toPercentage((current_month_sale_sum - last_month_sale_sum), last_month_sale_sum);
+                var text_current_month_sale_up_to_last = current_month_sale_up_to_last;
+                if (current_month_sale_sum >= last_month_sale_sum) {
+                    text_current_month_sale_up_to_last += arrow_up;
+                } else {
+                    text_current_month_sale_up_to_last += arrow_down;
+                }
+                $(" #currentMonthSaleSumUpPercentage ").html(text_current_month_sale_up_to_last);
+
+
+                // 采购统计
+                $(" #currentYearPurchaseSum ").text(info.currentYearPurchaseSum);
+                var current_month_purchase_sum = info.currentMonthPurchaseSum;
+                var last_month_purchase_sum = info.lastMonthPurchaseSum;
+                $(" #currentMonthPurchaseSum ").text(current_month_purchase_sum);
+                var current_month_purchase_up_to_last = toPercentage((current_month_purchase_sum - last_month_purchase_sum), last_month_purchase_sum);
+                var text_current_month_purchase_up_to_last = current_month_purchase_up_to_last;
+                if (current_month_purchase_sum >= last_month_purchase_sum) {
+                    text_current_month_purchase_up_to_last += arrow_up;
+                } else {
+                    text_current_month_purchase_up_to_last += arrow_down;
+                }
+                $(" #currentMonthPurchaseSumUpPercentage ").html(text_current_month_purchase_up_to_last);
+
+
+                // 损耗统计
+                $(" #currentYearWastageSum ").text(info.currentYearWastageSum);
+                var current_month_wastage_sum = info.currentMonthWastageSum;
+                var last_month_wastage_sum = info.lastMonthWastageSum;
+                $(" #currentMonthWastageSum ").text(current_month_wastage_sum);
+                var current_month_wastage_up_to_last = toPercentage((current_month_wastage_sum - last_month_wastage_sum), last_month_wastage_sum);
+                var text_ucurrent_month_wastage_up_to_last = current_month_wastage_up_to_last;
+                if (current_month_wastage_sum >= last_month_wastage_sum) {
+                    text_ucurrent_month_wastage_up_to_last += arrow_up;
+                } else {
+                    text_ucurrent_month_wastage_up_to_last += arrow_down;
+                }
+                $(" #currentMonthWastageUpPercentage ").html(text_ucurrent_month_wastage_up_to_last);
+
+
+                // 营收统计
+                var current_month_sale_amount = info.currentMonthSaleAmount;
+                var last_month_sale_amount = info.lastMonthSaleAmount
+                $(" #currentMonthSaleAmount ").text(current_month_sale_amount)
+                var current_month_sale_amount_up_to_last = toPercentage((current_month_sale_amount - last_month_sale_amount), last_month_sale_amount);
+                if (current_month_sale_amount >= last_month_sale_amount) {
+                    current_month_sale_amount_up_to_last += arrow_up;
+                } else {
+                    current_month_sale_amount_up_to_last += arrow_down;
+                }
+                $(" #currentMonthSaleAmountUpPercentage ").html(current_month_sale_amount_up_to_last);
+
+
+                var current_month_purchase_amount = info.currentMonthPurchaseAmount;
+                var last_month_purchase_amount = info.lastMonthPurchaseAmount
+                $(" #currentMonthPurchaseAmount ").text(current_month_purchase_amount)
+                var current_month_purchase_amount_up_to_last = toPercentage((current_month_purchase_amount - last_month_purchase_amount), last_month_purchase_amount);
+
+                if (current_month_purchase_amount >= last_month_purchase_amount) {
+                    current_month_purchase_amount_up_to_last += arrow_up;
+                } else {
+                    current_month_purchase_amount_up_to_last += arrow_down;
+                }
+                $(" #currentMonthPurchaseAmountUpPercentage ").html(current_month_purchase_amount_up_to_last)
+
+
+            }
+        });
+    }
+
     // 获取车辆年检提醒信息
-    function getManitenanceInfo() {
-        var tipListDiv = $(" #maintenanceList ");
-        tipListDiv.text("");
-        tipListDiv.append("<h1 style='color:#FF0000;'>test</h1>")
+    function getManitenanceTips() {
+        $.ajax({
+            type: "get",
+            async: true,
+            url: "./getMaintenanceTipsForHome",
+            dataType: "json",
+            success: function (result) {
+                var infos = eval('(' + result.showData + ')');
+                var tipListDiv = $(" #maintenanceList ");
+                tipListDiv.text("");
+                for (var i = 0; i < infos.length; i++) {
+                    var info = infos[i];
+                    tipListDiv.append(" <li><h5><span style=\"color: #0000CC\">" + info.vehicleType + info.vehicleID + "</span>上次年检时间为:" +
+                        "<span style=\"color: #0000CC\">" + info.lastAnnualInspectionTime + "</span>，年检周期" +
+                        "<span style=\"color: #0000CC\">" + info.annualInspectionCycle + "</span>个月，下次年检时间为：" +
+                        "<span style=\"color: #0000CC\">" + info.nextAnnualInspectionTime + "</span>，" +
+                        "距离下次年检时间还有<span style=\"color: #FF0000\">" + info.intervalDeadline +
+                        "</span>天，请及时安排年检！</h5></li>");
+                }
+            }
+        });
+
     }
 
     // 获取基础信息
@@ -259,21 +369,27 @@
             url: "./getBaseInfoForHome",
             dataType: "json",
             success: function (result) {
-                var info = eval('(' + result.showData + ')')
-
-                $(" #staffCount ").text(info.staffCount)
-                $(" #customerCount ").text(info.customerCount)
-                $(" #supplierCount ").text(info.supplierCount)
-                $(" #gasCount ").text(info.gasCount)
-                $(" #tractorCount ").text(info.tractorCount)
-                $(" #trailerCount ").text(info.trailerCount)
+                var info = eval('(' + result.showData + ')');
+                $(" #staffCount ").text(info.staffCount);
+                $(" #customerCount ").text(info.customerCount);
+                $(" #supplierCount ").text(info.supplierCount);
+                $(" #gasCount ").text(info.gasCount);
+                $(" #tractorCount ").text(info.tractorCount);
+                $(" #trailerCount ").text(info.trailerCount);
             }
         });
     }
 
     $(document).ready(function () {
+        var deadline_text = "截止：" + getCurrentFormatDate();
+        $("span[id^='span_deadline']").each(function (i) {
+            $(this).html(deadline_text);
+        });
+
+        getSummary()
+        getManitenanceTips();
         getBaseInfo();
-        getManitenanceInfo();
+
     });
 
 

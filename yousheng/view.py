@@ -13,6 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
 from apps.BusinessUtils import ViewModelsDBUtils, SelectItemDataUtils
 from apps.BaseModels.BaseModelsORM.BaseORMViews import BaseViewUtils
+from apps.BussinessModels.BussinessModelsORM.BusinessORMViews import BusinessViewUtils
 
 
 def index(request):
@@ -38,11 +39,17 @@ def index(request):
 def homePage(request):
     return render(request, "homePage.html")
 
+def getSummary(request):
+    summaryInfo = BusinessViewUtils.getHomePageSummary()
+    return JsonResponse({'showData': json.dumps(summaryInfo)})
 
 def getBaseInfoForHome(request):
     baseInfo = BaseViewUtils.getBaseInfoForHome()
     return JsonResponse({'showData': json.dumps(baseInfo)})
 
+def getMaintenanceTipsForHome(request):
+    manitenanceTipsInfo = BaseViewUtils.getMaintenanceTipsForHome()
+    return JsonResponse({'showData': json.dumps(manitenanceTipsInfo)})
 
 def unfound(request):
     return render(request, "404.html")
