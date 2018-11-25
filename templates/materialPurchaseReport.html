@@ -21,12 +21,16 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <div>
-                        按时间段查询采购单报表：
+                        查询已入库的采购单：
+                        供应商名称: <select id="supplierName" style="width: 150px"> </select> &nbsp;&nbsp;
+                        气体类型: <select id="category" style="width: 150px"> </select> &nbsp;&nbsp;
                         下单日期 From:
-                        <input id="fromDate" class="Wdate" type="text" onClick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd'})">
+                        <input id="fromDate" class="Wdate" type="text"
+                               onClick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd'})">
                         To:
-                        <input id="deadline" class="Wdate" type="text" onClick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd'})">
-                        <button onclick="searchByDate()">搜索</button>
+                        <input id="deadline" class="Wdate" type="text"
+                               onClick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd'})">
+                        <button onclick="searchByDate()" style="width: 60px;">搜索</button>
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -47,15 +51,68 @@
 <script src="{% static "js/plugins/jqgrid/jquery.jqGrid.minffe4.js" %}?0820"></script>
 
 <script type="text/javascript">
+    function isEmpty(obj) {
+        if (typeof obj == "undefined" || obj == null || obj == "") {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
+    function decodeUnicode(str) {
+        str = str.replace(/\\/g, "%");
+        return unescape(str);
+    }
+
+    function handleData(item) {
+        var data = item.substring(1, item.length - 1);
+        var str = data.replace(/\"/g, "")
+        var strArr = str.split(",")
+        return strArr
+    }
+
+
+    //初始化下拉菜单数据
+    function initSelectOptions() {
+        $.ajax({
+            type: "get",
+            async: true,
+            url: "./getSelectDataForMaterialPurchaseReport",
+            dataType: "json",
+            success: function (result) {
+                // 解析客户名称
+                var strArrSupplierNames = handleData(result.allSupplierNames);
+                $("#supplierName").html(""); //绑定客户名称下拉菜单
+                $("#supplierName").append($("<option value=\"\"> --所有供应商-- </option>"));
+                for (var i = 0; i < strArrSupplierNames.length; i++) {
+                    $("#supplierName").append($("<option value=\"" + decodeUnicode($.trim(strArrSupplierNames[i])) + "\">" + decodeUnicode($.trim(strArrSupplierNames[i])) + "</option>"));
+                }
+
+                $("#category").html("");
+                $("#category").append($("<option value=\"\"> --所有类型-- </option>"));
+                //解析气体种类
+                var strArrGasCategory = handleData(result.allGasNames);
+                for (var i = 0; i < strArrGasCategory.length; i++) {
+                    $("#category").append($("<option value=\"" + decodeUnicode($.trim(strArrGasCategory[i])) + "\">" + decodeUnicode($.trim(strArrGasCategory[i])) + "</option>"));
+                }
+            }
+        });
+    }
 
     function searchByDate() {
+        var supplierName = $(" #supplierName ").val();
+        var category = $(" #category ").val();
         var fromDate = $(" #fromDate ").val();
         var deadline = $(" #deadline ").val();
+
+        if ((isEmpty(fromDate) && !isEmpty(deadline)) || (!isEmpty(fromDate) && isEmpty(deadline))) {
+            alert("无效的查询条件： 起始日期不正确！");
+        }
+
         $.ajax({
             type: "get",
             async: false,
-            data: {fromDate: fromDate, deadline: deadline},
+            data: {supplierName: supplierName, category: category, fromDate: fromDate, deadline: deadline},
             url: "./searchMaterialPurchaseByDate",
             dataType: "json",
             success: function (result) {
@@ -119,6 +176,10 @@
             jQuery("#table_list_2").jqGrid('addRowData', i + 1, jqdata[i]);
         }
     }
+
+    $(document).ready(function () {
+        initSelectOptions();
+    });
 </script>
 
 </body>

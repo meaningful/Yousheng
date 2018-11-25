@@ -73,9 +73,8 @@
             dataType: "json",
             success: function (result) {
                 // 解析客户名称
-                strArr = handleData(result.allCustomNames);
+                var strArr = handleData(result.allCustomNames);
                 $("#customName").html(""); //绑定客户名称下拉菜单
-                //$("#customName").append($("<option value=\"0\"> -请选择客户名称- </option>"));
                 for (var i = 0; i < strArr.length; i++) {
                     $("#customName").append($("<option value=\"" + decodeUnicode($.trim(strArr[i])) + "\">" + decodeUnicode($.trim(strArr[i])) + "</option>"));
                 }

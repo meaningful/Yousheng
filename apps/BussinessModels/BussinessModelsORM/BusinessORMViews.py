@@ -429,12 +429,56 @@ class MaterialPurchaseDBUtils(object):
         return allMaterialPurchase
 
     @classmethod
-    def queryAllMaterialPurchaseByDate(cls, isStoraged, fromDate, deadline):
+    def queryAllMaterialPurchaseByDate(cls, supplierName, category, fromDate, deadline):
         session = DBSession()
-        queryAll = session.query(MaterialPurchase).filter(
-            MaterialPurchase.isStoraged == isStoraged,
-            MaterialPurchase.orderDate >= fromDate,
-            MaterialPurchase.orderDate <= deadline).all()
+        # 1. 仅 supplierName 不为空
+        if supplierName.strip() and not category.strip() and not fromDate.strip() and not deadline.strip():
+            queryAll = session.query(MaterialPurchase).order_by(desc(MaterialPurchase.orderDate)).filter(
+                MaterialPurchase.supplierName == supplierName,
+                MaterialPurchase.isStoraged == MaterialPurchaseDBUtils.IS_STORAGED_YES).all()
+        # 2. 仅 category 不为空
+        elif not supplierName.strip() and category.strip() and not fromDate.strip() and not deadline.strip():
+            queryAll = session.query(MaterialPurchase).order_by(desc(MaterialPurchase.orderDate)).filter(
+                MaterialPurchase.category == category,
+                MaterialPurchase.isStoraged == MaterialPurchaseDBUtils.IS_STORAGED_YES).all()
+        # 3. 仅 date 不为空
+        elif not supplierName.strip() and not category.strip() and fromDate.strip() and deadline.strip():
+            queryAll = session.query(MaterialPurchase).order_by(desc(MaterialPurchase.orderDate)).filter(
+                MaterialPurchase.orderDate >= fromDate,
+                MaterialPurchase.orderDate <= deadline,
+                MaterialPurchase.isStoraged == MaterialPurchaseDBUtils.IS_STORAGED_YES).all()
+        # 4. 仅 supplierName 为空
+        elif not supplierName.strip() and category.strip() and fromDate.strip() and deadline.strip():
+            queryAll = session.query(MaterialPurchase).order_by(desc(MaterialPurchase.orderDate)).filter(
+                MaterialPurchase.category == category,
+                MaterialPurchase.orderDate >= fromDate,
+                MaterialPurchase.orderDate <= deadline,
+                MaterialPurchase.isStoraged == MaterialPurchaseDBUtils.IS_STORAGED_YES).all()
+        # 5. 仅 category 为空
+        elif supplierName.strip() and not category.strip() and fromDate.strip() and deadline.strip():
+            queryAll = session.query(MaterialPurchase).order_by(desc(MaterialPurchase.orderDate)).filter(
+                MaterialPurchase.supplierName == supplierName,
+                MaterialPurchase.orderDate >= fromDate,
+                MaterialPurchase.orderDate <= deadline,
+                MaterialPurchase.isStoraged == MaterialPurchaseDBUtils.IS_STORAGED_YES).all()
+        # 6. 仅 date 为空
+        elif supplierName.strip() and category.strip() and not fromDate.strip() and not deadline.strip():
+            queryAll = session.query(MaterialPurchase).order_by(desc(MaterialPurchase.orderDate)).filter(
+                MaterialPurchase.supplierName == supplierName,
+                MaterialPurchase.category == category,
+                MaterialPurchase.isStoraged == MaterialPurchaseDBUtils.IS_STORAGED_YES).all()
+        # 7.查询条件全部不为空
+        elif supplierName.strip() and category.strip() and fromDate.strip() and deadline.strip():
+            queryAll = session.query(MaterialPurchase).order_by(desc(MaterialPurchase.orderDate)).filter(
+                MaterialPurchase.supplierName == supplierName,
+                MaterialPurchase.category == category,
+                MaterialPurchase.orderDate >= fromDate,
+                MaterialPurchase.orderDate <= deadline,
+                MaterialPurchase.isStoraged == MaterialPurchaseDBUtils.IS_STORAGED_YES).all()
+        # 8.查询条件全部为空则查询所有已入库采购单
+        elif not supplierName.strip() and not category.strip() and not fromDate.strip() and not deadline.strip():
+            queryAll = session.query(MaterialPurchase).order_by(desc(MaterialPurchase.orderDate)).filter(
+                MaterialPurchase.isStoraged == MaterialPurchaseDBUtils.IS_STORAGED_YES).all()
 
         allMaterialPurchase = []
         for item in queryAll:

@@ -194,10 +194,11 @@ def materialPurchaseReport(request):
 
 # 根据时间段查询已入库的采购单
 def searchMaterialPurchaseByDate(request):
+    supplierName = request.GET.get("supplierName")
+    category = request.GET.get("category")
     fromDate = request.GET.get("fromDate")
     deadline = request.GET.get("deadline")
-    allMaterialPurchase = MaterialPurchaseDBUtils.queryAllMaterialPurchaseByDate(
-        MaterialPurchaseDBUtils.IS_STORAGED_YES, fromDate, deadline)
+    allMaterialPurchase = MaterialPurchaseDBUtils.queryAllMaterialPurchaseByDate(supplierName, category, fromDate, deadline)
     return JsonResponse({'showData': json.dumps(allMaterialPurchase)})
 
 
@@ -719,10 +720,16 @@ def getAllVehicleIDs(request):
 #     return JsonResponse({"allSupercargoNames": allSupercargoNames})
 
 
-# 获取销售/采购报表页面Select选项数据(客户名称，气体种类)
-def getSelectDataForReport(request):
-    allSelectItemDatas = SelectItemDataUtils.getSelectDataForReport()
+# 获取销售报表页面Select选项数据(客户名称，气体种类)
+def getSelectDataForSaleListReport(request):
+    allSelectItemDatas = SelectItemDataUtils.getSelectDataForSaleListReport()
     return JsonResponse({"allCustomNames": allSelectItemDatas["allCustomNames"],
+                         "allGasNames": allSelectItemDatas["allGasNames"]})
+
+# 获取采购报表页面Select选项数据(供应商名称，气体种类)
+def getSelectDataForMaterialPurchaseReport(request):
+    allSelectItemDatas = SelectItemDataUtils.getSelectDataForMaterialPurchaseReport()
+    return JsonResponse({"allSupplierNames": allSelectItemDatas["allSupplierNames"],
                          "allGasNames": allSelectItemDatas["allGasNames"]})
 
 # 获取客户对账单页面select选项数据

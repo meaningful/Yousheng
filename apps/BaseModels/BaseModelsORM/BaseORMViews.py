@@ -185,6 +185,24 @@ class CustomerManageDBUtils(object):
 
 # <- 客户管理表 End ->
 
+# <- 供货商管理表 Begin ->
+# 供应商编号		supplierID
+# 单位名称		supplierName
+# 电话		tel
+# 地址		addr
+# 公司负责人（姓名）		companyChargeName
+# 公司负责人（职务）		companyChargePosition
+# 公司负责人（电话）		companyChargeTel
+# 公司联系人（姓名）		companyContactName
+# 公司联系人（职务）		companyContactPosition
+# 公司联系人（电话）		companyContactTel
+# 客户资质	三证	customQualification
+# 客户资质（税号）		customTaxFileNO
+# 客户资质（开户行）		customBankOfDepsit
+# 客户资质（账号）		customBankAccount
+# 客户资质（联系人）		customContactName
+# 客户资质（手机）		customContactTel
+# 采购品种		purchaseCategory
 
 class Supplier(Base):
     __tablename__ = 'BaseModels_supplier'
@@ -268,6 +286,7 @@ class SupplierDBUtils(object):
         session.close()
         return allSuppliers
 
+# <- 供货商管理表 End ->
 
 # <- 公司人员管理表 Begin ->
 # 编号		staffID
@@ -699,6 +718,51 @@ class VehicleMaintenanceTip(object):
 
 
 class BaseViewUtils(object):
+
+    @classmethod
+    def getSelectDataForSaleListReport(cls):
+        session = DBSession()
+        queryAllCustom = session.query(CustomerManage).all()
+        allCustomer = []
+        for item in queryAllCustom:
+            customer_json = json.dumps(object2dict(item), cls=DateEncoder)
+            customer = json.loads(customer_json)
+            allCustomer.append(customer)
+
+        queryAllGas = session.query(GasManage).all()
+        allGas = []
+        for item in queryAllGas:
+            gas_json = json.dumps(object2dict(item), cls=DateEncoder)
+            gas = json.loads(gas_json)
+            allGas.append(gas)
+
+        session.close()
+
+        return {"allCustomer": allCustomer,
+                "allGas": allGas}
+
+    @classmethod
+    def getSelectDataForMaterialPurchaseReport(cls):
+        session = DBSession()
+
+        queryAllSuppliers = session.query(Supplier).all()
+        allSuppliers = []
+        for item in queryAllSuppliers:
+            supplier_json = json.dumps(object2dict(item), cls=DateEncoder)
+            supplier = json.loads(supplier_json)
+            allSuppliers.append(supplier)
+
+        queryAllGas = session.query(GasManage).all()
+        allGas = []
+        for item in queryAllGas:
+            gas_json = json.dumps(object2dict(item), cls=DateEncoder)
+            gas = json.loads(gas_json)
+            allGas.append(gas)
+
+        session.close()
+
+        return {"allSuppliers": allSuppliers,
+                "allGas": allGas}
 
     # 查询销售单 Select item 的数据
     @classmethod

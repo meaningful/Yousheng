@@ -31,13 +31,7 @@
                         <input id="deadline" class="Wdate" type="text"
                                onClick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd'})">
 
-                        {#                        <select id="invoiced" name="invoiced">#}
-                        {#                            <option value="NA" selected="selected"> NA</option>#}
-                        {#                            <option value="否"> 否</option>#}
-                        {#                            <option value="是"> 是</option>#}
-                        {#                             #}
-                        {#                        </select>#}
-                        <button onclick="searchByDate()" style="width: 80px;">查询</button>
+                        <button onclick="searchByDate()" style="width: 60px;">查询</button>
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -85,21 +79,21 @@
         $.ajax({
             type: "get",
             async: true,
-            url: "./getSelectDataForReport",
+            url: "./getSelectDataForSaleListReport",
             dataType: "json",
             success: function (result) {
                 // 解析客户名称
-                strArrCustomerNames = handleData(result.allCustomNames);
+                var strArrCustomerNames = handleData(result.allCustomNames);
                 $("#customName").html(""); //绑定客户名称下拉菜单
                 $("#customName").append($("<option value=\"\"> --所有客户-- </option>"));
                 for (var i = 0; i < strArrCustomerNames.length; i++) {
                     $("#customName").append($("<option value=\"" + decodeUnicode($.trim(strArrCustomerNames[i])) + "\">" + decodeUnicode($.trim(strArrCustomerNames[i])) + "</option>"));
                 }
-                console.log(result.allGasNames)
+
                 $("#category").html("");
                 $("#category").append($("<option value=\"\"> --所有类型-- </option>"));
                 //解析气体种类
-                strArrGasCategory = handleData(result.allGasNames);
+                var strArrGasCategory = handleData(result.allGasNames);
                 for (var i = 0; i < strArrGasCategory.length; i++) {
                     $("#category").append($("<option value=\"" + decodeUnicode($.trim(strArrGasCategory[i])) + "\">" + decodeUnicode($.trim(strArrGasCategory[i])) + "</option>"));
                 }
@@ -113,7 +107,7 @@
         var fromDate = $(" #fromDate ").val();
         var deadline = $(" #deadline ").val();
 
-        if((isEmpty(fromDate) && !isEmpty(deadline)) || (!isEmpty(fromDate) && isEmpty(deadline))){
+        if ((isEmpty(fromDate) && !isEmpty(deadline)) || (!isEmpty(fromDate) && isEmpty(deadline))) {
             alert("无效的查询条件： 起始日期不正确！");
         }
 
