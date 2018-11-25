@@ -49,8 +49,12 @@
         var url = window.location.href;
         var herfData = url.split("=");
         var customName = decodeURI(String((herfData[1].split("&"))[0]));
-        var billDateYear = (herfData[2].split("&"))[0];
-        var billDateMonth = (herfData[3].split("&"))[0];
+        var billDate =  (herfData[2].split("&"))[0];
+        var billDateYear = billDate.slice(0,4);
+        var billDateMonth = billDate.slice(5,7);
+        console.log(customName);
+        console.log(billDateYear);
+        console.log(billDateMonth);
 
         var strTableTitle = billDateYear + "年" + billDateMonth + "月份" + customName + "液体结算明细";
         $("#tableTitle").text(strTableTitle);

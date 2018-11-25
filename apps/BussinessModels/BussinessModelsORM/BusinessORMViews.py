@@ -116,9 +116,9 @@ class SalesListDBUtils(object):
             latestCustomPaymentInfo = session.query(CustomPaymentInfo).order_by(desc(CustomPaymentInfo.payTime),
                                                                                 desc(CustomPaymentInfo.id)).filter(
                 CustomPaymentInfo.customName == salesList.customName).first()
-
-            latestCustomPaymentInfo.balance = DataUtils.strNumToDeciaml(
-                latestCustomPaymentInfo.balance) - DataUtils.countSaleListPrice(salesList.count, salesList.unitPrice)
+            if latestCustomPaymentInfo:
+                latestCustomPaymentInfo.balance = DataUtils.strNumToDeciaml(
+                    latestCustomPaymentInfo.balance) - DataUtils.countSaleListPrice(salesList.count, salesList.unitPrice)
 
         session.commit()
         session.close()
@@ -162,9 +162,9 @@ class SalesListDBUtils(object):
             latestCustomPaymentInfo = session.query(CustomPaymentInfo).order_by(desc(CustomPaymentInfo.payTime),
                                                                                 desc(CustomPaymentInfo.id)).filter(
                 CustomPaymentInfo.customName == salesList.customName).first()
-
-            latestCustomPaymentInfo.balance = DataUtils.strNumToDeciaml(
-                latestCustomPaymentInfo.balance) - DataUtils.countSaleListPrice(salesList.count, salesList.unitPrice)
+            if latestCustomPaymentInfo:
+                latestCustomPaymentInfo.balance = DataUtils.strNumToDeciaml(
+                    latestCustomPaymentInfo.balance) - DataUtils.countSaleListPrice(salesList.count, salesList.unitPrice)
 
         session.commit()
         session.close()

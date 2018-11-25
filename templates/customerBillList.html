@@ -19,7 +19,6 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    {#                    <h5>客户对账单 -- 按时间段筛选</h5>#}
                     <div>
                         客户名称: <select id="customName" style="width: 150px"> </select>
                         账单年月:
@@ -81,17 +80,17 @@
                     $("#customName").append($("<option value=\"" + decodeUnicode($.trim(strArr[i])) + "\">" + decodeUnicode($.trim(strArr[i])) + "</option>"));
                 }
 
-                var minYear = parseInt((result.earliestStorageDate.substring(0, 4)))
-                var maxYear = parseInt((result.latestStorageDate.substring(0, 4)))
-                $("#billDateYear").html(""); //绑定日期年份下拉菜单
-                for (var year = maxYear; year >= minYear; year--) {
-                    $("#billDateYear").append($("<option value=\"" + year + "\">" + year + "</option>"));
-                }
+                //var minYear = parseInt((result.earliestStorageDate.substring(0, 4)))
+                //var maxYear = parseInt((result.latestStorageDate.substring(0, 4)))
+                //$("#billDateYear").html(""); //绑定日期年份下拉菜单
+               // for (var year = maxYear; year >= minYear; year--) {
+                 //   $("#billDateYear").append($("<option value=\"" + year + "\">" + year + "</option>"));
+               // }
 
-                $("#billDateMonth").html(""); //绑定日期月份下拉菜单
-                for (var month = 1; month <= 12; month++) {
-                    $("#billDateMonth").append($("<option value=\"" + prefixInteger(month, 2) + "\">" + prefixInteger(month, 2) + "</option>"));
-                }
+                //$("#billDateMonth").html(""); //绑定日期月份下拉菜单
+               // for (var month = 1; month <= 12; month++) {
+                //    $("#billDateMonth").append($("<option value=\"" + prefixInteger(month, 2) + "\">" + prefixInteger(month, 2) + "</option>"));
+               // }
             }
         });
     }
@@ -172,7 +171,7 @@
     });
 
     function createBillListTable() {
-        var url = "./customerStatement.html" + "?" + "customName=" + $(" #customName ").val() + "&billDateYear=" + $(" #billDateYear ").val() + "&billDateMonth=" + $(" #billDateMonth ").val();
+        var url = "./customerStatement.html" + "?" + "customName=" + $(" #customName ").val() + "&billDate=" + $(" #billDate ").val();
         window.open(encodeURI(url));
     }
 </script>
