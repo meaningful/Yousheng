@@ -20,13 +20,16 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-{#                    <h5>销售单报表 -- 按时间段筛选</h5>#}
                     <div>
-                        按照时间段查询已入库的销售单：
+                        查询已入库的销售单：
+                        客户名称: <select id="customName" style="width: 150px"> </select> &nbsp;&nbsp;
+                        气体类型: <select id="category" style="width: 150px"> </select> &nbsp;&nbsp;
                         下单日期 From:
-                        <input id="fromDate" class="Wdate" type="text" onClick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd'})">
+                        <input id="fromDate" class="Wdate" type="text"
+                               onClick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd'})">
                         To:
-                        <input id="deadline" class="Wdate" type="text" onClick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd'})">
+                        <input id="deadline" class="Wdate" type="text"
+                               onClick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd'})">
 
                         {#                        <select id="invoiced" name="invoiced">#}
                         {#                            <option value="NA" selected="selected"> NA</option>#}
@@ -34,8 +37,7 @@
                         {#                            <option value="是"> 是</option>#}
                         {#                             #}
                         {#                        </select>#}
-
-                        <button onclick="searchByDate()">查询</button>
+                        <button onclick="searchByDate()" style="width: 80px;">查询</button>
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -57,15 +59,69 @@
 
 <script type="text/javascript">
 
+    function isEmpty(obj) {
+        if (typeof obj == "undefined" || obj == null || obj == "") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function decodeUnicode(str) {
+        str = str.replace(/\\/g, "%");
+        return unescape(str);
+    }
+
+    function handleData(item) {
+        var data = item.substring(1, item.length - 1);
+        var str = data.replace(/\"/g, "")
+        var strArr = str.split(",")
+        return strArr
+    }
+
+
+    //初始化下拉菜单数据
+    function initSelectOptions() {
+        $.ajax({
+            type: "get",
+            async: true,
+            url: "./getSelectDataForReport",
+            dataType: "json",
+            success: function (result) {
+                // 解析客户名称
+                strArrCustomerNames = handleData(result.allCustomNames);
+                $("#customName").html(""); //绑定客户名称下拉菜单
+                $("#customName").append($("<option value=\"\"> --所有客户-- </option>"));
+                for (var i = 0; i < strArrCustomerNames.length; i++) {
+                    $("#customName").append($("<option value=\"" + decodeUnicode($.trim(strArrCustomerNames[i])) + "\">" + decodeUnicode($.trim(strArrCustomerNames[i])) + "</option>"));
+                }
+                console.log(result.allGasNames)
+                $("#category").html("");
+                $("#category").append($("<option value=\"\"> --所有类型-- </option>"));
+                //解析气体种类
+                strArrGasCategory = handleData(result.allGasNames);
+                for (var i = 0; i < strArrGasCategory.length; i++) {
+                    $("#category").append($("<option value=\"" + decodeUnicode($.trim(strArrGasCategory[i])) + "\">" + decodeUnicode($.trim(strArrGasCategory[i])) + "</option>"));
+                }
+            }
+        });
+    }
 
     function searchByDate() {
+        var customName = $(" #customName ").val();
+        var category = $(" #category ").val();
         var fromDate = $(" #fromDate ").val();
         var deadline = $(" #deadline ").val();
+
+        if((isEmpty(fromDate) && !isEmpty(deadline)) || (!isEmpty(fromDate) && isEmpty(deadline))){
+            alert("无效的查询条件： 起始日期不正确！");
+        }
+
         //var invoiced = $(" #invoiced ").val();
         $.ajax({
             type: "get",
             async: false,
-            data: {fromDate: fromDate, deadline: deadline},
+            data: {customName: customName, category: category, fromDate: fromDate, deadline: deadline},
             url: "./searchSalesListByDate",
             dataType: "json",
             success: function (result) {
@@ -138,6 +194,10 @@
             $("#table_list_2").setGridWidth(width)
         });
     }
+
+    $(document).ready(function () {
+        initSelectOptions();
+    });
 </script>
 
 </body>

@@ -187,6 +187,15 @@ class SelectItemDataUtils(object):
                 "earliestStorageDate": earliestStorageDate,
                 "latestStorageDate": latestStorageDate}
 
+    @classmethod
+    def getSelectDataForReport(cls):
+        allData = BaseViewUtils.getAllSelectItemDataForSaleList()
+        allCustomNames = ViewModelsDBUtils.getAllCustomNames(allData["allCustomer"])
+        allGasNames = ViewModelsDBUtils.getAllGasName(allData["allGas"])
+
+        return {"allCustomNames": allCustomNames,
+                "allGasNames": allGasNames}
+
     # 获取销售单 Select item 的数据
     @classmethod
     def getAllSelectItemDataForSaleList(cls):

@@ -100,7 +100,7 @@ class SalesListDBUtils(object):
     IS_STORAGED_NO = "否"
     IS_INVOICED_YES = "是"
     IS_INVOICED_NO = "否"
-    IS_INVOICED_NA = "NA"
+    IS_NA = "NA"
 
     @classmethod
     def add(cls, salesList):
@@ -211,7 +211,7 @@ class SalesListDBUtils(object):
         return allSalesList
 
     @classmethod
-    def queryAllSalesListByDate(cls, fromDate, deadline):
+    def queryAllSalesListByDate(cls, customName, category, fromDate, deadline):
         session = DBSession()
         # if isInvoiced == SalesListDBUtils.IS_INVOICED_NA:
         #     queryAll = session.query(SalesList).order_by(asc(SalesList.orderDate)).filter(
@@ -222,10 +222,55 @@ class SalesListDBUtils(object):
         #             SalesList.isInvoiced == isInvoiced,
         #             SalesList.orderDate >= fromDate,
         #             SalesList.orderDate <= deadline).all()
-        queryAll = session.query(SalesList).order_by(asc(SalesList.orderDate)).filter(
-            SalesList.isStoraged == SalesListDBUtils.IS_STORAGED_YES,
-            SalesList.orderDate >= fromDate,
-            SalesList.orderDate <= deadline).all()
+
+        # 1. 仅 customName 不为空
+        if customName.strip() and not category.strip() and not fromDate.strip() and not deadline.strip():
+            queryAll = session.query(SalesList).order_by(desc(SalesList.orderDate)).filter(
+                SalesList.customName == customName,
+                SalesList.isStoraged == SalesListDBUtils.IS_STORAGED_YES).all()
+        # 2. 仅 category 不为空
+        elif not customName.strip() and category.strip() and not fromDate.strip() and not deadline.strip():
+            queryAll = session.query(SalesList).order_by(desc(SalesList.orderDate)).filter(
+                SalesList.category == category,
+                SalesList.isStoraged == SalesListDBUtils.IS_STORAGED_YES).all()
+        # 3. 仅 date 不为空
+        elif not customName.strip() and not category.strip() and fromDate.strip() and deadline.strip():
+            queryAll = session.query(SalesList).order_by(desc(SalesList.orderDate)).filter(
+                SalesList.orderDate >= fromDate,
+                SalesList.orderDate <= deadline,
+                SalesList.isStoraged == SalesListDBUtils.IS_STORAGED_YES).all()
+        # 4. 仅 customName 为空
+        elif not customName.strip() and category.strip() and fromDate.strip() and deadline.strip():
+            queryAll = session.query(SalesList).order_by(desc(SalesList.orderDate)).filter(
+                SalesList.category == category,
+                SalesList.orderDate >= fromDate,
+                SalesList.orderDate <= deadline,
+                SalesList.isStoraged == SalesListDBUtils.IS_STORAGED_YES).all()
+        # 5. 仅 category 为空
+        elif customName.strip() and not category.strip() and fromDate.strip() and deadline.strip():
+            queryAll = session.query(SalesList).order_by(desc(SalesList.orderDate)).filter(
+                SalesList.customName == customName,
+                SalesList.orderDate >= fromDate,
+                SalesList.orderDate <= deadline,
+                SalesList.isStoraged == SalesListDBUtils.IS_STORAGED_YES).all()
+        # 6. 仅 date 为空
+        elif customName.strip() and category.strip() and not fromDate.strip() and not deadline.strip():
+            queryAll = session.query(SalesList).order_by(desc(SalesList.orderDate)).filter(
+                SalesList.customName == customName,
+                SalesList.category == category,
+                SalesList.isStoraged == SalesListDBUtils.IS_STORAGED_YES).all()
+        # 7.查询条件全部不为空
+        elif customName.strip() and category.strip() and fromDate.strip() and deadline.strip():
+            queryAll = session.query(SalesList).order_by(desc(SalesList.orderDate)).filter(
+                SalesList.customName == customName,
+                SalesList.category == category,
+                SalesList.orderDate >= fromDate,
+                SalesList.orderDate <= deadline,
+                SalesList.isStoraged == SalesListDBUtils.IS_STORAGED_YES).all()
+        # 8.查询条件全部为空则查询所有已入库销售单
+        elif not customName.strip() and not category.strip() and not fromDate.strip() and not deadline.strip():
+            queryAll = session.query(SalesList).order_by(desc(SalesList.orderDate)).filter(
+                SalesList.isStoraged == SalesListDBUtils.IS_STORAGED_YES).all()
 
         allSalesList = []
         for item in queryAll:

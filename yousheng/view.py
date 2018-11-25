@@ -169,8 +169,11 @@ def salesListReport(request):
 
 # 根据时间段查询已入库的销售单
 def searchSalesListByDate(request):
+    customName = request.GET.get("customName")
+    category = request.GET.get("category")
     fromDate = request.GET.get("fromDate")
     deadline = request.GET.get("deadline")
+
     # invoiced = request.GET.get("invoiced")
     # isInvoiced = ""
     # if invoiced == SalesListDBUtils.IS_INVOICED_YES:
@@ -180,7 +183,7 @@ def searchSalesListByDate(request):
     # else:
     #     isInvoiced = SalesListDBUtils.IS_INVOICED_NA
 
-    allSalesList = SalesListDBUtils.queryAllSalesListByDate(fromDate, deadline)
+    allSalesList = SalesListDBUtils.queryAllSalesListByDate(customName, category, fromDate, deadline)
     return JsonResponse({'showData': json.dumps(allSalesList)})
 
 
@@ -715,6 +718,12 @@ def getAllVehicleIDs(request):
 #     allSupercargoNames = ViewModelsDBUtils.getAllSupercargoNames()
 #     return JsonResponse({"allSupercargoNames": allSupercargoNames})
 
+
+# 获取销售/采购报表页面Select选项数据(客户名称，气体种类)
+def getSelectDataForReport(request):
+    allSelectItemDatas = SelectItemDataUtils.getSelectDataForReport()
+    return JsonResponse({"allCustomNames": allSelectItemDatas["allCustomNames"],
+                         "allGasNames": allSelectItemDatas["allGasNames"]})
 
 # 获取客户对账单页面select选项数据
 def getCustomerBillListSelectData(request):

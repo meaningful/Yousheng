@@ -68,6 +68,7 @@ urlpatterns = [
     url(r'^getAllVehicleIDs', view.getAllVehicleIDs),
     url(r'^getTrailerIDs', view.getTrailerIDs),
     url(r'^getCustomerBillListSelectData$', view.getCustomerBillListSelectData),
+    url(r'^getSelectDataForReport', view.getSelectDataForReport),
     url(r'^getAllSelectItemDataForSaleList', view.getAllSelectItemDataForSaleList),
     url(r'^getAllSelectItemDataForMaterialPurchase', view.getAllSelectItemDataForMaterialPurchase),
     url(r'^getBaseInfoForHome', view.getBaseInfoForHome),
