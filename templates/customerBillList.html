@@ -157,10 +157,12 @@
             url: "./searchForCustomerBillList",
             dataType: "json",
             success: function (result) {
+                var dataShow = eval('(' + result.showData + ')');
+                var data = dataShow.allSalesLists;
                 //清除旧数据
                 $("#table_list_2").jqGrid("clearGridData");
                 //显示新的数据
-                showData(eval('(' + result.showData + ')'));
+                showData(data);
             }
         });
     }

@@ -137,6 +137,14 @@ class ViewModelsDBUtils(object):
     def getAllSupercargoNames(cls):
         return ViewModelsDBUtils.getAllStaffNamesByCategory(StaffManageDBUtils.STAFF_CATEGORY_SUPERCARGO)
 
+    @classmethod
+    def queryAllSalesListForCustomerBillList(cls, customName, fromDate, deadline):
+        customer = CustomerManageDBUtils.queryByCustomName(customName)
+        allSalesLists = SalesListDBUtils.queryAllSalesListForCustomerBillList(customName, fromDate, deadline)
+        return {"customer": customer,
+                "allSalesLists": allSalesLists,
+                }
+
 
 class SelectItemDataUtils(object):
     # 获取所有气体名称Select Item 的数据（供应商管理）

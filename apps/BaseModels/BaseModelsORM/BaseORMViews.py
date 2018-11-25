@@ -173,6 +173,15 @@ class CustomerManageDBUtils(object):
         session.close()
         return allCustomer
 
+    @classmethod
+    def queryByCustomName(cls, customName):
+        session = DBSession()
+        queryItem = session.query(CustomerManage).filter(CustomerManage.customName == customName).first()
+        customer_json = json.dumps(object2dict(queryItem), cls=DateEncoder)
+        customer = json.loads(customer_json)
+        session.close()
+        return customer
+
 
 # <- 客户管理表 End ->
 
@@ -884,5 +893,3 @@ class BaseViewUtils(object):
 
         session.close()
         return allTips
-
-

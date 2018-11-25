@@ -152,7 +152,7 @@ def searchForCustomerBillList(request):
     customName = request.GET.get("customName")
     fromDate = request.GET.get("fromDate")
     deadline = request.GET.get("deadline")
-    allSalesList = SalesListDBUtils.queryAllSalesListForCustomerBillList(customName, fromDate, deadline)
+    allSalesList = ViewModelsDBUtils.queryAllSalesListForCustomerBillList(customName, fromDate, deadline)
     return JsonResponse({'showData': json.dumps(allSalesList)})
 
 

@@ -18,46 +18,172 @@
 
     <tr>
         <td width="15%">收件人（To）</td>
-        <td width="25%" height="25px"><input style="width:100%;height:100%;border: 0px;"></td>
+        <td width="25%" height="25px"><input id="addressee"
+                                             style="width:100%;height:100%;border: 0px;font-size: 16px;">
+        </td>
         <td width="15%">发件人（From）</td>
-        <td width="25%" height="25px"><input style="width:100%;height:100%;border: 0px;"></td>
+        <td width="25%" height="25px"><input style="width:100%;height:100%;border: 0px; font-size: 16px;"></td>
     </tr>
 
     <tr>
         <td width="15%">公司（Company）</td>
-        <td width="25%" height="25px"><input style="width:100%;height:100%;border: 0px;"></td>
+        <td width="25%" height="25px"><input id="buyerCompany"
+                                             style="width:100%;height:100%;border: 0px;font-size: 16px;"></td>
         <td width="15%">公司（Company）</td>
-        <td width="25%" height="25px"><input style="width:100%;height:100%;border: 0px;"></td>
+        <td width="25%" height="25px"><input id="sellerCompany"
+                                             style="width:100%;height:100%;border: 0px;font-size: 16px;"></td>
     </tr>
     <tr>
         <td width="15%">传真（Fax）</td>
-        <td width="25%" height="25px"><input style="width:100%;height:100%;border: 0px;"></td>
+        <td width="25%" height="25px"><input id="buyerFax" style="width:100%;height:100%;border: 0px;font-size: 16px;">
+        </td>
         <td width="15%">电话（Tel）</td>
-        <td width="25%" height="25px"><input style="width:100%;height:100%;border: 0px;"></td>
+        <td width="25%" height="25px"><input style="width:100%;height:100%;border: 0px;font-size: 16px;"></td>
     </tr>
     <tr>
         <td width="15%">电话（Tel）</td>
-        <td width="25%" height="25px"><input style="width:100%;height:100%;border: 0px;"></td>
+        <td width="25%" height="25px"><input id="buyerTel" style="width:100%;height:100%;border: 0px;font-size: 16px;">
+        </td>
         <td width="15%">日期（Date）</td>
-        <td width="25%" height="25px"><input style="width:100%;height:100%;border: 0px;"></td>
+        <td width="25%" height="25px"><input id="mailDate" style="width:100%;height:100%;border: 0px; font-size: 16px;">
+        </td>
     </tr>
 
 </table>
 <script src="{% static "js/jquery.min.js" %}?v=2.1.4"></script>
 <script type="text/javascript">
+    function toDecimal(x) {
+        var f = parseFloat(x);
+        if (isNaN(f)) {
+            return false;
+        }
+        var f = Math.round(x * 100) / 100;
+        var s = f.toString();
+        var rs = s.indexOf('.');
+        if (rs < 0) {
+            rs = s.length;
+            s += '.';
+        }
+        while (s.length <= rs + 2) {
+            s += '0';
+        }
+        return s;
+    }
+
+    function convertCurrency(money) {
+        //汉字的数字
+        var cnNums = new Array('零', '壹', '贰', '叁', '肆', '伍', '陆', '柒', '捌', '玖');
+        //基本单位
+        var cnIntRadice = new Array('', '拾', '佰', '仟');
+        //对应整数部分扩展单位
+        var cnIntUnits = new Array('', '万', '亿', '兆');
+        //对应小数部分单位
+        var cnDecUnits = new Array('角', '分', '毫', '厘');
+        //整数金额时后面跟的字符
+        var cnInteger = '整';
+        //整型完以后的单位
+        var cnIntLast = '元';
+        //最大处理的数字
+        var maxNum = 999999999999999.9999;
+        //金额整数部分
+        var integerNum;
+        //金额小数部分
+        var decimalNum;
+        //输出的中文金额字符串
+        var chineseStr = '';
+        //分离金额后用的数组，预定义
+        var parts;
+        if (money == '') {
+            return '';
+        }
+        money = parseFloat(money);
+        if (money >= maxNum) {
+            //超出最大处理数字
+            return '';
+        }
+        if (money == 0) {
+            chineseStr = cnNums[0] + cnIntLast + cnInteger;
+            return chineseStr;
+        }
+        //转换为字符串
+        money = money.toString();
+        if (money.indexOf('.') == -1) {
+            integerNum = money;
+            decimalNum = '';
+        } else {
+            parts = money.split('.');
+            integerNum = parts[0];
+            decimalNum = parts[1].substr(0, 4);
+        }
+        //获取整型部分转换
+        if (parseInt(integerNum, 10) > 0) {
+            var zeroCount = 0;
+            var IntLen = integerNum.length;
+            for (var i = 0; i < IntLen; i++) {
+                var n = integerNum.substr(i, 1);
+                var p = IntLen - i - 1;
+                var q = p / 4;
+                var m = p % 4;
+                if (n == '0') {
+                    zeroCount++;
+                } else {
+                    if (zeroCount > 0) {
+                        chineseStr += cnNums[0];
+                    }
+                    //归零
+                    zeroCount = 0;
+                    chineseStr += cnNums[parseInt(n)] + cnIntRadice[m];
+                }
+                if (m == 0 && zeroCount < 4) {
+                    chineseStr += cnIntUnits[q];
+                }
+            }
+            chineseStr += cnIntLast;
+        }
+        //小数部分
+        if (decimalNum != '') {
+            var decLen = decimalNum.length;
+            for (var i = 0; i < decLen; i++) {
+                var n = decimalNum.substr(i, 1);
+                if (n != '0') {
+                    chineseStr += cnNums[Number(n)] + cnDecUnits[i];
+                }
+            }
+        }
+        if (chineseStr == '') {
+            chineseStr += cnNums[0] + cnIntLast + cnInteger;
+        } else if (decimalNum == '') {
+            chineseStr += cnInteger;
+        }
+        return chineseStr;
+    }
+
+    function getCurrentFormatDate() {
+        var nowDate = new Date();
+        var year = nowDate.getFullYear();
+        var month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1) : nowDate.getMonth() + 1;
+        var date = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();
+        return year + "-" + month + "-" + date;
+    }
+
     $(document).ready(function () {
         var url = window.location.href;
         var herfData = url.split("=");
         var customName = decodeURI(String((herfData[1].split("&"))[0]));
-        var billDate =  (herfData[2].split("&"))[0];
-        var billDateYear = billDate.slice(0,4);
-        var billDateMonth = billDate.slice(5,7);
+        var billDate = (herfData[2].split("&"))[0];
+        var billDateYear = billDate.slice(0, 4);
+        var billDateMonth = billDate.slice(5, 7);
 
         var strTableTitle = billDateYear + "年" + billDateMonth + "月份" + customName + "液体结算明细";
         $("#tableTitle").text(strTableTitle);
 
         var fromDate = billDateYear + "-" + billDateMonth + "-01";
         var deadline = billDateYear + "-" + billDateMonth + "-31";
+        $("#buyerCompany").val(customName);
+        $("#sellerCompany").val("武汉友盛气体责任有限公司");
+        var mailDate = getCurrentFormatDate();
+        $("#mailDate").val(mailDate);
+
 
         $.ajax({
             type: "get",
@@ -66,9 +192,12 @@
             url: "./searchForCustomerBillList",
             dataType: "json",
             success: function (result) {
-                console.log(result.showData);
-                var data = eval('(' + result.showData + ')');
-                console.log(data.length);
+                var dataShow = eval('(' + result.showData + ')');
+                var data = dataShow.allSalesLists;
+                var customerInfo = dataShow.customer;
+                $("#addressee").val(customerInfo.companyContact);
+                $("#buyerFax").val(customerInfo.fax);
+                $("#buyerTel").val(customerInfo.tel);
 
                 var html = "";
 
@@ -89,10 +218,12 @@
                 html += "</tr>";
 
                 var length = data.length;
+                var sumAmount = 0;
+                var sumTotal = 0;
 
                 for (var i = 0; i < length; i++) {
-                    console.log(data[i]);
                     var item = data[i];
+                    var total = toDecimal(item.count * item.unitPrice);
                     html += "<tr>";
                     html += "<td>" + (i + 1) + "</td>";
                     html += "<td>" + item.category + "</td>";
@@ -101,20 +232,33 @@
                     html += "<td>" + item.count + "</td>";
                     html += "<td>" + item.count + "</td>";
                     html += "<td>" + item.unitPrice + "</td>";
-                    html += "<td>" + 999 + "</td>";
-                    html += "<td>" + "<input style='width:100%;height:100%;border: 0px;'>" + "</td>";
+                    html += "<td>" + total + "</td>";
+                    html += "<td>" + "<input style='width:100%;height:100%;border: 0px; font-size: 16px;'>" + "</td>";
                     html += "</tr>";
+
+                    sumAmount += parseFloat(item.count);
+                    sumTotal += parseFloat(total);
+
                 }
+                console.log(sumAmount)
+                console.log(sumTotal)
+
 
                 html += "<tr>";
                 html += "<td width='10%' rowspan='2'>" + "合计" + "</td>";
                 for (var i = 0; i < 8; i++) {
-                    html += "<td width='10%'>" + "<input style='width:100%;height:100%;border: 0px;'>" + "</td>";
+                    if (i == 3 || i == 4) {
+                        html += "<td width='10%'>" + toDecimal(sumAmount) + "</td>";
+                    } else if (i == 6) {
+                        html += "<td width='10%'>" + toDecimal(sumTotal) + "</td>";
+                    } else {
+                        html += "<td width='10%'>" + "<input style='width:100%;height:100%;border: 0px; font-size: 16px;'>" + "</td>";
+                    }
                 }
                 html += "</tr>";
 
                 html += "<tr>";
-                html += "<td width='10%' colspan='8'>" + "<input style='width:100%;height:100%;border: 0px;'>" + "</td>";
+                html += "<td width='10%' colspan='8'>" + convertCurrency(toDecimal(sumTotal)) + '&nbsp;&nbsp;(&nbsp;' + toDecimal(sumTotal) + '&nbsp;)' + "</td>";
                 html += "</tr>";
 
                 $("#list_tab").html(html);
@@ -133,15 +277,15 @@
 <div class="div_footer_left">
     <p class="p_bottom_lr">贵公司签字 &nbsp; 盖章确认如下：</P>
     <br>
-    <p>签字：<input type="text"></P>
-    <p>日期：<input type="text"></P>
+    <p>签字：<input type="text" style="font-size: 16px;"></P>
+    <p>日期：<input type="text" style="font-size: 16px;"></P>
 </div>
 
 <div class="div_footer_right">
     <p class="p_bottom_lr">武汉友盛气体有限责任有限公司</P>
-    <p>编制：<input type="text"></P>
-    <p>审核：<input type="text"></P>
-    <p>日期：<input type="text"></P>
+    <p>编制：<input type="text" style="font-size: 16px;"></P>
+    <p>审核：<input type="text" style="font-size: 16px;"></P>
+    <p>日期：<input type="text" style="font-size: 16px;"></P>
 </div>
 </body>
 </html>
